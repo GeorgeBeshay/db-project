@@ -1,6 +1,7 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
 public class PetDocument {
+    private int id;
     private int petId;
     private String documentType;
     private byte[] document;
@@ -9,6 +10,10 @@ public class PetDocument {
         this.petId = petId;
         this.documentType = documentType;
         this.document = document;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getPetId() {
