@@ -84,7 +84,7 @@ BEGIN
 
 CREATE TABLE PET_DOCUMENT (
     id INT IDENTITY(1, 1) PRIMARY KEY,
-    pet_id INT FOREIGN KEY REFERENCES PET(id),
+    pet_id INT NOT NULL FOREIGN KEY REFERENCES PET(id),
     document_type VARCHAR(50) NOT NULL,
     document VARBINARY(MAX) NOT NULL
 );
@@ -101,7 +101,7 @@ IF dbo.relation_exists(@inputTableName) = 0
 BEGIN
 
 CREATE TABLE ADOPTION (
-    pet_id INT FOREIGN KEY REFERENCES PET(id),
+    pet_id INT NOT NULL FOREIGN KEY REFERENCES PET(id),
     adopter_id INT,
     PRIMARY KEY (pet_id, adopter_id)
 );
