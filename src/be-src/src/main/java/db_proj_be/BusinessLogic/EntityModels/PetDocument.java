@@ -6,6 +6,7 @@ public class PetDocument {
     private String documentType;
     private byte[] document;
 
+    public PetDocument() {}
     public PetDocument(int petId, String documentType, byte[] document) {
         this.petId = petId;
         this.documentType = documentType;
@@ -14,6 +15,10 @@ public class PetDocument {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getPetId() {

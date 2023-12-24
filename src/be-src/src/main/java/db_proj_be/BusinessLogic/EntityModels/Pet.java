@@ -16,6 +16,8 @@ public class Pet {
     private boolean houseTraining;
     private boolean vaccination;
 
+    public Pet() {}
+
     public Pet(int id, String name, String specie, String breed, String birthdate,
                boolean gender, String healthStatus, String behaviour, String description,
                int shelterId, boolean neutering, boolean houseTraining, boolean vaccination) {
