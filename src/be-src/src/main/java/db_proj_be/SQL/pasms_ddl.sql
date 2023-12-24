@@ -7,7 +7,7 @@ DECLARE @inputTableName VARCHAR(128) = 'ADOPTION_APPLICATION';
 IF dbo.relation_exists(@inputTableName) = 0
 BEGIN
     CREATE TABLE ADOPTION_APPLICATION (
-        id INT,
+        id INT IDENTITY (1, 1),
         adopter_id INT NOT NULL,
         pet_id INT NOT NULL,
         status TINYINT NOT NULL,
