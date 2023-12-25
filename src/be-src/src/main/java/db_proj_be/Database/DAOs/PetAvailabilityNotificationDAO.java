@@ -10,22 +10,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.util.List;
 
-public class AvailabilityNotificationDAO {
+public class PetAvailabilityNotificationDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
     private final BeanPropertyRowMapper<PetAvailabilityNotification> rowMapper;
 
-    public AvailabilityNotificationDAO(JdbcTemplate jdbcTemplate) {
+    public PetAvailabilityNotificationDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.rowMapper = new BeanPropertyRowMapper<>();
+        this.rowMapper = new BeanPropertyRowMapper<>(PetAvailabilityNotification.class);
     }
 
     // Return all rows in the table
     @Transactional
     public List<PetAvailabilityNotification> findAll() {
         try {
-            String sql = "SELECT * FROM AVAILABILITY_NOTIFICATION";
+            String sql = "SELECT * FROM PET_AVAILABILITY_NOTIFICATION";
             return jdbcTemplate.query(sql, rowMapper);
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,7 +37,7 @@ public class AvailabilityNotificationDAO {
     @Transactional
     public List<PetAvailabilityNotification> findByPetId(int petId) {
         try {
-            String sql = "SELECT * FROM AVAILABILITY_NOTIFICATION WHERE pet_id = ?";
+            String sql = "SELECT * FROM PET_AVAILABILITY_NOTIFICATION WHERE pet_id = ?";
             return jdbcTemplate.query(sql, rowMapper, petId);
         } catch (Exception e) {
             return null;
@@ -48,7 +48,7 @@ public class AvailabilityNotificationDAO {
     @Transactional
     public List<PetAvailabilityNotification> findByAdopterId(int adopterId) {
         try {
-            String sql = "SELECT * FROM AVAILABILITY_NOTIFICATION WHERE adopter_id = ?";
+            String sql = "SELECT * FROM PET_AVAILABILITY_NOTIFICATION WHERE adopter_id = ?";
             return jdbcTemplate.query(sql, rowMapper, adopterId);
         } catch (Exception e) {
             return null;
@@ -57,9 +57,9 @@ public class AvailabilityNotificationDAO {
 
     // Return all records with the given status value
     @Transactional
-    public List<PetAvailabilityNotification> findByStatus(int status) {
+    public List<PetAvailabilityNotification> findByStatus(Boolean status) {
         try {
-            String sql = "SELECT * FROM AVAILABILITY_NOTIFICATION WHERE status = ?";
+            String sql = "SELECT * FROM PET_AVAILABILITY_NOTIFICATION WHERE status = ?";
             return jdbcTemplate.query(sql, rowMapper, status);
         } catch (Exception e) {
             return null;
@@ -70,7 +70,7 @@ public class AvailabilityNotificationDAO {
     @Transactional
     public List<PetAvailabilityNotification> findByDate(Date date) {
         try {
-            String sql = "SELECT * FROM AVAILABILITY_NOTIFICATION WHERE date = ?";
+            String sql = "SELECT * FROM PET_AVAILABILITY_NOTIFICATION WHERE date = ?";
             return jdbcTemplate.query(sql, rowMapper, date);
         } catch (Exception e) {
             return null;
@@ -80,6 +80,11 @@ public class AvailabilityNotificationDAO {
     // Save the given availability notification in the database table
     @Transactional
     public boolean create(PetAvailabilityNotification petAvailabilityNotification) {
+        // Guard check for null
+        if (petAvailabilityNotification == null) {
+            throw new IllegalArgumentException("Argument can not be null");
+        }
+
         try {
             String relationName = "PET_AVAILABILITY_NOTIFICATION";
             SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(relationName);
@@ -97,8 +102,13 @@ public class AvailabilityNotificationDAO {
     // and false if no rows where affected
     @Transactional
     public boolean delete(PetAvailabilityNotification petAvailabilityNotification) {
+        // Guard check for null
+        if (petAvailabilityNotification == null) {
+            throw new IllegalArgumentException("Argument can not be null");
+        }
+
         try {
-            String sql = "DELETE FROM AVAILABILITY_NOTIFICATION WHERE pet_id = ?, adopter_id = ?";
+            String sql = "DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE pet_id = ? and adopter_id = ?";
             return jdbcTemplate.update(sql, petAvailabilityNotification.getPetId(),
                     petAvailabilityNotification.getAdopterId()) > 0;
         } catch (Exception e) {
