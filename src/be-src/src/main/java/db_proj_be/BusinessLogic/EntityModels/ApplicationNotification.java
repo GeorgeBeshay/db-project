@@ -1,27 +1,31 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
 import java.sql.Date;
+import java.util.Objects;
 
 public class ApplicationNotification {
 
-    int appId;
+    int applicationId;
     int adopterId;
-    NotificationStatus status;
+    Boolean status; // Equivalent to isRead
     Date date;
 
-    public ApplicationNotification(int appId, int adopterId, NotificationStatus status, Date date) {
-        this.appId = appId;
+    public ApplicationNotification() {
+    }
+
+    public ApplicationNotification(int applicationId, int adopterId, Boolean status, Date date) {
+        this.applicationId = applicationId;
         this.adopterId = adopterId;
         this.status = status;
         this.date = date;
     }
 
-    public int getAppId() {
-        return appId;
+    public int getApplicationId() {
+        return applicationId;
     }
 
-    public void setAppId(int appId) {
-        this.appId = appId;
+    public void setApplicationId(int applicationId) {
+        this.applicationId = applicationId;
     }
 
     public int getAdopterId() {
@@ -32,11 +36,11 @@ public class ApplicationNotification {
         this.adopterId = adopterId;
     }
 
-    public NotificationStatus getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(NotificationStatus status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
@@ -46,5 +50,18 @@ public class ApplicationNotification {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ApplicationNotification that = (ApplicationNotification) o;
+        return applicationId == that.applicationId && adopterId == that.adopterId && status.equals(that.status) && date.equals(that.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(applicationId, adopterId, status, date);
     }
 }
