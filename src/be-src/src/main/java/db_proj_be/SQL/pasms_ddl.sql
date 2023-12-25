@@ -1,19 +1,39 @@
 USE PASMS_DB;
 GO
-
+DECLARE @inputTableName
+VARCHAR(125) = 'ADMINISTRATOR';
+IF
+dbo.relation_exists(@inputTableName) = 0
+BEGIN
 Create table ADMINISTRATOR(
-admin_id int primary key,
-fname varchar(20) NOT NULL,
-lname varchar(20) not null,
+id int primary key,
+fname varchar(50) NOT NULL,
+lname varchar(50) not null,
 email varchar(30) unique not null,
 phone varchar(15),
-password_hash varchar(256) not null)
+password_hash varchar(256) not null);
+END
+ELSE
+BEGIN
+    PRINT 'Administrator relation already exists.';
+END
+GO
 
+DECLARE @inputTableName
+VARCHAR(125) = 'SHELTER';
+IF
+dbo.relation_exists(@inputTableName) = 0
+BEGIN
 Create table SHELTER(
-shelter_id int primary key,
-shelter_name varchar(50) not null,
-shelter_location varchar(255) not null,
-shelter_email varchar(255) not null,
-shelter_phone varchar(15) not null,
-shelter_manager int foreign key references STAFF(id));
-
+id int primary key,
+name varchar(50) not null,
+location varchar(255) not null,
+email varchar(255) not null,
+phone varchar(15) not null,
+manager int foreign key references STAFF(id));
+END
+ELSE
+BEGIN
+    PRINT 'Shelter relation already exists.';
+END
+GO
