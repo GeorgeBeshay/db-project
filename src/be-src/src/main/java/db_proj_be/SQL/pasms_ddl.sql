@@ -10,7 +10,7 @@ BEGIN
         id INT IDENTITY (1, 1),
         adopter_id INT NOT NULL,
         pet_id INT NOT NULL,
-        status TINYINT NOT NULL,
+        status VARCHAR(10) NOT NULL CHECK (status IN ('Pending', 'Approved', 'Rejected')),
         experience BIT NOT NULL,
         creation_date DATE NOT NULL,
         closing_date DATE,
