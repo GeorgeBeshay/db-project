@@ -17,8 +17,7 @@ public class AdoptionApplication {
     public AdoptionApplication() {
     }
 
-    public AdoptionApplication(int id, int adopterId, int petId, ApplicationStatus status, String description, Boolean experience, Date creationDate, Date closingDate) {
-        this.id = id;
+    public AdoptionApplication(int adopterId, int petId, ApplicationStatus status, String description, Boolean experience, Date creationDate, Date closingDate) {
         this.adopterId = adopterId;
         this.petId = petId;
         this.status = status;
@@ -97,7 +96,7 @@ public class AdoptionApplication {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AdoptionApplication that = (AdoptionApplication) o;
-        return id == that.id && adopterId == that.adopterId && petId == that.petId && status == that.status && description.equals(that.description) && experience.equals(that.experience) && creationDate.equals(that.creationDate) && Objects.equals(closingDate, that.closingDate);
+        return adopterId == that.adopterId && petId == that.petId && status == that.status && description.equals(that.description) && experience.equals(that.experience) && creationDate.equals(that.creationDate) && Objects.equals(closingDate, that.closingDate);
     }
 
     @Override
