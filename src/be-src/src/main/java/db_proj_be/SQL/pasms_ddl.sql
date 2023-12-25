@@ -7,8 +7,8 @@ dbo.relation_exists(@inputTableName) = 0
 BEGIN
 Create table ADMINISTRATOR(
 id int primary key,
-fname varchar(50) NOT NULL,
-lname varchar(50) not null,
+first_name varchar(50) NOT NULL,
+last_name varchar(50) not null,
 email varchar(30) unique not null,
 phone varchar(15),
 password_hash varchar(256) not null);
