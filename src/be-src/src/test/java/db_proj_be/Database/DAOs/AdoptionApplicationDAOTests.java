@@ -19,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /*
  * Important Notes and Assumptions
  * ---------------------------------
- * The implementation within this test class assumes that the ids from 10_000 to 10_010 (inclusively)
+ * The implementation within this test class assumes that the ids from 10_000 to 10_011 (inclusively)
+ * besides to adopter ids from 20_000 to 20_011 and pet ids from 30_000 to 30_011 (inclusively)
  * are used for testing, and so the DB state should never contain a record containing any of those ids,
  * in addition to testing using this ids will not modify the db state, but instead create a temp record during the
  * test processing, and then remove the record when terminate the test.
@@ -49,7 +50,6 @@ public class AdoptionApplicationDAOTests {
     @Test
     public void testAdoptionApplicationCreationAllArguments() {
         // Arrange
-        int id = 10_000;
         int adopterId = 20_000;
         int pet_id = 30_000;
         ApplicationStatus status = ApplicationStatus.REJECTED;
@@ -58,7 +58,7 @@ public class AdoptionApplicationDAOTests {
         Date creationDate = Date.valueOf("1990-12-13");
         Date closingDate = Date.valueOf("2001-12-15");
 
-        AdoptionApplication adoptionApplication = new AdoptionApplication(id, adopterId, pet_id, status, description, experience, creationDate, closingDate);
+        AdoptionApplication adoptionApplication = new AdoptionApplication(adopterId, pet_id, status, description, experience, creationDate, closingDate);
 
         // Act
         boolean isSuccess = adoptionApplicationDAO.create(adoptionApplication);
@@ -67,13 +67,12 @@ public class AdoptionApplicationDAOTests {
         assertTrue(isSuccess);
 
         // Clean (to prevent modifying the DB current state)
-        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", id);
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE adopter_id = ?", adopterId);
     }
 
     @Test
     public void testAdoptionApplicationCreationRequiredAttributesOnly() {
         // Arrange
-        int id = 10_001;
         int adopterId = 20_001;
         int pet_id = 30_001;
         ApplicationStatus status = ApplicationStatus.PENDING;
@@ -82,7 +81,6 @@ public class AdoptionApplicationDAOTests {
         Date creationDate = Date.valueOf("1990-12-13");
 
         AdoptionApplication adoptionApplication = new AdoptionApplication();
-        adoptionApplication.setId(id);
         adoptionApplication.setAdopterId(adopterId);
         adoptionApplication.setPetId(pet_id);
         adoptionApplication.setStatus(status);
@@ -97,41 +95,39 @@ public class AdoptionApplicationDAOTests {
         assertTrue(isSuccess);
 
         // Clean (to prevent modifying the DB current state)
-        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", id);
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE adopter_id = ?", adopterId);
     }
 
-    @Test
-    public void testAdoptionApplicationCreationDuplicateObjects() {
-        // Arrange
-        int id = 10_002;
-        int adopterId = 20_002;
-        int pet_id = 30_002;
-        ApplicationStatus status = ApplicationStatus.REJECTED;
-        String description = "I need to adopt this pet.";
-        Boolean experience = false;
-        Date creationDate = Date.valueOf("1990-12-13");
-        Date closingDate = Date.valueOf("2001-12-15");
-
-        AdoptionApplication adoptionApplication = new AdoptionApplication(id, adopterId, pet_id, status, description, experience, creationDate, closingDate);
-
-        // Act
-        boolean isSuccess = adoptionApplicationDAO.create(adoptionApplication);
-
-        // Assert
-        assertTrue(isSuccess);
-        isSuccess = adoptionApplicationDAO.create(adoptionApplication);
-
-        // Assert
-        assertFalse(isSuccess);
-
-        // Clean (to prevent modifying the DB current state)
-        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", id);
-    }
+//    @Test
+//    public void testAdoptionApplicationCreationDuplicateObjects() {
+//        // Arrange
+//        int adopterId = 20_002;
+//        int pet_id = 30_002;
+//        ApplicationStatus status = ApplicationStatus.REJECTED;
+//        String description = "I need to adopt this pet.";
+//        Boolean experience = false;
+//        Date creationDate = Date.valueOf("1990-12-13");
+//        Date closingDate = Date.valueOf("2001-12-15");
+//
+//        AdoptionApplication adoptionApplication = new AdoptionApplication(adopterId, pet_id, status, description, experience, creationDate, closingDate);
+//
+//        // Act
+//        boolean isSuccess = adoptionApplicationDAO.create(adoptionApplication);
+//
+//        // Assert
+//        assertTrue(isSuccess);
+//        isSuccess = adoptionApplicationDAO.create(adoptionApplication);
+//
+//        // Assert
+//        assertFalse(isSuccess);
+//
+//        // Clean (to prevent modifying the DB current state)
+//        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE adopter_id = ?", adopterId);
+//    }
 
     @Test
     public void testAdoptionApplicationCreationMissingAttributes() {
         // Arrange
-        int id = 10_003;
         int adopterId = 20_003;
         int pet_id = 30_003;
         ApplicationStatus status = null;
@@ -140,7 +136,6 @@ public class AdoptionApplicationDAOTests {
         Date creationDate = null;
 
         AdoptionApplication adoptionApplication = new AdoptionApplication();
-        adoptionApplication.setId(id);
         adoptionApplication.setAdopterId(adopterId);
         adoptionApplication.setPetId(pet_id);
         adoptionApplication.setStatus(status);
@@ -177,11 +172,11 @@ public class AdoptionApplicationDAOTests {
     @Test
     public void testAdoptionApplicationDeletionObjectDoesntExist() {
         // Arrange - none
-        AdoptionApplication adopter = new AdoptionApplication();
-        adopter.setId(10_004);
+        AdoptionApplication adoptionApplication = new AdoptionApplication();
+        adoptionApplication.setId(10_004);
 
         // Act
-        boolean isSuccess = adoptionApplicationDAO.delete(adopter);
+        boolean isSuccess = adoptionApplicationDAO.delete(adoptionApplication);
 
         // Assert
         assertFalse(isSuccess);
@@ -191,7 +186,6 @@ public class AdoptionApplicationDAOTests {
     public void testAdoptionApplicationDeletionValidObject() {
         // Arrange - none
         // Arrange
-        int id = 10_005;
         int adopterId = 20_005;
         int pet_id = 30_005;
         ApplicationStatus status = ApplicationStatus.REJECTED;
@@ -200,15 +194,17 @@ public class AdoptionApplicationDAOTests {
         Date creationDate = Date.valueOf("1990-12-13");
         Date closingDate = Date.valueOf("2001-12-15");
 
-        AdoptionApplication adoptionApplication = new AdoptionApplication(id, adopterId, pet_id, status, description, experience, creationDate, closingDate);
+        AdoptionApplication adoptionApplication = new AdoptionApplication(adopterId, pet_id, status, description, experience, creationDate, closingDate);
 
 
         // Add the record to the DB
         boolean isSuccess = adoptionApplicationDAO.create(adoptionApplication);
         assertTrue(isSuccess);
 
+        AdoptionApplication fetchedApp = adoptionApplicationDAO.findByAdopterId(adopterId).get(0);
+
         // Act
-        isSuccess = adoptionApplicationDAO.delete(adoptionApplication);
+        isSuccess = adoptionApplicationDAO.delete(fetchedApp);
 
         // Assert
         assertTrue(isSuccess);
@@ -241,7 +237,6 @@ public class AdoptionApplicationDAOTests {
     @Test
     public void testAdoptionApplicationUpdatingValidObject() {
         // Arrange
-        int id = 10_007;
         int adopterId = 20_007;
         int pet_id = 30_007;
         ApplicationStatus status = ApplicationStatus.PENDING;
@@ -250,7 +245,6 @@ public class AdoptionApplicationDAOTests {
         Date creationDate = Date.valueOf("1990-12-13");
 
         AdoptionApplication adoptionApplication = new AdoptionApplication();
-        adoptionApplication.setId(id);
         adoptionApplication.setAdopterId(adopterId);
         adoptionApplication.setPetId(pet_id);
         adoptionApplication.setStatus(status);
@@ -268,33 +262,34 @@ public class AdoptionApplicationDAOTests {
         adoptionApplication.setClosingDate(closingDate);
 
         // Act
+        AdoptionApplication fetchedAdoptionApp = adoptionApplicationDAO.findByAdopterId(adopterId).get(0);
+        adoptionApplication.setId(fetchedAdoptionApp.getId());
         isSuccess = adoptionApplicationDAO.update(adoptionApplication);
-        AdoptionApplication fetchedAdoptionApp = adoptionApplicationDAO.findById(id);
-        System.out.println(fetchedAdoptionApp);
+        fetchedAdoptionApp = adoptionApplicationDAO.findById(fetchedAdoptionApp.getId());
+
         // Assert
         assertTrue(isSuccess);
         assertEquals(fetchedAdoptionApp.getStatus(), newStatus);
         assertEquals(fetchedAdoptionApp.getClosingDate(), closingDate);
 
         // clean
-        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", id);
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", fetchedAdoptionApp.getId());
     }
 
     // ------------------------- Find Tests -------------------------
 
     @Test
-    public void testAdoptionApplicationFindIdDoesntExist() {
+    public void testAdoptionApplicationFindAdopterIdDoesntExist() {
         // Arrange - none
-        int id = 10_008;
+        int adopterId = 20_008;
 
         // Act & Assert
-        assertNull(adoptionApplicationDAO.findById(id));
+        assertTrue(adoptionApplicationDAO.findByAdopterId(adopterId).isEmpty());
     }
 
     @Test
-    public void testAdoptionApplicationFindIdValid() {
+    public void testAdoptionApplicationFindAdopterIdValid() {
         // Arrange
-        int id = 10_009;
         int adopterId = 20_009;
         int pet_id = 30_009;
         ApplicationStatus status = ApplicationStatus.REJECTED;
@@ -303,7 +298,7 @@ public class AdoptionApplicationDAOTests {
         Date creationDate = Date.valueOf("1990-12-13");
         Date closingDate = Date.valueOf("2001-12-15");
 
-        AdoptionApplication adoptionApplication = new AdoptionApplication(id, adopterId, pet_id, status, description, experience, creationDate, closingDate);
+        AdoptionApplication adoptionApplication = new AdoptionApplication(adopterId, pet_id, status, description, experience, creationDate, closingDate);
 
 
         // Add the record to the DB
@@ -311,19 +306,55 @@ public class AdoptionApplicationDAOTests {
         assertTrue(isSuccess);
 
         // Act
-        AdoptionApplication fetchedAdoptionApp = adoptionApplicationDAO.findById(id);
+        AdoptionApplication fetchedAdoptionApp = adoptionApplicationDAO.findByAdopterId(adopterId).get(0);
 
         // Assert
         assertEquals(adoptionApplication, fetchedAdoptionApp);
 
         // clean
-        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", id);
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", fetchedAdoptionApp.getId());
     }
 
     @Test
-    public void testAdoptionApplicationFindAll() {
+    public void testAdoptionApplicationFindPetIdDoesntExist() {
+        // Arrange - none
+        int petId = 30_008;
+
+        // Act & Assert
+        assertTrue(adoptionApplicationDAO.findByPetId(petId).isEmpty());
+    }
+
+    @Test
+    public void testAdoptionApplicationFindPetIdValid() {
         // Arrange
-        int id1 = 10_010;
+        int adopterId = 20_009;
+        int pet_id = 30_009;
+        ApplicationStatus status = ApplicationStatus.REJECTED;
+        String description = "I need to adopt this pet.";
+        Boolean experience = false;
+        Date creationDate = Date.valueOf("1990-12-13");
+        Date closingDate = Date.valueOf("2001-12-15");
+
+        AdoptionApplication adoptionApplication = new AdoptionApplication(adopterId, pet_id, status, description, experience, creationDate, closingDate);
+
+
+        // Add the record to the DB
+        boolean isSuccess = adoptionApplicationDAO.create(adoptionApplication);
+        assertTrue(isSuccess);
+
+        // Act
+        AdoptionApplication fetchedAdoptionApp = adoptionApplicationDAO.findByPetId(pet_id).get(0);
+
+        // Assert
+        assertEquals(adoptionApplication, fetchedAdoptionApp);
+
+        // clean
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", fetchedAdoptionApp.getId());
+    }
+
+    @Test
+    public void testAdoptionApplicationFindStatusValid() {
+        // Arrange
         int adopterId1 = 20_010;
         int pet_id1 = 30_010;
         ApplicationStatus status1 = ApplicationStatus.REJECTED;
@@ -332,9 +363,57 @@ public class AdoptionApplicationDAOTests {
         Date creationDate1 = Date.valueOf("1990-12-13");
         Date closingDate1 = Date.valueOf("2001-12-15");
 
-        AdoptionApplication adoptionApplication1 = new AdoptionApplication(id1, adopterId1, pet_id1, status1, description1, experience1, creationDate1, closingDate1);
+        AdoptionApplication adoptionApplication1 = new AdoptionApplication(adopterId1, pet_id1, status1, description1, experience1, creationDate1, closingDate1);
 
-        int id2 = 10_011;
+        int adopterId2 = 20_010;
+        int pet_id2 = 30_011;
+        ApplicationStatus status2 = ApplicationStatus.APPROVED;
+        String description2 = "I love this pet.";
+        Boolean experience2 = true;
+        Date creationDate2 = Date.valueOf("1995-11-16");
+        Date closingDate2 = Date.valueOf("2020-01-12");
+
+        AdoptionApplication adoptionApplication2 = new AdoptionApplication(adopterId2, pet_id2, status2, description2, experience2, creationDate2, closingDate2);
+
+
+        // Add the record to the DB
+        boolean isSuccess = adoptionApplicationDAO.create(adoptionApplication1);
+        assertTrue(isSuccess);
+
+        isSuccess = adoptionApplicationDAO.create(adoptionApplication2);
+        assertTrue(isSuccess);
+
+        // Act
+        List<AdoptionApplication> fetchedAdoptionApps = adoptionApplicationDAO.findByStatus(ApplicationStatus.REJECTED);
+
+        // Assert
+        assertTrue(fetchedAdoptionApps.size() >= 1);
+        assertTrue(fetchedAdoptionApps.contains(adoptionApplication1));
+
+        // Act
+        fetchedAdoptionApps = adoptionApplicationDAO.findByStatus(ApplicationStatus.APPROVED);
+
+        // Assert
+        assertTrue(fetchedAdoptionApps.size() >= 1);
+        assertTrue(fetchedAdoptionApps.contains(adoptionApplication2));
+
+        // clean
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE adopter_id = ?", adopterId1);
+    }
+
+    @Test
+    public void testAdoptionApplicationFindAll() {
+        // Arrange
+        int adopterId1 = 20_010;
+        int pet_id1 = 30_010;
+        ApplicationStatus status1 = ApplicationStatus.REJECTED;
+        String description1 = "I need to adopt this pet.";
+        Boolean experience1 = false;
+        Date creationDate1 = Date.valueOf("1990-12-13");
+        Date closingDate1 = Date.valueOf("2001-12-15");
+
+        AdoptionApplication adoptionApplication1 = new AdoptionApplication(adopterId1, pet_id1, status1, description1, experience1, creationDate1, closingDate1);
+
         int adopterId2 = 20_011;
         int pet_id2 = 30_011;
         ApplicationStatus status2 = ApplicationStatus.APPROVED;
@@ -343,7 +422,7 @@ public class AdoptionApplicationDAOTests {
         Date creationDate2 = Date.valueOf("1995-11-16");
         Date closingDate2 = Date.valueOf("2020-01-12");
 
-        AdoptionApplication adoptionApplication2 = new AdoptionApplication(id2, adopterId2, pet_id2, status2, description2, experience2, creationDate2, closingDate2);
+        AdoptionApplication adoptionApplication2 = new AdoptionApplication(adopterId2, pet_id2, status2, description2, experience2, creationDate2, closingDate2);
 
         // Add the record to the DB
         boolean isSuccess = adoptionApplicationDAO.create(adoptionApplication1);
@@ -360,8 +439,8 @@ public class AdoptionApplicationDAOTests {
         assertTrue(fetchedApps.contains(adoptionApplication2));
 
         // clean
-        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", id1);
-        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", id2);
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE adopter_id = ?", adopterId1);
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE adopter_id = ?", adopterId2);
     }
 
 }
