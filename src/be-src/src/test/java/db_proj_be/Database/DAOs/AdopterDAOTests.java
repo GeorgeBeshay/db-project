@@ -7,9 +7,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /*
@@ -17,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * ---------------------------------
  * The implementation within this test class assumes that the ids from 10_000 to 10_010 (inclusively)
  * are used for testing, and so the DB state should never contain a record containing any of those ids,
- * in addition to testing using this ids will not modify the db state, but instead create a temp record during the
+ * in addition to testing using those ids will not modify the db state, but instead create a temp record during the
  * test processing, and then remove the record when terminate the test.
  */
 
@@ -191,7 +189,6 @@ public class AdopterDAOTests {
     @Test
     @DisplayName("Adopter DAO Tests - Deletion: Passing a valid object")
     public void testAdopterDeletionValidObject() {
-        // Arrange - none
         // Arrange
         int id = 10_000;
         String firstName = "John";

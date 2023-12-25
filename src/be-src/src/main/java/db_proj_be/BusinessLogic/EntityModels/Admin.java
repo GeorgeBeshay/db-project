@@ -1,5 +1,7 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
+import java.util.Objects;
+
 public class Admin implements Identifiable {
 
     private int id;
@@ -66,5 +68,23 @@ public class Admin implements Identifiable {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Admin admin = (Admin) o;
+        return id == admin.id &&
+                Objects.equals(email, admin.email) &&
+                Objects.equals(passwordHash, admin.passwordHash) &&
+                Objects.equals(firstName, admin.firstName) &&
+                Objects.equals(lastName, admin.lastName) &&
+                Objects.equals(phone, admin.phone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, passwordHash, firstName, lastName, phone);
     }
 }
