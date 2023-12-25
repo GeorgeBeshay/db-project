@@ -99,7 +99,7 @@ BEGIN
 
 CREATE TABLE ADOPTION (
     pet_id INT NOT NULL FOREIGN KEY REFERENCES PET(id),
-    adopter_id INT,
+    adopter_id INT NOT NULL,
     PRIMARY KEY (pet_id, adopter_id)
 );
 
