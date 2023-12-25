@@ -14,8 +14,8 @@ import org.junit.jupiter.api.TestInstance;
 /*
  * Important Notes and Assumptions
  * ---------------------------------
- * The implementation within this test class assumes that the ids from 10_000 to 10_010 (inclusively)
- * are used for testing, and so the DB state should never contain a record containing any of those ids,
+ * The implementation within this test class assumes that the id 10_000
+ * is used for testing, and so the DB state should never contain a record with this id,
  * in addition to testing using those ids will not modify the db state, but instead create a temp record during the
  * test processing, and then remove the record when terminate the test.
  */
@@ -31,6 +31,9 @@ public class AdminDAOTests {
     @BeforeEach
     public void initAdminDAOTest() {
         this.adminDAO = new AdminDAO(jdbcTemplate);
+
+        // checking for the absence of the id that is being used by the tests from the current DB state.
+        assert adminDAO.findById(10000) == null : "Current DB State contains an Adopter with ID 10_000, which is used in testing ..";
     }
 
     @AfterAll
@@ -44,7 +47,7 @@ public class AdminDAOTests {
     @DisplayName("Admin DAO Tests - Creation: Passing an object that contains all of the attributes set.")
     public void testAdminCreationAllArguments() {
         // Arrange
-        int id = 10_000;
+        int id = 10_000; // ignored
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
@@ -54,10 +57,10 @@ public class AdminDAOTests {
         Admin admin = new Admin(id, firstName, lastName, email, phone, passwordHash);
 
         // Act
-        boolean isSuccess = adminDAO.create(admin);
+        id = adminDAO.create(admin);
 
         // Assert
-        assertTrue(isSuccess);
+        assertTrue(id >= 1);
 
         // Clean (to prevent modifying the DB current state)
         jdbcTemplate.update("DELETE FROM ADMINISTRATOR WHERE id = ?", id);
@@ -67,24 +70,22 @@ public class AdminDAOTests {
     @DisplayName("Admin DAO Tests - Creation: Passing an object that contains the required attributes only set.")
     public void testAdminCreationRequiredAttributesOnly() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
         String passwordHash = "hashedpassword";
 
         Admin admin = new Admin();
-        admin.setId(id);
         admin.setFirstName(firstName);
         admin.setLastName(lastName);
         admin.setEmail(email);
         admin.setPasswordHash(passwordHash);
 
         // Act
-        boolean isSuccess = adminDAO.create(admin);
+        int id = adminDAO.create(admin);
 
         // Assert
-        assertTrue(isSuccess);
+        assertTrue(id >= 1);
 
         // Clean (to prevent modifying the DB current state)
         jdbcTemplate.update("DELETE FROM ADMINISTRATOR WHERE id = ?", id);
@@ -94,26 +95,26 @@ public class AdminDAOTests {
     @DisplayName("Admin DAO Tests - Creation: Passing a duplicate object.")
     public void testAdminCreationDuplicateObjects() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
         String passwordHash = "hashedpassword";
 
         Admin admin = new Admin();
-        admin.setId(id);
         admin.setFirstName(firstName);
         admin.setLastName(lastName);
         admin.setEmail(email);
         admin.setPasswordHash(passwordHash);
 
         // Act
-        boolean isSuccess = adminDAO.create(admin);
-        assertTrue(isSuccess);
-        isSuccess = adminDAO.create(admin);
+        int id = adminDAO.create(admin);
+        assertTrue(id >= 1);
+        admin.setId(id);
+
+        int id2 = adminDAO.create(admin);
 
         // Assert
-        assertFalse(isSuccess);
+        assertFalse(id2 >= 1);
 
         // Clean (to prevent modifying the DB current state)
         jdbcTemplate.update("DELETE FROM ADMINISTRATOR WHERE id = ?", id);
@@ -123,24 +124,22 @@ public class AdminDAOTests {
     @DisplayName("Admin DAO Tests - Creation: Passing an object that contains required attributes not set.")
     public void testAdminCreationMissingAttributes() {
         // Arrange
-        int id = 10_000;
         String firstName = null;
         String lastName = null;
         String email = null;
         String passwordHash = null;
 
         Admin admin = new Admin();
-        admin.setId(id);
         admin.setFirstName(firstName);
         admin.setLastName(lastName);
         admin.setEmail(email);
         admin.setPasswordHash(passwordHash);
 
         // Act
-        boolean isSuccess = adminDAO.create(admin);
+        int id = adminDAO.create(admin);
 
         // Assert
-        assertFalse(isSuccess);
+        assertFalse(id >= 1);
     }
 
     @Test
@@ -181,25 +180,24 @@ public class AdminDAOTests {
     @DisplayName("Admin DAO Tests - Deletion: Passing a valid object")
     public void testAdminDeletionValidObject() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
         String passwordHash = "hashedpassword";
 
         Admin admin = new Admin();
-        admin.setId(id);
         admin.setFirstName(firstName);
         admin.setLastName(lastName);
         admin.setEmail(email);
         admin.setPasswordHash(passwordHash);
 
         // Add the record to the DB
-        boolean isSuccess = adminDAO.create(admin);
-        assertTrue(isSuccess);
+        int id = adminDAO.create(admin);
+        assertTrue(id >= 1);
+        admin.setId(id);
 
         // Act
-        isSuccess = adminDAO.delete(admin);
+        boolean isSuccess = adminDAO.delete(admin);
 
         // Assert
         assertTrue(isSuccess);
@@ -234,28 +232,27 @@ public class AdminDAOTests {
     @DisplayName("Admin DAO Tests - Updating: Passing a valid object")
     public void testAdminUpdatingValidObject() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
         String passwordHash = "hashedpassword";
 
         Admin admin = new Admin();
-        admin.setId(id);
         admin.setFirstName(firstName);
         admin.setLastName(lastName);
         admin.setEmail(email);
         admin.setPasswordHash(passwordHash);
 
         // Add the record to the DB
-        boolean isSuccess = adminDAO.create(admin);
-        assertTrue(isSuccess);
+        int id = adminDAO.create(admin);
+        assertTrue(id >= 1);
+        admin.setId(id);
 
         String modifiedFirstName = "Mark";
         admin.setFirstName(modifiedFirstName);
 
         // Act
-        isSuccess = adminDAO.update(admin);
+        boolean isSuccess = adminDAO.update(admin);
         Admin fetchedAdmin = adminDAO.findById(id);
 
         // Assert
@@ -282,22 +279,21 @@ public class AdminDAOTests {
     @DisplayName("Admin DAO Tests - Find: Passing a valid id")
     public void testAdminFindIdValid() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
         String passwordHash = "hashedpassword";
 
         Admin admin = new Admin();
-        admin.setId(id);
         admin.setFirstName(firstName);
         admin.setLastName(lastName);
         admin.setEmail(email);
         admin.setPasswordHash(passwordHash);
 
         // Add the record to the DB
-        boolean isSuccess = adminDAO.create(admin);
-        assertTrue(isSuccess);
+        int id = adminDAO.create(admin);
+        assertTrue(id >= 1);
+        admin.setId(id);
 
         // Act
         Admin fetchedAdmin = adminDAO.findById(id);
@@ -313,37 +309,36 @@ public class AdminDAOTests {
     @DisplayName("Admin DAO Tests - Find All")
     public void testAdminFindAll() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
         String passwordHash = "hashedpassword";
 
         Admin admin = new Admin();
-        admin.setId(id);
         admin.setFirstName(firstName);
         admin.setLastName(lastName);
         admin.setEmail(email);
         admin.setPasswordHash(passwordHash);
 
-        int id2 = 10_001;
         String firstName2 = "John";
         String lastName2 = "Doe";
         String email2 = "john.doe2@example.com";
         String passwordHash2 = "hashedpassword";
 
         Admin admin2 = new Admin();
-        admin2.setId(id2);
         admin2.setFirstName(firstName2);
         admin2.setLastName(lastName2);
         admin2.setEmail(email2);
         admin2.setPasswordHash(passwordHash2);
 
         // Add the record to the DB
-        boolean isSuccess = adminDAO.create(admin);
-        assertTrue(isSuccess);
-        isSuccess = adminDAO.create(admin2);
-        assertTrue(isSuccess);
+        int id = adminDAO.create(admin);
+        assertTrue(id >= 1);
+        admin.setId(id);
+
+        int id2 = adminDAO.create(admin2);
+        assertTrue(id2 >= 1);
+        admin2.setId(id2);
 
         // Act
         List<Admin> fetchedAdmins = adminDAO.findAll();

@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /*
  * Important Notes and Assumptions
  * ---------------------------------
- * The implementation within this test class assumes that the ids from 10_000 to 10_010 (inclusively)
- * are used for testing, and so the DB state should never contain a record containing any of those ids,
+ * The implementation within this test class assumes that the id 10_000
+ * is used for testing, and so the DB state should never contain a record with this id,
  * in addition to testing using those ids will not modify the db state, but instead create a temp record during the
  * test processing, and then remove the record when terminate the test.
  */
@@ -31,6 +31,9 @@ public class AdopterDAOTests {
     public void initAdopterDAOTest() {
         // enforce independence between the tests.
         this.adopterDAO = new AdopterDAO(jdbcTemplate);
+
+        // checking for the absence of the id that is being used by the tests from the current DB state.
+        assert adopterDAO.findById(10000) == null : "Current DB State contains an Adopter with ID 10_000, which is used in testing ..";
     }
 
     @AfterAll
@@ -44,7 +47,7 @@ public class AdopterDAOTests {
     @DisplayName("Adopter DAO Tests - Creation: Passing an object that contains all of the attributes set.")
     public void testAdopterCreationAllArguments() {
         // Arrange
-        int id = 10_000;
+        int id = -100; // will be ignored
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
@@ -57,10 +60,10 @@ public class AdopterDAOTests {
         Adopter adopter = new Adopter(id, email, passwordHash, firstName, lastName, phone, birthDate, gender, address);
 
         // Act
-        boolean isSuccess = adopterDAO.create(adopter);
+        id = adopterDAO.create(adopter);
 
         // Assert
-        assertTrue(isSuccess);
+        assertTrue(id >= 1);
 
         // Clean (to prevent modifying the DB current state)
         jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id);
@@ -70,7 +73,6 @@ public class AdopterDAOTests {
     @DisplayName("Adopter DAO Tests - Creation: Passing an object that contains the required attributes only set.")
     public void testAdopterCreationRequiredAttributesOnly() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
@@ -78,7 +80,6 @@ public class AdopterDAOTests {
         String address = "123 Main St, City";
 
         Adopter adopter = new Adopter();
-        adopter.setId(id);
         adopter.setFirstName(firstName);
         adopter.setLastName(lastName);
         adopter.setEmail(email);
@@ -86,10 +87,10 @@ public class AdopterDAOTests {
         adopter.setAddress(address);
 
         // Act
-        boolean isSuccess = adopterDAO.create(adopter);
+        int id = adopterDAO.create(adopter);
 
         // Assert
-        assertTrue(isSuccess);
+        assertTrue(id >= 1);
 
         // Clean (to prevent modifying the DB current state)
         jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id);
@@ -99,7 +100,6 @@ public class AdopterDAOTests {
     @DisplayName("Adopter DAO Tests - Creation: Passing a duplicate object.")
     public void testAdopterCreationDuplicateObjects() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
@@ -107,7 +107,6 @@ public class AdopterDAOTests {
         String address = "123 Main St, City";
 
         Adopter adopter = new Adopter();
-        adopter.setId(id);
         adopter.setFirstName(firstName);
         adopter.setLastName(lastName);
         adopter.setEmail(email);
@@ -115,12 +114,13 @@ public class AdopterDAOTests {
         adopter.setAddress(address);
 
         // Act
-        boolean isSuccess = adopterDAO.create(adopter);
-        assertTrue(isSuccess);
-        isSuccess = adopterDAO.create(adopter);
+        int id = adopterDAO.create(adopter);
+        assertTrue(id >= 1);
+
+        int id2 = adopterDAO.create(adopter);       // duplicate email.
 
         // Assert
-        assertFalse(isSuccess);
+        assertFalse(id2 >= 1);
 
         // Clean (to prevent modifying the DB current state)
         jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id);
@@ -130,7 +130,6 @@ public class AdopterDAOTests {
     @DisplayName("Adopter DAO Tests - Creation: Passing an object that contains required attributes not set.")
     public void testAdopterCreationMissingAttributes() {
         // Arrange
-        int id = 10_000;
         String firstName = null;
         String lastName = null;
         String email = null;
@@ -138,7 +137,6 @@ public class AdopterDAOTests {
         String address = "123 Main St, City";
 
         Adopter adopter = new Adopter();
-        adopter.setId(id);
         adopter.setFirstName(firstName);
         adopter.setLastName(lastName);
         adopter.setEmail(email);
@@ -146,10 +144,10 @@ public class AdopterDAOTests {
         adopter.setAddress(address);
 
         // Act
-        boolean isSuccess = adopterDAO.create(adopter);
+        int id = adopterDAO.create(adopter);
 
         // Assert
-        assertFalse(isSuccess);
+        assertFalse(id >= 1);
     }
 
     @Test
@@ -190,7 +188,6 @@ public class AdopterDAOTests {
     @DisplayName("Adopter DAO Tests - Deletion: Passing a valid object")
     public void testAdopterDeletionValidObject() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
@@ -198,7 +195,6 @@ public class AdopterDAOTests {
         String address = "123 Main St, City";
 
         Adopter adopter = new Adopter();
-        adopter.setId(id);
         adopter.setFirstName(firstName);
         adopter.setLastName(lastName);
         adopter.setEmail(email);
@@ -206,11 +202,12 @@ public class AdopterDAOTests {
         adopter.setAddress(address);
 
         // Add the record to the DB
-        boolean isSuccess = adopterDAO.create(adopter);
-        assertTrue(isSuccess);
+        int id = adopterDAO.create(adopter);
+        assertTrue(id >= 1);
+        adopter.setId(id);
 
         // Act
-        isSuccess = adopterDAO.delete(adopter);
+        boolean isSuccess = adopterDAO.delete(adopter);
 
         // Assert
         assertTrue(isSuccess);
@@ -245,7 +242,6 @@ public class AdopterDAOTests {
     @DisplayName("Adopter DAO Tests - Updating: Passing a valid object")
     public void testAdopterUpdatingValidObject() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
@@ -253,7 +249,6 @@ public class AdopterDAOTests {
         String address = "123 Main St, City";
 
         Adopter adopter = new Adopter();
-        adopter.setId(id);
         adopter.setFirstName(firstName);
         adopter.setLastName(lastName);
         adopter.setEmail(email);
@@ -261,14 +256,15 @@ public class AdopterDAOTests {
         adopter.setAddress(address);
 
         // Add the record to the DB
-        boolean isSuccess = adopterDAO.create(adopter);
-        assertTrue(isSuccess);
+        int id = adopterDAO.create(adopter);
+        assertTrue(id >= 1);
+        adopter.setId(id);
 
         String modifiedAddress = "86 Main St, Alexandria";
         adopter.setAddress(modifiedAddress);
 
         // Act
-        isSuccess = adopterDAO.update(adopter);
+        boolean isSuccess = adopterDAO.update(adopter);
         Adopter fetchedAdopter = adopterDAO.findById(id);
 
         // Assert
@@ -295,7 +291,6 @@ public class AdopterDAOTests {
     @DisplayName("Adopter DAO Tests - Find: Passing a valid id")
     public void testAdopterFindIdValid() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
@@ -303,7 +298,6 @@ public class AdopterDAOTests {
         String address = "123 Main St, City";
 
         Adopter adopter = new Adopter();
-        adopter.setId(id);
         adopter.setFirstName(firstName);
         adopter.setLastName(lastName);
         adopter.setEmail(email);
@@ -311,8 +305,9 @@ public class AdopterDAOTests {
         adopter.setAddress(address);
 
         // Add the record to the DB
-        boolean isSuccess = adopterDAO.create(adopter);
-        assertTrue(isSuccess);
+        int id = adopterDAO.create(adopter);
+        assertTrue(id >= 1);
+        adopter.setId(id);
 
         // Act
         Adopter fetchedAdopter = adopterDAO.findById(id);
@@ -328,7 +323,6 @@ public class AdopterDAOTests {
     @DisplayName("Adopter DAO Tests - Find All")
     public void testAdopterFindAll() {
         // Arrange
-        int id = 10_000;
         String firstName = "John";
         String lastName = "Doe";
         String email = "john.doe@example.com";
@@ -336,14 +330,12 @@ public class AdopterDAOTests {
         String address = "123 Main St, City";
 
         Adopter adopter = new Adopter();
-        adopter.setId(id);
         adopter.setFirstName(firstName);
         adopter.setLastName(lastName);
         adopter.setEmail(email);
         adopter.setPasswordHash(passwordHash);
         adopter.setAddress(address);
 
-        int id2 = 10_001;
         String firstName2 = "John";
         String lastName2 = "Doe";
         String email2 = "john.doe2@example.com";
@@ -351,7 +343,6 @@ public class AdopterDAOTests {
         String address2 = "123 Main St, City";
 
         Adopter adopter2 = new Adopter();
-        adopter2.setId(id2);
         adopter2.setFirstName(firstName2);
         adopter2.setLastName(lastName2);
         adopter2.setEmail(email2);
@@ -359,10 +350,13 @@ public class AdopterDAOTests {
         adopter2.setAddress(address2);
 
         // Add the record to the DB
-        boolean isSuccess = adopterDAO.create(adopter);
-        assertTrue(isSuccess);
-        isSuccess = adopterDAO.create(adopter2);
-        assertTrue(isSuccess);
+        int id = adopterDAO.create(adopter);
+        assertTrue(id >= 1);
+        adopter.setId(id);
+
+        int id2 = adopterDAO.create(adopter2);
+        assertTrue(id2 >= 1);
+        adopter2.setId(id2);
 
         // Act
         List<Adopter> fetchedAdopters = adopterDAO.findAll();

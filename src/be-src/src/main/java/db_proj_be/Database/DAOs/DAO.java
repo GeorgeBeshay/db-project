@@ -97,26 +97,27 @@ public abstract class DAO <T extends Identifiable> {
 
     /**
      * Creates a new entity in the database.
+     *
      * @param objOfTypeT The entity object to create.
-     * @return True if creation is successful, false otherwise.
+     * @return The generated ID if creation is successful, -1 otherwise.
      * @throws IllegalArgumentException If objOfTypeT is null.
      */
     @Transactional
-    public boolean create(T objOfTypeT) {
+    public int create(T objOfTypeT) {
         // guard clause
         if (objOfTypeT == null) {
             throw new IllegalArgumentException("Entity object to create can't be null");
         }
 
         try {
-            SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(relationName);
+            SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(relationName).usingGeneratedKeyColumns("id");
             BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(objOfTypeT);
 
-            return jdbcInsert.execute(parameterSource) > 0;
+            return jdbcInsert.executeAndReturnKey(parameterSource).intValue();
 
         } catch (Exception ex) {
             Logger.logMsgFrom(this.getClass().getName(), "Error in " + relationName + " create(): " + ex.getMessage(), 1);
-            return false; // Return a meaningful response indicating failure
+            return -1; // Return a meaningful response indicating failure
 
         }
 
