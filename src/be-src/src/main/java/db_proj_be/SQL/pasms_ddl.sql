@@ -11,7 +11,6 @@ BEGIN
         adopter_id INT NOT NULL,
         pet_id INT NOT NULL,
         status TINYINT NOT NULL,
-        marital_status TINYINT NOT NULL,
         experience BIT NOT NULL,
         creation_date DATE NOT NULL,
         closing_date DATE,
