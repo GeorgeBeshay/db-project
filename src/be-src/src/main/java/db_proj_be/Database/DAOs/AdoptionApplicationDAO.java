@@ -5,8 +5,6 @@ import db_proj_be.BusinessLogic.EntityModels.AdoptionApplication;
 import db_proj_be.BusinessLogic.EntityModels.ApplicationStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
@@ -47,7 +45,7 @@ public class AdoptionApplicationDAO {
     public List<AdoptionApplication> findByStatus(ApplicationStatus status) {
         try {
             String sql = "SELECT * FROM ADOPTION_APPLICATION WHERE status = ?";
-            return jdbcTemplate.query(sql, rowMapper, status);
+            return jdbcTemplate.query(sql, rowMapper, status.getValue());
         } catch (Exception e) {
             return null;
         }
@@ -90,10 +88,11 @@ public class AdoptionApplicationDAO {
     @Transactional
     public boolean create(AdoptionApplication adoptionApplication) {
         try {
-            String relationName = "ADOPTION_APPLICATION";
-            SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(relationName);
-            BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(adoptionApplication);
-            return jdbcInsert.execute(parameterSource) > 0;
+            String sql = "INSERT INTO ADOPTION_APPLICATION (adopter_id, pet_id, status," +
+                    "description, experience, creation_date, closing_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            return jdbcTemplate.update(sql, adoptionApplication.getAdopterId(), adoptionApplication.getPetId(),
+                    adoptionApplication.getStatus().getValue(), adoptionApplication.getDescription(), adoptionApplication.getExperience(),
+                    adoptionApplication.getCreationDate(), adoptionApplication.getClosingDate()) > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
