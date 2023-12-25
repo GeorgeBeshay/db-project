@@ -1,7 +1,6 @@
 package db_proj_be.Database.DAOs;
 
 import db_proj_be.BusinessLogic.EntityModels.ApplicationNotification;
-import db_proj_be.BusinessLogic.EntityModels.NotificationStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -37,7 +36,7 @@ public class ApplicationNotificationDAO {
     @Transactional
     public List<ApplicationNotification> findByAppId(int appId) {
         try {
-            String sql = "SELECT * FROM APPLICATION_NOTIFICATION WHERE adoption_app_id = ?";
+            String sql = "SELECT * FROM APPLICATION_NOTIFICATION WHERE application_id = ?";
             return jdbcTemplate.query(sql, rowMapper, appId);
         } catch (Exception e) {
             return null;
@@ -48,7 +47,7 @@ public class ApplicationNotificationDAO {
     @Transactional
     public List<ApplicationNotification> findByAdopterId(int adopterId) {
         try {
-            String sql = "SELECT * FROM ADOPTION_APPLICATION WHERE adopter_id = ?";
+            String sql = "SELECT * FROM APPLICATION_NOTIFICATION WHERE adopter_id = ?";
             return jdbcTemplate.query(sql, rowMapper, adopterId);
         } catch (Exception e) {
             return null;
@@ -57,9 +56,9 @@ public class ApplicationNotificationDAO {
 
     // Return all records with the given status value
     @Transactional
-    public List<ApplicationNotification> findByStatus(NotificationStatus status) {
+    public List<ApplicationNotification> findByStatus(Boolean status) {
         try {
-            String sql = "SELECT * FROM ADOPTION_APPLICATION WHERE status = ?";
+            String sql = "SELECT * FROM APPLICATION_NOTIFICATION WHERE status = ?";
             return jdbcTemplate.query(sql, rowMapper, status);
         } catch (Exception e) {
             return null;
@@ -80,6 +79,11 @@ public class ApplicationNotificationDAO {
     // Save the given application notification in the database table
     @Transactional
     public boolean create(ApplicationNotification applicationNotification) {
+        // Guard check for null
+        if (applicationNotification == null) {
+            throw new IllegalArgumentException("Argument can not be null");
+        }
+
         try {
             String relationName = "APPLICATION_NOTIFICATION";
             SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(relationName);
@@ -97,9 +101,14 @@ public class ApplicationNotificationDAO {
     // and false if no rows where affected or exception was thrown
     @Transactional
     public boolean delete(ApplicationNotification applicationNotification) {
+        // Guard check for null
+        if (applicationNotification == null) {
+            throw new IllegalArgumentException("Argument can not be null");
+        }
+
         try {
-            String sql = "DELETE FROM APPLICATION_NOTIFICATION WHERE adoption_app_id = ?, adopter_id = ?";
-            return jdbcTemplate.update(sql, applicationNotification.getAppId(),
+            String sql = "DELETE FROM APPLICATION_NOTIFICATION WHERE application_id = ? and adopter_id = ?";
+            return jdbcTemplate.update(sql, applicationNotification.getApplicationId(),
                     applicationNotification.getAdopterId()) > 0;
         } catch (Exception e) {
             e.printStackTrace();
