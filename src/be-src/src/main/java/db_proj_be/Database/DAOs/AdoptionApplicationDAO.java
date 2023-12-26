@@ -3,6 +3,7 @@ package db_proj_be.Database.DAOs;
 
 import db_proj_be.BusinessLogic.EntityModels.AdoptionApplication;
 import db_proj_be.BusinessLogic.EntityModels.ApplicationStatus;
+import db_proj_be.BusinessLogic.Utilities.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,34 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.util.List;
 
-public class AdoptionApplicationDAO {
-
-    private final JdbcTemplate jdbcTemplate;
+public class AdoptionApplicationDAO extends DAO<AdoptionApplication> {
 
     private final BeanPropertyRowMapper<AdoptionApplication> rowMapper;
 
     public AdoptionApplicationDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        super(jdbcTemplate, AdoptionApplication.class, "ADOPTION_APPLICATION");
         this.rowMapper = new BeanPropertyRowMapper<>(AdoptionApplication.class);
-    }
-
-    // Return all rows in the table
-    @Transactional
-    public List<AdoptionApplication> findAll() {
-        String sql = "SELECT * FROM ADOPTION_APPLICATION";
-        return jdbcTemplate.query(sql, rowMapper);
-    }
-
-    // Return the adoption application record for the given id
-    @Transactional
-    public AdoptionApplication findById(int id) {
-        try {
-            String sql = "SELECT * FROM ADOPTION_APPLICATION WHERE id = ?";
-            return jdbcTemplate.queryForObject(sql, rowMapper, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     // Return all records with the given status value
@@ -45,8 +25,9 @@ public class AdoptionApplicationDAO {
     public List<AdoptionApplication> findByStatus(ApplicationStatus status) {
         try {
             String sql = "SELECT * FROM ADOPTION_APPLICATION WHERE status = ?";
-            return jdbcTemplate.query(sql, rowMapper, status.getValue());
-        } catch (Exception e) {
+            return jdbcTemplate.query(sql, getRowMapper(), status.getValue());
+        } catch (Exception ex) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTION_APPLICATION findByStatus(): " + ex.getMessage(), 1);
             return null;
         }
     }
@@ -56,8 +37,9 @@ public class AdoptionApplicationDAO {
     public List<AdoptionApplication> findByDateCreated(Date date) {
         try {
             String sql = "SELECT * FROM ADOPTION_APPLICATION WHERE date = ?";
-            return jdbcTemplate.query(sql, rowMapper, date);
-        } catch (Exception e) {
+            return jdbcTemplate.query(sql, getRowMapper(), date);
+        } catch (Exception ex) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTION_APPLICATION findByDateCreated(): " + ex.getMessage(), 1);
             return null;
         }
     }
@@ -67,8 +49,9 @@ public class AdoptionApplicationDAO {
     public List<AdoptionApplication> findByAdopterId(int id) {
         try {
             String sql = "SELECT * FROM ADOPTION_APPLICATION WHERE adopter_id = ?";
-            return jdbcTemplate.query(sql, rowMapper, id);
-        } catch (Exception e) {
+            return jdbcTemplate.query(sql, getRowMapper(), id);
+        } catch (Exception ex) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTION_APPLICATION findByAdopterId(): " + ex.getMessage(), 1);
             return null;
         }
     }
@@ -78,35 +61,31 @@ public class AdoptionApplicationDAO {
     public List<AdoptionApplication> findByPetId(int id) {
         try {
             String sql = "SELECT * FROM ADOPTION_APPLICATION WHERE pet_id = ?";
-            return jdbcTemplate.query(sql, rowMapper, id);
-        } catch (Exception e) {
+            return jdbcTemplate.query(sql, getRowMapper(), id);
+        } catch (Exception ex) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTION_APPLICATION findByPetId(): " + ex.getMessage(), 1);
             return null;
-        }
-    }
-
-    // Save the given adoption application in the database table
-    @Transactional
-    public boolean create(AdoptionApplication adoptionApplication) {
-        try {
-            String sql = "INSERT INTO ADOPTION_APPLICATION (adopter_id, pet_id, status," +
-                    "description, experience, creation_date, closing_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            return jdbcTemplate.update(sql, adoptionApplication.getAdopterId(), adoptionApplication.getPetId(),
-                    adoptionApplication.getStatus().getValue(), adoptionApplication.getDescription(), adoptionApplication.getExperience(),
-                    adoptionApplication.getCreationDate(), adoptionApplication.getClosingDate()) > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
     // Update the values of the adoption application with new values
     @Transactional
     public boolean update(AdoptionApplication adoptionApplication) {
+        // guard clause
+        if (adoptionApplication == null) {
+            throw new IllegalArgumentException("Can't update an entity given a null object ..");
+        }
+        
         try {
             String sql = "UPDATE ADOPTION_APPLICATION SET " +
-                    "adopter_id = ?, pet_id = ?, status = ?, " +
-                    "description = ?, experience = ?, creation_date = ?, " +
-                    "closing_date = ? WHERE id = ?";
+                    "adopter_id = ?, " +
+                    "pet_id = ?, " +
+                    "status = ?, " +
+                    "description = ?, " +
+                    "experience = ?, " +
+                    "creation_date = ?, " +
+                    "closing_date = ? " +
+                    "WHERE id = ?";
             return jdbcTemplate.update(sql,
                     adoptionApplication.getAdopterId(),
                     adoptionApplication.getPetId(),
@@ -117,22 +96,8 @@ public class AdoptionApplicationDAO {
                     adoptionApplication.getClosingDate(),
                     adoptionApplication.getId()
             ) > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Delete the application record with the given id
-    // Return true if a record was deleted,
-    // and false if no rows where affected
-    @Transactional
-    public boolean delete(AdoptionApplication adoptionApplication) {
-        try {
-            String sql = "DELETE FROM ADOPTION_APPLICATION WHERE id = ? ";
-            return jdbcTemplate.update(sql, adoptionApplication.getId()) > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTION_APPLICATION update(): " + ex.getMessage(), 1);
             return false;
         }
     }

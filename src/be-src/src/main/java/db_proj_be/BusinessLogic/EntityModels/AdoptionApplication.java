@@ -3,7 +3,7 @@ package db_proj_be.BusinessLogic.EntityModels;
 import java.sql.Date;
 import java.util.Objects;
 
-public class AdoptionApplication {
+public class AdoptionApplication implements Identifiable {
 
     int id;
     int adopterId;
