@@ -1,6 +1,5 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
-import java.sql.Date;
 import java.util.Objects;
 
 public class AdoptionApplication implements Identifiable {
@@ -11,13 +10,13 @@ public class AdoptionApplication implements Identifiable {
     ApplicationStatus status;
     String description;
     Boolean experience;
-    Date creationDate;
-    Date closingDate;
+    String creationDate;
+    String closingDate;
 
     public AdoptionApplication() {
     }
 
-    public AdoptionApplication(int adopterId, int petId, ApplicationStatus status, String description, Boolean experience, Date creationDate, Date closingDate) {
+    public AdoptionApplication(int adopterId, int petId, ApplicationStatus status, String description, Boolean experience, String creationDate, String closingDate) {
         this.adopterId = adopterId;
         this.petId = petId;
         this.status = status;
@@ -75,19 +74,19 @@ public class AdoptionApplication implements Identifiable {
         this.experience = experience;
     }
 
-    public Date getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Date getClosingDate() {
+    public String getClosingDate() {
         return closingDate;
     }
 
-    public void setClosingDate(Date closingDate) {
+    public void setClosingDate(String closingDate) {
         this.closingDate = closingDate;
     }
 
