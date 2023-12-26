@@ -1,6 +1,8 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
+
 import java.util.Objects;
+
 
 public class Pet implements Identifiable {
 
