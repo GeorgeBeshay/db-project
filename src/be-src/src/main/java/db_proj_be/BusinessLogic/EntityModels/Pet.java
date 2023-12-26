@@ -1,6 +1,6 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
-public class Pet {
+public class Pet implements Identifiable {
 
     private int id;
     private String name;
@@ -18,10 +18,9 @@ public class Pet {
 
     public Pet() {}
 
-    public Pet(int id, String name, String specie, String breed, String birthdate,
+    public Pet(String name, String specie, String breed, String birthdate,
                boolean gender, String healthStatus, String behaviour, String description,
                int shelterId, boolean neutering, boolean houseTraining, boolean vaccination) {
-        this.id = id;
         this.name = name;
         this.specie = specie;
         this.breed = breed;

@@ -1,15 +1,17 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
-public class PetDocument {
+public class PetDocument implements Identifiable {
     private int id;
     private int petId;
     private String documentType;
+    private String name;
     private byte[] document;
 
     public PetDocument() {}
-    public PetDocument(int petId, String documentType, byte[] document) {
+    public PetDocument(int petId, String documentType, String name, byte[] document) {
         this.petId = petId;
         this.documentType = documentType;
+        this.name = name;
         this.document = document;
     }
 
@@ -35,6 +37,14 @@ public class PetDocument {
 
     public void setDocumentType(String documentType) {
         this.documentType = documentType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public byte[] getDocument() {

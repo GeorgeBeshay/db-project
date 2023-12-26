@@ -1,27 +1,17 @@
 package db_proj_be.Database.DAOs;
 
 import db_proj_be.BusinessLogic.EntityModels.Pet;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import db_proj_be.BusinessLogic.Utilities.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
-public class PetDAO {
-
-    private final JdbcTemplate jdbcTemplate;
+public class PetDAO extends DAO<Pet> {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final BeanPropertyRowMapper<Pet> rowMapper;
-
     public PetDAO (JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        super(jdbcTemplate, Pet.class, "PET");
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        this.rowMapper = new BeanPropertyRowMapper<>(Pet.class);
-        this.rowMapper.setPrimitivesDefaultedForNullValue(true);
-    }
-
-    public BeanPropertyRowMapper<Pet> getRowMapper() {
-        return rowMapper;
     }
 
     @Transactional
@@ -44,7 +34,7 @@ public class PetDAO {
         }
 
         catch (Exception e) {
-            System.out.println("The pet can not be updated: " + e.getMessage());
+            Logger.logMsgFrom(this.getClass().getName(), "Error in updating the pet: " + e.getMessage(), 1);
             return false;
         }
     }
@@ -62,61 +52,7 @@ public class PetDAO {
         }
 
         catch (Exception e) {
-            System.out.println("Can not get the pets ordered by birthdate: " + e.getMessage());
-            return null;
-        }
-    }
-
-    @Transactional
-    public List<Pet> filterByVaccination(boolean vaccination) {
-        try {
-            String sql = """
-                    SELECT *
-                    FROM PET
-                    WHERE vaccination = ?
-                    """;
-
-            return jdbcTemplate.query(sql, rowMapper, vaccination);
-        }
-
-        catch (Exception e) {
-            System.out.println("Can not filter the pets by vaccination: " + e.getMessage());
-            return null;
-        }
-    }
-
-    @Transactional
-    public List<Pet> filterByHouseTraining(boolean houseTraining) {
-        try {
-            String sql = """
-                    SELECT *
-                    FROM PET
-                    WHERE house_training = ?
-                    """;
-
-            return jdbcTemplate.query(sql, rowMapper, houseTraining);
-        }
-
-        catch (Exception e) {
-            System.out.println("Can not filter the pets by house training: " + e.getMessage());
-            return null;
-        }
-    }
-
-    @Transactional
-    public List<Pet> filterByNeutering(boolean neutering) {
-        try {
-            String sql = """
-                    SELECT *
-                    FROM PET
-                    WHERE neutering = ?
-                    """;
-
-            return jdbcTemplate.query(sql, rowMapper, neutering);
-        }
-
-        catch (Exception e) {
-            System.out.println("Can not filter the pets by neutering: " + e.getMessage());
+            Logger.logMsgFrom(this.getClass().getName(), "Error in sorting the pets with their birthdate: " + e.getMessage(), 1);
             return null;
         }
     }
@@ -136,7 +72,7 @@ public class PetDAO {
         }
 
         catch (Exception e) {
-            System.out.println("Can not get the pets filtered by some attributes: " + e.getMessage());
+            Logger.logMsgFrom(this.getClass().getName(), "Error in filtering the pets: " + e.getMessage(), 1);
             return null;
         }
     }
