@@ -1,39 +1,16 @@
 package db_proj_be.Database.DAOs;
 
 import db_proj_be.BusinessLogic.EntityModels.PetDocument;
+import db_proj_be.BusinessLogic.Utilities.Logger;
 import org.springframework.jdbc.core.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-public class PetDocumentDAO {
-
-    private final JdbcTemplate jdbcTemplate;
-    private final BeanPropertyRowMapper<PetDocument> rowMapper;
+public class PetDocumentDAO extends DAO<PetDocument> {
 
     public PetDocumentDAO (JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.rowMapper = new BeanPropertyRowMapper<>(PetDocument.class);
-        this.rowMapper.setPrimitivesDefaultedForNullValue(true);
-    }
-
-    public BeanPropertyRowMapper<PetDocument> getRowMapper() {
-        return rowMapper;
-    }
-
-    @Transactional
-    public boolean saveDocument(PetDocument petDocument) {
-        try {
-            String sql = "INSERT INTO PET_DOCUMENT (pet_id, document_type, document) VALUES (?, ?, ?)";
-            int rowsAffected = jdbcTemplate.update(sql, petDocument.getPetId(), petDocument.getDocumentType(), petDocument.getDocument());
-
-            return rowsAffected > 0;
-        }
-
-        catch (Exception e) {
-            System.out.println("The document of the pet can not be saved: " + e.getMessage());
-            return false;
-        }
+        super(jdbcTemplate, PetDocument.class, "PET_DOCUMENT");
     }
 
     @Transactional
@@ -49,7 +26,7 @@ public class PetDocumentDAO {
         }
 
         catch (Exception e) {
-            System.out.println("Can not get the documents of this pet: " + e.getMessage());
+            Logger.logMsgFrom(this.getClass().getName(), "Error in finding the document by pet Id: " + e.getMessage(), 1);
             return null;
         }
     }
@@ -67,26 +44,26 @@ public class PetDocumentDAO {
         }
 
         catch (Exception e) {
-            System.out.println("Can not get the documents of this pet: " + e.getMessage());
+            Logger.logMsgFrom(this.getClass().getName(), "Error in finding the document by pet Id and type: " + e.getMessage(), 1);
             return null;
         }
     }
 
     @Transactional
-    public boolean deleteDocument(PetDocument petDocument) {
+    public List<PetDocument> findByPetIdAndName(int petId, String name) {
         try {
             String sql = """
-                DELETE FROM PET_DOCUMENT
-                WHERE pet_id = ? AND document_type = ? AND document = ?
+                SELECT *
+                FROM PET_DOCUMENT
+                WHERE pet_id = ? AND name = ?
                 """;
 
-            int rowsAffected = jdbcTemplate.update(sql, petDocument.getPetId(), petDocument.getDocumentType(), petDocument.getDocument());
-            return rowsAffected > 0;
+            return jdbcTemplate.query(sql, rowMapper, petId, name);
         }
 
         catch (Exception e) {
-            System.out.println("Can not delete the document of this pet: " + e.getMessage());
-            return false;
+            Logger.logMsgFrom(this.getClass().getName(), "Error in finding the document by pet Id and name: " + e.getMessage(), 1);
+            return null;
         }
     }
 
@@ -95,16 +72,16 @@ public class PetDocumentDAO {
         try {
             String sql = """
                 UPDATE PET_DOCUMENT
-                SET pet_id = ?, document_type = ?, document = ?
+                SET pet_id = ?, document_type = ?, name = ?, document = ?
                 WHERE id = ?
                 """;
-            int rowsAffected = jdbcTemplate.update(sql, petDocument.getPetId(), petDocument.getDocumentType(), petDocument.getDocument(), petDocument.getId());
+            int rowsAffected = jdbcTemplate.update(sql, petDocument.getPetId(), petDocument.getDocumentType(), petDocument.getName(), petDocument.getDocument(), petDocument.getId());
 
             return rowsAffected > 0;
         }
 
         catch (Exception e) {
-            System.out.println("The document of the pet can not be updated: " + e.getMessage());
+            Logger.logMsgFrom(this.getClass().getName(), "Error in updating the document of the pet: " + e.getMessage(), 1);
             return false;
         }
     }
