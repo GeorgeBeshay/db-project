@@ -1,5 +1,7 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
+import java.util.Objects;
+
 public class Pet implements Identifiable {
 
     private int id;
@@ -137,5 +139,30 @@ public class Pet implements Identifiable {
 
     public void setVaccination(boolean vaccination) {
         this.vaccination = vaccination;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pet pet = (Pet) o;
+        return id == pet.id &&
+                gender == pet.gender &&
+                shelterId == pet.shelterId &&
+                neutering == pet.neutering &&
+                houseTraining == pet.houseTraining &&
+                vaccination == pet.vaccination &&
+                Objects.equals(name, pet.name) &&
+                Objects.equals(specie, pet.specie) &&
+                Objects.equals(breed, pet.breed) &&
+                Objects.equals(birthdate, pet.birthdate) &&
+                Objects.equals(healthStatus, pet.healthStatus) &&
+                Objects.equals(behaviour, pet.behaviour) &&
+                Objects.equals(description, pet.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, specie, breed, birthdate, gender, healthStatus, behaviour, description, shelterId, neutering, houseTraining, vaccination);
     }
 }

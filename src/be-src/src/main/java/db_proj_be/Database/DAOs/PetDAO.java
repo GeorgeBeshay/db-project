@@ -40,35 +40,51 @@ public class PetDAO extends DAO<Pet> {
     }
 
     @Transactional
-    public List<Pet> sortByBirthdate() {
+    public List<Pet> sortByAttribute(String attribute, boolean ascending) {
+        List<String> allowedColumns = Arrays.asList("id", "name", "specie", "breed", "birthdate",
+                "gender", "health_status", "behaviour", "description", "shelter_id", "neutering",
+                "house_training", "vaccination");
+
+        if (!allowedColumns.contains(attribute)) {
+            throw new IllegalArgumentException("Invalid attribute: " + attribute);
+        }
+
         try {
-            String sql = """
-                    SELECT *
-                    FROM PET
-                    ORDER BY birthdate
-                    """;
+            String sortOrder = ascending ? "ASC" : "DESC";
+
+            String sql = "SELECT * FROM PET ORDER BY " + attribute + " " + sortOrder;
 
             return jdbcTemplate.query(sql, rowMapper);
         }
 
         catch (Exception e) {
-            Logger.logMsgFrom(this.getClass().getName(), "Error in sorting the pets with their birthdate: " + e.getMessage(), 1);
+            Logger.logMsgFrom(this.getClass().getName(), "Error in sorting the pets: " + e.getMessage(), 1);
             return null;
         }
     }
 
+    /**
+     * This function filter the pets according to the map attributesToValues
+     * This function selects the pets that satisfy all equality conditions of attributes map
+     * In case the map is empty, this function will return all pets in the DB
+     * @param attributesToValues this will map each attribute to its value like: "specie" -> "dog"
+     * @return list of pets that satisfy all equality conditions
+     */
     @Transactional
     public List<Pet> findByAttributes(Map<String, Object> attributesToValues) {
+
+        if (attributesToValues == null) {
+            throw new IllegalArgumentException("Map object can't be null");
+        }
+
         try {
             StringBuilder sql = new StringBuilder("SELECT * FROM PET WHERE 1=1 ");
-            Map<String, Object> parametersMap = new HashMap<>();
 
             attributesToValues.forEach((key, value) -> {
                 sql.append("AND ").append(key).append(" = :").append(key).append(" ");
-                parametersMap.put(key, value);
             });
 
-            return namedParameterJdbcTemplate.query(sql.toString(), parametersMap, rowMapper);
+            return namedParameterJdbcTemplate.query(sql.toString(), attributesToValues, rowMapper);
         }
 
         catch (Exception e) {

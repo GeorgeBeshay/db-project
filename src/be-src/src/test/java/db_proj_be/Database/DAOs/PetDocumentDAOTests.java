@@ -222,6 +222,7 @@ public class PetDocumentDAOTests {
         assertTrue(result);
 
         // Clean
+        jdbcTemplate.update("DELETE FROM PET_DOCUMENT WHERE id = ?", documentId);
         jdbcTemplate.update("DELETE FROM PET WHERE id = ?", petId);
     }
 
@@ -256,8 +257,11 @@ public class PetDocumentDAOTests {
         document.setId(documentId);
         boolean result = petDocumentDAO.updateDocument(document);
 
+        PetDocument updatedDocument = petDocumentDAO.findById(documentId);
+
         // Assert
         assertTrue(result);
+        assertEquals(document, updatedDocument);
 
         // Clean
         jdbcTemplate.update("DELETE FROM PET_DOCUMENT WHERE id = ?", documentId);
