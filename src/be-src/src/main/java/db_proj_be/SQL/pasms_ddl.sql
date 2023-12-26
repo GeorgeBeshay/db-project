@@ -53,21 +53,21 @@ DECLARE @inputTableName VARCHAR(128) = 'PET';
 IF dbo.relation_exists(@inputTableName) = 0
 BEGIN
 
-CREATE TABLE PET (
-     id INT PRIMARY KEY,
-     name VARCHAR(50) NOT NULL,
-     specie VARCHAR(50) NOT NULL,
-     breed VARCHAR(50) NOT NULL,
-     birthdate DATE,
-     gender BIT NOT NULL,
-     health_status VARCHAR(50) NOT NULL,
-     behaviour VARCHAR(100),
-     description VARCHAR(100),
-     shelter_id INT,
-     neutering BIT,
-     house_training BIT,
-     vaccination BIT
-);
+    CREATE TABLE PET (
+         id INT PRIMARY KEY IDENTITY(1, 1),
+         name VARCHAR(50) NOT NULL,
+         specie VARCHAR(50) NOT NULL,
+         breed VARCHAR(50) NOT NULL,
+         birthdate DATE,
+         gender BIT NOT NULL,
+         health_status VARCHAR(50) NOT NULL,
+         behaviour VARCHAR(100),
+         description VARCHAR(100),
+         shelter_id INT,
+         neutering BIT,
+         house_training BIT,
+         vaccination BIT
+    );
 
 END
 ELSE
@@ -80,12 +80,13 @@ DECLARE @inputTableName VARCHAR(128) = 'PET_DOCUMENT';
 IF dbo.relation_exists(@inputTableName) = 0
 BEGIN
 
-CREATE TABLE PET_DOCUMENT (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
-    pet_id INT NOT NULL FOREIGN KEY REFERENCES PET(id),
-    document_type VARCHAR(50) NOT NULL,
-    document VARBINARY(MAX) NOT NULL
-);
+    CREATE TABLE PET_DOCUMENT (
+        id INT IDENTITY(1, 1) PRIMARY KEY,
+        pet_id INT NOT NULL FOREIGN KEY REFERENCES PET(id),
+        document_type VARCHAR(50) NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        document VARBINARY(MAX) NOT NULL
+    );
 
 END
 ELSE
@@ -98,11 +99,11 @@ DECLARE @inputTableName VARCHAR(128) = 'ADOPTION';
 IF dbo.relation_exists(@inputTableName) = 0
 BEGIN
 
-CREATE TABLE ADOPTION (
-    pet_id INT NOT NULL FOREIGN KEY REFERENCES PET(id),
-    adopter_id INT,
-    PRIMARY KEY (pet_id, adopter_id)
-);
+    CREATE TABLE ADOPTION (
+        pet_id INT NOT NULL FOREIGN KEY REFERENCES PET(id),
+        adopter_id INT,
+        PRIMARY KEY (pet_id, adopter_id)
+    );
 
 END
 ELSE
