@@ -6,7 +6,7 @@ IF
 dbo.relation_exists(@inputTableName) = 0
 BEGIN
 Create table ADMINISTRATOR(
-id int primary key,
+id int primary key IDENTITY(1, 1),
 first_name varchar(50) NOT NULL,
 last_name varchar(50) not null,
 email varchar(30) unique not null,
@@ -25,7 +25,7 @@ IF
 dbo.relation_exists(@inputTableName) = 0
 BEGIN
 Create table SHELTER(
-id int primary key,
+id int primary key IDENTITY(1, 1),
 name varchar(50) not null,
 location varchar(255) not null,
 email varchar(255) not null,
