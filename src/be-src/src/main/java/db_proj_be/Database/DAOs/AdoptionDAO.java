@@ -12,8 +12,8 @@ import java.util.List;
 
 public class AdoptionDAO {
 
-    private JdbcTemplate jdbcTemplate;
-    protected BeanPropertyRowMapper<Adoption> rowMapper;
+    private final JdbcTemplate jdbcTemplate;
+    protected final BeanPropertyRowMapper<Adoption> rowMapper;
 
     public AdoptionDAO(JdbcTemplate jdbcTemplate) {
         if (jdbcTemplate == null) {
@@ -45,7 +45,7 @@ public class AdoptionDAO {
     public Adoption findByPetId(int petId) {
 
         try {
-            String sql = "SELECT * FROM ADOPTION WHERE petId = ?";
+            String sql = "SELECT * FROM ADOPTION WHERE pet_id = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, petId);
 
         } catch (Exception e) {
@@ -57,11 +57,11 @@ public class AdoptionDAO {
     }
 
     @Transactional
-    public Adoption findByAdopterId(int adopterId) {
+    public List<Adoption> findByAdopterId(int adopterId) {
 
         try {
-            String sql = "SELECT * FROM ADOPTION WHERE adopterId = ?";
-            return jdbcTemplate.queryForObject(sql, rowMapper, adopterId);
+            String sql = "SELECT * FROM ADOPTION WHERE adopter_id = ?";
+            return jdbcTemplate.query(sql, rowMapper, adopterId);
 
         } catch (Exception e) {
             Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTION findByPetId(): " + e.getMessage(), 1);
@@ -99,23 +99,14 @@ public class AdoptionDAO {
         if (adoption == null) {
             throw new IllegalArgumentException("Entity object to delete can't be null");
         }
-
-        try {
-            String sql = "DELETE FROM ADOPTION WHERE adopterId = ? AND petId = ?";
-            return jdbcTemplate.update(sql, adoption.getAdopterId(), adoption.getPetId()) > 0;
-
-        } catch (Exception ex) {
-            Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTION delete(): " + ex.getMessage(), 1);
-            return false; // Return a meaningful response indicating failure
-
-        }
+        return delete(adoption.getPetId(), adoption.getAdopterId());
 
     }
 
     public boolean delete(int petId, int adopterId) {
 
         try {
-            String sql = "DELETE FROM ADOPTION WHERE adopterId = ? AND petId = ?";
+            String sql = "DELETE FROM ADOPTION WHERE adopter_id = ? AND pet_id = ?";
             return jdbcTemplate.update(sql, adopterId, petId) > 0;
 
         } catch (Exception ex) {

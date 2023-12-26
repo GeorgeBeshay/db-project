@@ -45,7 +45,7 @@ public class AdminDAOTests {
 
     @Test
     @DisplayName("Admin DAO Tests - Creation: Passing an object that contains all of the attributes set.")
-    public void testAdminCreationAllArguments() {
+    public void testAdminCreationAllAttributes() {
         // Arrange
         int id = 10_000; // ignored
         String firstName = "John";
