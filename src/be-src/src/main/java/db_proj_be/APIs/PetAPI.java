@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import java.util.*;
 
 @ComponentScan(basePackages = {"db_proj_be.BusinessLogic.Services", "db_proj_be.APIs"})
 @RestController
@@ -59,6 +60,18 @@ public class PetAPI {
         return (this.petService.deletePet(pet))
                 ? new ResponseEntity<>(true, HttpStatus.OK)
                 : new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("getUnAdoptedPets")
+    @ResponseBody
+    public ResponseEntity<List<Pet>> getUnAdoptedPets() {
+        Logger.logMsgFrom(this.getClass().getName(), "Getting unAdopted pets.. ", -1);
+
+        List<Pet> unAdoptedPets = petService.getUnAdoptedPets();
+
+        return (unAdoptedPets != null)
+                ? new ResponseEntity<>(unAdoptedPets, HttpStatus.OK)
+                : new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 
 }

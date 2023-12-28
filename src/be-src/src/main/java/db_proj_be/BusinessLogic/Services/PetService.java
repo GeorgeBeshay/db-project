@@ -6,6 +6,7 @@ import db_proj_be.Database.DAOs.PetDAO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
+import java.util.*;
 
 @Service
 public class PetService {
@@ -51,6 +52,17 @@ public class PetService {
             Logger.logMsgFrom(this.getClass().getName(), "A pet is failed to be deleted", 1);
 
         return petDeleted;
+    }
+
+    public List<Pet> getUnAdoptedPets() {
+        List<Pet> unAdoptedPets = petDAO.getUnAdoptedPets();
+        if (unAdoptedPets != null)
+            Logger.logMsgFrom(this.getClass().getName(), "Getting unAdopted pets successfully..", 0);
+
+        else
+            Logger.logMsgFrom(this.getClass().getName(), "Getting unAdopted pets failed..", 1);
+
+        return unAdoptedPets;
     }
 
 }
