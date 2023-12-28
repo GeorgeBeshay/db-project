@@ -26,3 +26,11 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+test {
+    jvmArgs = ["-ea"] // Enable assertions for test tasks
+}
+
+tasks.withType(JavaExec).configureEach {
+    jvmArgs = ["-ea"] // Enable assertions for running the application
+}
