@@ -5,14 +5,14 @@ VARCHAR(125) = 'ADMINISTRATOR';
 IF
 dbo.relation_exists(@inputTableName) = 0
 BEGIN
-Create table ADMINISTRATOR(
-id int primary key IDENTITY(1, 1),
-first_name varchar(50) NOT NULL,
-last_name varchar(50) not null,
-email varchar(255) unique not null,
-phone varchar(15),
-password_hash varchar(256) not null);
-END
+    Create table ADMINISTRATOR(
+        id int primary key IDENTITY(1, 1),
+        first_name varchar(50) NOT NULL,
+        last_name varchar(50) not null,
+        email varchar(255) unique not null,
+        phone varchar(15),
+        password_hash varchar(256) not null);
+    END
 ELSE
 BEGIN
     PRINT 'Administrator relation already exists.';
@@ -25,22 +25,24 @@ VARCHAR(125) = 'SHELTER';
 IF
 dbo.relation_exists(@inputTableName) = 0
 BEGIN
-Create table SHELTER(
-id int primary key IDENTITY(1, 1),
-name varchar(50) not null,
-location varchar(255) not null,
-email varchar(255) not null,
-phone varchar(15) not null,
-manager int not null;
-END
+    Create table SHELTER(
+        id int primary key IDENTITY(1, 1),
+        name varchar(50) not null,
+        location varchar(255) not null,
+        email varchar(255) not null,
+        phone varchar(15) not null,
+        manager int)
+    END
 ELSE
 BEGIN
-    PRINT 'Shelter relation already exists.';
+    PRINT 'Shelter relation already exists.'
+END
+GO
 
 
 DECLARE @inputTableName VARCHAR(128) = 'ADOPTER';
 IF dbo.relation_exists(@inputTableName) = 0
-BEGIN
+    BEGIN
     CREATE TABLE ADOPTER (
         id INT PRIMARY KEY IDENTITY(1, 1),
         email VARCHAR(255) UNIQUE NOT NULL,         -- candidate key
@@ -51,7 +53,7 @@ BEGIN
         birth_date DATE,
         gender BIT, -- equivalent to isMale boolean variable
         address VARCHAR(255) NOT NULL -- Adjust length based on address length requirement
-                         );
+    );
 END
 ELSE
 BEGIN
@@ -75,7 +77,7 @@ BEGIN
         shelter_id INT NOT NULL,
         FOREIGN KEY (shelter_id) REFERENCES SHELTER(id),
         -- The SHELTER relation must be defined before creating this relation.
-                        );
+    );
 END
 ELSE
 BEGIN
@@ -89,19 +91,19 @@ IF dbo.relation_exists(@inputTableName) = 0
 BEGIN
 
     CREATE TABLE PET (
-         id INT PRIMARY KEY IDENTITY(1, 1),
-         name VARCHAR(50) NOT NULL,
-         specie VARCHAR(50) NOT NULL,
-         breed VARCHAR(50) NOT NULL,
-         birthdate DATE,
-         gender BIT NOT NULL,
-         health_status VARCHAR(50) NOT NULL,
-         behaviour VARCHAR(100),
-         description VARCHAR(100),
-         shelter_id INT,
-         neutering BIT,
-         house_training BIT,
-         vaccination BIT
+        id INT PRIMARY KEY IDENTITY(1, 1),
+        name VARCHAR(50) NOT NULL,
+        specie VARCHAR(50) NOT NULL,
+        breed VARCHAR(50) NOT NULL,
+        birthdate DATE,
+        gender BIT NOT NULL,
+        health_status VARCHAR(50) NOT NULL,
+        behaviour VARCHAR(100),
+        description VARCHAR(100),
+        shelter_id INT,
+        neutering BIT,
+        house_training BIT,
+        vaccination BIT
     );
 
 END
@@ -109,6 +111,7 @@ ELSE
 BEGIN
     PRINT 'PET relation already exists.'
 end;
+GO
 
 
 DECLARE @inputTableName VARCHAR(128) = 'PET_DOCUMENT';
@@ -128,6 +131,7 @@ ELSE
 BEGIN
     PRINT 'PET_DOCUMENT relation already exists.'
 end;
+GO
 
 
 DECLARE @inputTableName VARCHAR(128) = 'ADOPTION';
@@ -146,22 +150,27 @@ ELSE
 BEGIN
     PRINT 'ADOPTION relation already exists.'
 end;
+GO
 
 
 ALTER TABLE PET
 ADD CONSTRAINT fk_pet_shelter
 FOREIGN KEY (shelter_id)
 REFERENCES SHELTER(id);
+GO
 
 ALTER TABLE ADOPTION
 ADD CONSTRAINT fk_adoption_adopter
 FOREIGN KEY (adopter_id)
 REFERENCES ADOPTER(id);
+GO
 
 ALTER TABLE SHELTER
 ADD CONSTRAINT fk_shelter_mgr
 FOREIGN KEY (manager)
 REFERENCES STAFF(id);
+GO
+
 -- Guard condition to check for relation absence before creating it.
 DECLARE @inputTableName VARCHAR(128) = 'ADOPTION_APPLICATION';
 IF dbo.relation_exists(@inputTableName) = 0
@@ -178,7 +187,7 @@ BEGIN
         PRIMARY KEY (id),
         FOREIGN KEY (adopter_id) REFERENCES ADOPTER(id),
         FOREIGN KEY (pet_id) REFERENCES PET(id)
-    );
+        );
 END
 ELSE
 BEGIN
@@ -209,6 +218,7 @@ GO
 -- Guard condition to check for relation absence before creating it.
 DECLARE @inputTableName VARCHAR(128) = 'PET_AVAILABILITY_NOTIFICATION';
 IF dbo.relation_exists(@inputTableName) = 0
+BEGIN
     CREATE TABLE PET_AVAILABILITY_NOTIFICATION (
         pet_id INT NOT NULL,
         adopter_id INT NOT NULL,
