@@ -65,4 +65,15 @@ public class PetService {
         return unAdoptedPets;
     }
 
+    public Pet findById(int petId) {
+        Pet pet = petDAO.findById(petId);
+        if (pet != null)
+            Logger.logMsgFrom(this.getClass().getName(), "A pet is found successfully", 0);
+
+        else
+            Logger.logMsgFrom(this.getClass().getName(), "A pet is failed to be found", 1);
+
+        return pet;
+    }
+
 }

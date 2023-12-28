@@ -5,6 +5,7 @@ import db_proj_be.BusinessLogic.Services.*;
 import db_proj_be.BusinessLogic.Utilities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +15,7 @@ import java.util.*;
 
 @ComponentScan(basePackages = {"db_proj_be.BusinessLogic.Services", "db_proj_be.APIs"})
 @RestController
-@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/pasms-server/pet-api/")
 
 public class PetAPI {
@@ -72,6 +73,18 @@ public class PetAPI {
         return (unAdoptedPets != null)
                 ? new ResponseEntity<>(unAdoptedPets, HttpStatus.OK)
                 : new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("findPetById")
+    @ResponseBody
+    public ResponseEntity<Pet> findPetById(@RequestBody Integer petId) {
+        Logger.logMsgFrom(this.getClass().getName(), "A pet requested to be found.. ", -1);
+
+        Pet pet = petService.findById(petId);
+
+        return (pet != null)
+                ? new ResponseEntity<>(pet, HttpStatus.OK)
+                : new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
 }
