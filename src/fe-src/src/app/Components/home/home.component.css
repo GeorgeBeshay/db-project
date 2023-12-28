@@ -1,0 +1,18 @@
+/* home.component.css */
+
+.container {
+  max-width: 800px;
+  margin: 0 auto 40px;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.intro-text p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
