@@ -1,6 +1,8 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
 
+import org.springframework.data.relational.core.sql.In;
+
 import java.util.Objects;
 
 
@@ -15,7 +17,7 @@ public class Pet implements Identifiable {
     private String healthStatus;
     private String behaviour;
     private String description;
-    private int shelterId;
+    private Integer shelterId;
     private boolean neutering;
     private boolean houseTraining;
     private boolean vaccination;
@@ -24,7 +26,7 @@ public class Pet implements Identifiable {
 
     public Pet(String name, String specie, String breed, String birthdate,
                boolean gender, String healthStatus, String behaviour, String description,
-               int shelterId, boolean neutering, boolean houseTraining, boolean vaccination) {
+               Integer shelterId, boolean neutering, boolean houseTraining, boolean vaccination) {
         this.name = name;
         this.specie = specie;
         this.breed = breed;
@@ -111,11 +113,11 @@ public class Pet implements Identifiable {
         this.description = description;
     }
 
-    public int getShelterId() {
+    public Integer getShelterId() {
         return shelterId;
     }
 
-    public void setShelterId(int shelterId) {
+    public void setShelterId(Integer shelterId) {
         this.shelterId = shelterId;
     }
 
