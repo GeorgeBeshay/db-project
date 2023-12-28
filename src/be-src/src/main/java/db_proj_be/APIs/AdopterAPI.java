@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @ComponentScan(basePackages = {"db_proj_be.BusinessLogic.Services", "db_proj_be.APIs"})
 @RestController
 @CrossOrigin()
@@ -32,5 +35,16 @@ public class AdopterAPI {
         return (adoptionAppId > 0)
                 ? new ResponseEntity<>(adoptionAppId, HttpStatus.OK)
                 : new ResponseEntity<>(adoptionAppId, HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("fetch-applications/{id}")
+    public ResponseEntity<List<AdoptionApplication>> fetchAdoptionApplications(@PathVariable("id") int adopterId) {
+        Logger.logMsgFrom(this.getClass().getName(), "Adoption applications requested by adopter " + adopterId, -1);
+
+        List<AdoptionApplication> adoptionApplications = this.adopterService.fetchAdoptionApplications(adopterId);
+
+        return (adoptionApplications != null)
+                ? new ResponseEntity<>(adoptionApplications, HttpStatus.OK)
+                : new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 }
