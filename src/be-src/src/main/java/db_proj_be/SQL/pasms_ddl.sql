@@ -204,7 +204,7 @@ BEGIN
         adopter_id INT NOT NULL,
         status BIT NOT NULL, -- equivalent to isRead
         date DATE NOT NULL,
-        PRIMARY KEY (application_id, adopter_id),
+        PRIMARY KEY (application_id),
         FOREIGN KEY (application_id) REFERENCES ADOPTION_APPLICATION(id),
         FOREIGN KEY (adopter_id) REFERENCES ADOPTER(id)
     );
