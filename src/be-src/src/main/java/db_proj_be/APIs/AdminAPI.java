@@ -36,5 +36,16 @@ public class AdminAPI {
         return new ResponseEntity<>(resultAdminObject,
                 (resultAdminObject != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
+    @PostMapping("createShelter")
+    @ResponseBody
+    public ResponseEntity<Boolean> createShelter(@RequestBody Shelter shelter){
+        Logger.logMsgFrom(this.getClass().getName(),"An Admin has requested to create a new shelter .."
+        + "processing the request.",-1);
+
+        Boolean result = this.adminServices.createShelter(shelter);
+
+        return new ResponseEntity<>(result,
+                (result)? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
 
 }
