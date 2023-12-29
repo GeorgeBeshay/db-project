@@ -1,5 +1,7 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
+import db_proj_be.BusinessLogic.Utilities.Logger;
+
 import java.util.Objects;
 
 public class Staff implements Identifiable {
@@ -9,18 +11,22 @@ public class Staff implements Identifiable {
     String role;
     String phone;
     String email;
-    int paswordHash;
+    String passwordHash;
     int shelterId;
-    public Staff(int id, String firstName, String lastName, String role, String phone, String email, int paswordHash, int shelterId) {
+
+    public Staff(int id, String firstName, String lastName, String role, String phone, String email, String passwordHash, int shelterId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
         this.phone = phone;
         this.email = email;
-        this.paswordHash = paswordHash;
+        this.passwordHash = passwordHash;
         this.shelterId = shelterId;
     }
+
+    public Staff(){}
+
     public int getId() {
         return id;
     }
@@ -50,6 +56,11 @@ public class Staff implements Identifiable {
     }
 
     public void setRole(String role) {
+        if (!role.equals(StaffRole.MANAGER.getValue()) && !role.equals(StaffRole.MEMBER.getValue())) {
+            Logger.logMsgFrom(this.getClass().getName(), "Role is invalid.", 1);
+            return;
+        }
+
         this.role = role;
     }
 
@@ -69,12 +80,12 @@ public class Staff implements Identifiable {
         this.email = email;
     }
 
-    public int getPaswordHash() {
-        return paswordHash;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPaswordHash(int paswordHash) {
-        this.paswordHash = paswordHash;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public int getShelterId() {
@@ -94,7 +105,7 @@ public class Staff implements Identifiable {
                 ", role='" + role + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                ", paswordHash=" + paswordHash +
+                ", paswordHash=" + passwordHash +
                 ", shelterId=" + shelterId +
                 '}';
     }
@@ -104,11 +115,19 @@ public class Staff implements Identifiable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Staff staff = (Staff) o;
-        return id == staff.id && paswordHash == staff.paswordHash && shelterId == staff.shelterId && Objects.equals(firstName, staff.firstName) && Objects.equals(lastName, staff.lastName) && Objects.equals(role, staff.role) && Objects.equals(phone, staff.phone) && Objects.equals(email, staff.email);
+        return id == staff.id
+                && Objects.equals(passwordHash, staff.passwordHash)
+                && shelterId == staff.shelterId
+                && Objects.equals(firstName, staff.firstName)
+                && Objects.equals(lastName, staff.lastName)
+                && Objects.equals(role, staff.role)
+                && Objects.equals(phone, staff.phone)
+                && Objects.equals(email, staff.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, role, phone, email, paswordHash, shelterId);
+        return Objects.hash(id, firstName, lastName, role, phone, email, passwordHash, shelterId);
     }
+
 }
