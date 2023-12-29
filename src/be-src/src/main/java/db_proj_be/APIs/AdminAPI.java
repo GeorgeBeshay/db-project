@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @ComponentScan(basePackages = {"db_proj_be.BusinessLogic.Services", "db_proj_be.APIs"})
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -60,5 +62,12 @@ public class AdminAPI {
         Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to delete a shelter.",0);
         boolean result = this.adminService.deleteShelter(shelterToBeDeleted);
         return new ResponseEntity<>(result,(result) ? HttpStatus.OK:HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping("findAllShelters")
+    @ResponseBody
+    public ResponseEntity<List<Shelter>> findAllShelters(){
+        Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to display all shelters.",0);
+        List<Shelter> shelters = this.adminService.findAllShelters();
+        return new ResponseEntity<>(shelters,(shelters != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 }
