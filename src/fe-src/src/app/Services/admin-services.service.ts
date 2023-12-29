@@ -13,6 +13,7 @@ export class AdminServicesService {
   //  ---------------------------- Constructor ----------------------------
   constructor(private http: HttpClient) { }
 
+  //  ---------------------------- Service Methods ----------------------------
   async adminSignIn(admin: Admin) {
 
     try {
@@ -32,4 +33,5 @@ export class AdminServicesService {
     }
 
   }
+
 }

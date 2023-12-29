@@ -2,17 +2,17 @@
   margin: 10px;
   padding: 5px;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;
+  min-height: 600px;
 }
 
 .center {
   text-align: left;
   width: 50%;
   padding: 20px;
-  margin: 20px auto;
+  margin: 5px auto;
   background-color: var(--beige);
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -65,4 +65,50 @@ button:hover {
 form div.error {
   color: red;
   margin-block: 5px;
+}
+
+.content-wrapper {
+  display: flex;
+  width: 80%;
+  margin-bottom: 100px;
+}
+
+.sidebar {
+  font-size: 20px;
+  align-self: flex-start;
+  width: 200px;
+  background-color: var(--grey-brown);
+  border-right: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: white;
+}
+
+.sidebar a:hover {
+  color: var(--beige);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  min-width: 80%;
+  background-color: var(--grey-brown);
+  min-height: 500px;
+  border-radius: 5px;
+  margin-left: 10px;
+  color: white;
 }

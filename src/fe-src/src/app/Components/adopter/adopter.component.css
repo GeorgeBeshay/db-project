@@ -6,4 +6,233 @@
 
 h2 {
   margin-bottom: 20px;
+  text-align: center;
+}
+
+.holder {
+  display: flex;
+  width: 100%;
+}
+
+.form-group {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px; /* Adjust as needed for spacing between form groups */
+  max-width: 500px; /* Set a maximum width for the form groups */
+  width: 50%;
+  padding: 20px;
+  margin: 5px auto;
+  background-color: var(--beige);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-height: 250px;
+}
+
+label {
+  display: flex;
+  font-weight: bold;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background-color: beige;
+  font-family: 'Montserrat', sans-serif;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+button {
+  padding: 10px 25px;
+  background-color: var(--dark-brown);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center;
+  margin-left: 50%;
+  transform: translate(-50%);
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+label {
+  margin-bottom: 5px; /* Adjust as needed for spacing between label and input */
+}
+
+input {
+  width: 100%; /* Force the input fields to take full width within their container */
+  box-sizing: border-box; /* Include padding and border within the width */
+  padding: 5px;
+}
+
+.input-error {
+  color: red;
+}
+
+.authentication {
+  width: 100%;
+}
+
+.adopter-main-page {
+  display: grid;
+  height: 1000px;
+  width: 100%;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 0.2fr repeat(4, 1fr);
+  grid-column-gap: 0;
+  grid-row-gap: 0;
+}
+
+.adopter-main-page .header {
+  grid-area: 1 / 1 / 2 / 7;
+  text-align: center;
+}
+
+.adopter-main-page .sidebar {
+  grid-area: 2 / 1 / 6 / 2;
+  background-color: var(--dark-brown);
+  padding: 20px;
+  border-radius: 10px 10px 0 0;
+}
+
+.adopter-main-page .main-content {
+  grid-area: 2 / 2 / 6 / 7;
+  padding: 20px;
+  border-radius: 10px 0 0 0;
+}
+
+.adopter-main-page .header h1 {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 40px;
+  padding: 5px;
+  width: fit-content;
+  margin: 15px auto;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Navigation links styles */
+.adopter-main-page .sidebar .nav-links {
+  list-style: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.adopter-main-page .sidebar .nav-links li {
+  margin-bottom: 10px;
+}
+
+.adopter-main-page .sidebar .nav-links a {
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+  color: var(--beige);
+}
+
+.adopter-main-page .sidebar .nav-links a:hover {
+  background-color: var(--beige);
+  color: var(--dark-brown);
+  border-radius: 3px;
+}
+
+.adopter-main-page .box {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-inline: 10px;
+}
+
+.adopter-main-page .adoption-list {
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.adopter-main-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.adopter-main-page th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.adopter-main-page th {
+  background-color: #f2f2f2;
+}
+
+.adopter-main-page .toggle-switch {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.adopter-main-page .toggle-switch {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.adopter-main-page .toggle-switch label {
+  margin-right: 10px; /* Adjust margin as needed */
+}
+
+.adopter-main-page .toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+  z-index: 2; /* Ensure the input is above the slider */
+}
+
+.adopter-main-page .slider {
+  position: relative;
+  cursor: pointer;
+  width: 40px; /* Adjust the width based on your preference */
+  height: 20px; /* Adjust the height based on your preference */
+  background-color: #ccc;
+  border-radius: 10px; /* Half of the height to make it a circle */
+  transition: 0.4s;
+  z-index: 1; /* Ensure the slider is below the input */
+}
+
+.adopter-main-page .slider:before {
+  content: '';
+  position: absolute;
+  height: 18px; /* Adjust the height based on your preference */
+  width: 18px; /* Adjust the width based on your preference */
+  left: 2px;
+  bottom: 1px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+.adopter-main-page input:checked + .slider {
+  background-color: #4CAF50;
+}
+
+.adopter-main-page input:checked + .slider:before {
+  transform: translateX(20px); /* Adjust the translation based on your preference */
+}
+
+.adopter-main-page input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
 }

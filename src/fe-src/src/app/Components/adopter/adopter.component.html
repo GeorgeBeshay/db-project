@@ -1,16 +1,94 @@
-<div class="container">
-  <h2>Adopter</h2>
-  <p>
-    This page should contain a sidebar for the different subpages that provide the adopter functionalities,
-    such as:
-  </p>
-  <ul>
-    <li>Sign Up</li>
-    <li>Sign In</li>
-    After signing in, the following operations will be available:
-    <li>Create Adoption Application</li>
-    <li>View Adoption Applications Submitted</li>
-    <li>etc..</li>
-  </ul>
-  <p>This is just a placeholder, and will be removed when implementing the real component.</p>
+<div class="holder">
+  <!-- TODO: the condition need to be modified -->
+  <ng-container *ngIf="1 != 1; else loggedIn">
+    <div class="authentication">
+      Here the authentication
+    </div>
+  </ng-container>
+
+
+  <ng-template #loggedIn>
+    <div class="adopter-main-page">
+
+      <div class="header">
+        <h1>Adopter Dashboard</h1>
+      </div>
+
+
+      <div class="sidebar">
+        <ul class="nav-links">
+          <li><a (click)="selectSection(0)">Home Page</a></li>
+          <li><a (click)="selectSection(1)">New Application</a></li>
+          <li><a (click)="selectSection(2)">My Applications</a></li>
+          <li><a (click)="selectSection(3)">Notifications</a></li>
+        </ul>
+      </div>
+
+      <div class="main-content">
+
+        <ng-container *ngIf="currentSection == 0">
+          This is the adopter home page!
+        </ng-container>
+
+        <ng-container *ngIf="currentSection == 1">
+          <form class="formGroup" [formGroup]="applicationForm" (ngSubmit)="submitApplication()">
+            <div>
+              <label for="adopterId">Adopter ID</label>
+              <input type="text" id="adopterId" formControlName="adopterId" [attr.disabled]="true" />
+            </div>
+            <div>
+              <label for="petId">Pet ID:</label>
+              <input type="text" id="petId" formControlName="petId" [attr.disabled]="true" />
+            </div>
+            <div class="toggle-switch">
+              <label for="experience">Have Previous Experience With Pet Adoption </label>
+              <label>
+                <input type="checkbox" id="experience" formControlName="experience" />
+                <div class="slider"></div>
+              </label>
+            </div>
+            <div>
+              <label for="description">Description *</label>
+              <textarea id="description" formControlName="description" rows="4" placeholder="Tell us about your experience with pets, your living situation, and any preferences you have for the adoption."></textarea>
+            </div>
+            <div>
+              <button type="submit" [disabled]="!applicationForm.valid">Submit Application</button>
+            </div>
+          </form>
+        </ng-container>
+
+        <ng-container *ngIf="currentSection == 2">
+          <div class="adoption-list">
+            <h2>Adoption Applications</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Pet ID</th>
+                  <th>Submission Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let application of adoptionApplications">
+                  <td>{{ application.id }}</td>
+                  <td>{{ application.petId }}</td>
+                  <td>{{ application.creationDate | date: 'short' }}</td>
+                  <td>{{ application.status }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+        </ng-container>
+
+        <ng-container *ngIf="currentSection == 3">
+          This is the notifications page!
+        </ng-container>
+
+      </div>
+
+    </div>
+
+  </ng-template>
 </div>

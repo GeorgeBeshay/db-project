@@ -26,22 +26,35 @@
   </ng-container>
 
   <ng-template #signedInView>
-    <!-- Display different content once admin is signed in -->
-    <p>Welcome, Admin!</p>
-    <!-- Other content for signed-in admin -->
+    <div class="content-wrapper">
+
+      <aside class="sidebar">
+        <ul><a (click)="selectSection(0)">My Profile</a></ul>
+        <ul><a (click)="selectSection(1)">Create Admin</a></ul>
+        <ul><a (click)="selectSection(2)">Create Staff</a></ul>
+        <ul><a (click)="selectSection(3)">Create Shelter</a></ul>
+      </aside>
+      <div class="main-content">
+
+        <ng-container *ngIf="selectedSection == 0">
+          <p>This is the admin profile sub-page.</p>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSection == 1">
+          <p>This is the admin creation sub-page.</p>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSection == 2">
+          <p>This is the staff creation sub-page.</p>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSection == 3">
+          <p>This is the shelter creation sub-page.</p>
+        </ng-container>
+
+      </div>
+
+    </div>
   </ng-template>
 
-  <p>
-    This page should contain a sidebar for the different subpages that provide the admin functionalities,
-    such as:
-  </p>
-  <ul>
-    <li>Sign In</li>
-    After signing in, the following operations will be available:
-    <li>Creating Shelter</li>
-    <li>Creating Staff</li>
-    <li>Creating Admin</li>
-    <li>etc..</li>
-  </ul>
-  <p>This is just a placeholder, and will be removed when implementing the real component.</p>
 </div>
