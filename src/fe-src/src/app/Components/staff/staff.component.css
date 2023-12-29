@@ -109,6 +109,27 @@ input {
   margin-inline: 10px;
 }
 
+.staff-main-page .adoption-list {
+  max-width: 1000px;
+  margin: 20px auto;
+}
+
+.staff-main-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.staff-main-page th, td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.staff-main-page th {
+  background-color: #f2f2f2;
+}
+
 .pet-form-container {
   display: flex;
 }

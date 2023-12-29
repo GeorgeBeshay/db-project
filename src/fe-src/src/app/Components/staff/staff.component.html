@@ -19,6 +19,7 @@
         <ul class="nav-links">
           <li><a (click)="selectSection(0)">Staff Home Page</a></li>
           <li><a (click)="selectSection(1)">Manage Pets</a></li>
+          <li><a (click)="selectSection(2)">Review Applications</a></li>
           <!-- Add more navigation links as needed -->
         </ul>
       </div>
@@ -145,6 +146,43 @@
                 </li>
               </ul>
             </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSection == 2">
+          <div class="adoption-list">
+            <h2>Adoption Applications</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Adopter ID</th>
+                  <th>Pet ID</th>
+                  <th>Submission Date</th>
+                  <th>Experience</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let application of adoptionApplications">
+                  <td>{{ application.id }}</td>
+                  <td><a [routerLink]="['/adopter', application.adopterId]">{{ application.adopterId }}</a></td>
+                  <td>{{ application.petId }}</td>
+                  <td>{{ application.creationDate | date: 'short' }}</td>
+                  <td>{{ application.experience ? 'Yes' : 'No' }}</td>
+                  <td>{{ application.description }}</td>
+                  <td>{{ application.status }}</td>
+                  <td>
+                    <select [(ngModel)]="application.status" (change)="updateApplication(application)">
+                      <option value="APPROVED" [disabled]="application.status !== 'PENDING'">Approve</option>
+                      <option value="REJECTED" [disabled]="application.status !== 'PENDING'">Reject</option>
+                    </select>
+                </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </ng-container>
 
