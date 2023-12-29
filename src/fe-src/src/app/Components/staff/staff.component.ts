@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
 import { StaffServicesService } from '../../Services/staff-services.service'
+import {UtilitiesService} from "../../Services/utilities.service";
 import { Pet } from '../../Entities/Pet'
 import {FormArray, FormControl, FormGroup, NonNullableFormBuilder, Validators, ReactiveFormsModule} from "@angular/forms";
 
@@ -13,6 +14,7 @@ export class StaffComponent implements OnInit{
 
   selectedSection: number
   staffService: StaffServicesService
+  utilitiesService: UtilitiesService;
 
   petForm: FormGroup
   availablePetsForAdoption: Pet[] = [];
@@ -21,6 +23,7 @@ export class StaffComponent implements OnInit{
   constructor(private http: HttpClient, private formBuilder: NonNullableFormBuilder) {
     this.selectedSection = 0
     this.staffService = new StaffServicesService(http);
+    this.utilitiesService = new UtilitiesService();
 
     this.petForm = this.formBuilder.group({
       id: [],
@@ -52,8 +55,16 @@ export class StaffComponent implements OnInit{
     console.log(this.petForm.value);
     const pet = this.petForm.value as Pet
     let result = await this.staffService.createPet(pet)
-    this.petForm.patchValue({ id: result });
     console.log(result)
+
+    if (result > 0) {
+      this.petForm.patchValue({ id: result });
+      await this.utilitiesService.sweetAlertSuccess("Successful Pet Creation")
+    }
+    else {
+      await this.utilitiesService.sweetAlertFailure("Pet Creation Failed")
+    }
+
     this.loadAvailablePetsForAdoption()
   }
 
@@ -62,6 +73,14 @@ export class StaffComponent implements OnInit{
     const pet = this.petForm.value as Pet
     let result = await this.staffService.updatePet(pet)
     console.log(result)
+
+    if (result) {
+      await this.utilitiesService.sweetAlertSuccess("Pet updated successfully")
+    }
+    else {
+      await this.utilitiesService.sweetAlertFailure("Pet can not be updated")
+    }
+
     this.loadAvailablePetsForAdoption()
   }
 
@@ -70,6 +89,14 @@ export class StaffComponent implements OnInit{
     const pet = this.petForm.value as Pet
     let result = await this.staffService.deletePet(pet)
     console.log(result)
+
+    if(result) {
+      await this.utilitiesService.sweetAlertSuccess("Pet is deleted successfully")
+    }
+    else {
+      await this.utilitiesService.sweetAlertFailure("Pet can not be deleted")
+    }
+    
     this.loadAvailablePetsForAdoption()
   }
 
