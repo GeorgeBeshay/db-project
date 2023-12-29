@@ -20,6 +20,7 @@
           <li><a (click)="selectSection(0)">Home Page</a></li>
           <li><a (click)="selectSection(1)">New Application</a></li>
           <li><a (click)="selectSection(2)">My Applications</a></li>
+          <li><a (click)="selectSection(3)">Notifications</a></li>
         </ul>
       </div>
 
@@ -79,6 +80,10 @@
             </table>
           </div>
           
+        </ng-container>
+
+        <ng-container *ngIf="currentSection == 3">
+          This is the notifications page!
         </ng-container>
 
       </div>
