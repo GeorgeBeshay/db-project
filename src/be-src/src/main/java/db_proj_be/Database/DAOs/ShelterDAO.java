@@ -20,8 +20,8 @@ public class ShelterDAO extends DAO<Shelter>{
             throw new IllegalArgumentException("Shelter name to find can't be null");
         }
         try{
-            String sql = "SELECT * FROM SHELTER WHERE name = >";
-            return jdbcTemplate.queryForObject(sql,Shelter.class);
+            String sql = "SELECT * FROM SHELTER WHERE name = ?";
+            return jdbcTemplate.queryForObject(sql,rowMapper,name);
         }catch (Exception e){
             return null;
         }
@@ -32,7 +32,7 @@ public class ShelterDAO extends DAO<Shelter>{
             throw new IllegalArgumentException("Shelter location to find can't be null");
         }
         try{
-            String sql = "SELECT * FROM SHELTER WHERE location = >";
+            String sql = "SELECT * FROM SHELTER WHERE location = "+location;
             return jdbcTemplate.queryForList(sql,Shelter.class);
         }catch (Exception e){
             return null;

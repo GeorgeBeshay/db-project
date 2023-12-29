@@ -22,7 +22,7 @@ public class StaffDAO extends DAO<Staff>{
         try {
             String sql = """
                     UPDATE STAFF
-                    SET firstName = ?, lastName = ?, role = ?, phone = ?, email = ?, passwordHash = ?, shelterId = ? 
+                    SET first_name = ?, last_name = ?, role = ?, phone = ?, email = ?, password_hash = ?, shelter_id = ? 
                     WHERE id = ?""";
             int rowsAffected = jdbcTemplate.update(sql,staff.getFirstName(),staff.getLastName(),staff.getRole(),staff.getPhone(),staff.getEmail(),staff.getPaswordHash(),staff.getId());
             return rowsAffected > 0;

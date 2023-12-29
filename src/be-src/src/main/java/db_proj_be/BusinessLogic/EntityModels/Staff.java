@@ -1,5 +1,7 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
+import java.util.Objects;
+
 public class Staff implements Identifiable {
     int id;
     String firstName;
@@ -9,7 +11,16 @@ public class Staff implements Identifiable {
     String email;
     int paswordHash;
     int shelterId;
-
+    public Staff(int id, String firstName, String lastName, String role, String phone, String email, int paswordHash, int shelterId) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+        this.phone = phone;
+        this.email = email;
+        this.paswordHash = paswordHash;
+        this.shelterId = shelterId;
+    }
     public int getId() {
         return id;
     }
@@ -74,19 +85,6 @@ public class Staff implements Identifiable {
         this.shelterId = shelterId;
     }
 
-    public Staff(int id, String firstName, String lastName, String role, String phone, String email, int paswordHash, int shelterId) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.role = role;
-        this.phone = phone;
-        this.email = email;
-        this.paswordHash = paswordHash;
-        this.shelterId = shelterId;
-
-
-    }
-
     @Override
     public String toString() {
         return "Staff{" +
@@ -99,5 +97,18 @@ public class Staff implements Identifiable {
                 ", paswordHash=" + paswordHash +
                 ", shelterId=" + shelterId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Staff staff = (Staff) o;
+        return id == staff.id && paswordHash == staff.paswordHash && shelterId == staff.shelterId && Objects.equals(firstName, staff.firstName) && Objects.equals(lastName, staff.lastName) && Objects.equals(role, staff.role) && Objects.equals(phone, staff.phone) && Objects.equals(email, staff.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, role, phone, email, paswordHash, shelterId);
     }
 }
