@@ -1,6 +1,7 @@
 package db_proj_be.BusinessLogic.Services;
 
 import db_proj_be.BusinessLogic.EntityModels.Admin;
+import db_proj_be.BusinessLogic.EntityModels.Staff;
 import db_proj_be.BusinessLogic.Utilities.Hasher;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import db_proj_be.Database.DAOs.AdminDAO;
@@ -16,7 +17,7 @@ public class AdminServices {
         this.adminDAO = new AdminDAO(jdbcTemplate);
     }
 
-    public Admin adminSignInLogic(Admin actualAdmin) {
+    public Admin SignInLogic(Admin actualAdmin) {
 
         if (actualAdmin == null) {
             Logger.logMsgFrom(this.getClass().getName(), "Admin object can't be null.", 1);
@@ -41,6 +42,53 @@ public class AdminServices {
         }
 
         Logger.logMsgFrom(this.getClass().getName(), "Something had went wrong ..", 1);
+        return null;
+    }
+
+    public Staff createStaff(Staff staff) {
+
+        if (staff == null) {
+            Logger.logMsgFrom(this.getClass().getName(), "Staff object can't be null.", 1);
+            return null;
+        }
+
+//        int createdStaffId = this.staffDAO.create(staff);
+        int createdStaffId = -1;
+
+        if (createdStaffId < 1) {
+            Logger.logMsgFrom(this.getClass().getName(), "Failed to create a staff record.", 1);
+            return null;
+        }
+
+//        Staff createdStaff = this.staffDAO.findById(createdStaffId);
+        Staff createdStaff = null;
+
+        if (createdStaff != null) {
+            Logger.logMsgFrom(this.getClass().getName(), "Created a staff record with id " + createdStaffId + "successfully.", 0);
+            return createdStaff;
+        }
+
+        Logger.logMsgFrom(this.getClass().getName(), "Something had went wrong ..", 1);
+        return null;
+    }
+
+    public Staff updateStaff(Staff staff) {
+
+        if (staff == null) {
+            Logger.logMsgFrom(this.getClass().getName(), "Staff object can't be null.", 1);
+            return null;
+        }
+
+//        Staff staffRecordToBeUpdated = this.staffDAO.findById(staff.getId())
+        Staff staffRecordToBeUpdated = null;
+
+        if (staffRecordToBeUpdated == null) {
+            Logger.logMsgFrom(this.getClass().getName(), "Staff record couldn't be found.", 1);
+            return null;
+        }
+
+
+
         return null;
     }
 
