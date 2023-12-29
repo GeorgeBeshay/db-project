@@ -10,7 +10,9 @@ import { AdminComponent } from './Components/admin/admin.component';
 import { AdopterComponent } from './Components/adopter/adopter.component';
 import { StaffComponent } from './Components/staff/staff.component';
 
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -22,11 +24,13 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     AdopterComponent,
     StaffComponent
   ],
-  imports: [
-    HttpClientModule,
-    BrowserModule,
-    AppRoutingModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+      ReactiveFormsModule,
+      HttpClientModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

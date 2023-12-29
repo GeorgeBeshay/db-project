@@ -4,6 +4,7 @@
   --dark-brown: #5b432e; /* Adjusted brown color */
   --beige: beige;
   --main-content-bg: #f3e9d2; /* Lighter brown/tan color for main content background */
+  --grey-brown: rgba(23, 17, 17, 0.73);
 }
 
 html, body { height: 100%; }
