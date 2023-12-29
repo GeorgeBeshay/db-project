@@ -9,6 +9,9 @@ import { VisitorComponent } from './Components/visitor/visitor.component';
 import { AdminComponent } from './Components/admin/admin.component';
 import { AdopterComponent } from './Components/adopter/adopter.component';
 import { StaffComponent } from './Components/staff/staff.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -20,10 +23,13 @@ import { StaffComponent } from './Components/staff/staff.component';
     AdopterComponent,
     StaffComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+      ReactiveFormsModule,
+      HttpClientModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

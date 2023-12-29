@@ -28,8 +28,8 @@ public class Hasher {
         return "ERROR";
     }
 
-//    public static void main(String[] args) {
-//        System.out.println(Hasher.hash("1234"));
-//    }
+    public static void main(String[] args) {
+        System.out.println(Hasher.hash("1234"));
+    }
 
 }
