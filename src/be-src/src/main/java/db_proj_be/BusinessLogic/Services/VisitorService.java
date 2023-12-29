@@ -37,7 +37,7 @@ public class VisitorService {
     private List<Pet> getPetsForVisitor(Map<String, Object> criteria, String location, List<String> orderByColumns) {
         if (checkForOrderByColumns(orderByColumns) && checkCriteriaKeys(criteria)) {
             List<Shelter> shelters = null;
-            if(location == null) {
+            if(location == null || location.length() == 0) {
                 shelters = new ArrayList<>();
             }
             else {
