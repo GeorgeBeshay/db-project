@@ -11,6 +11,8 @@ import { AdopterComponent } from './Components/adopter/adopter.component';
 import { StaffComponent } from './Components/staff/staff.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent,

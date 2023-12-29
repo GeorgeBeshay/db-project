@@ -1,17 +1,42 @@
-<div class="container">
-  <h2>Staff</h2>
-  <p>
-    This page should contain a sidebar for the different subpages that provide the staff functionalities,
-    such as:
-  </p>
-  <ul>
-    <li>Sign In</li>
-    After signing in, the following operations will be available:
-    <li>Modify the shelter he / she working at. (In case of being a manager)</li>
-    <li>View Adoption Applications.</li>
-    <li>Add new pets to the shelter.</li>
-    <li>Modify a pet profile.</li>
-    <li>etc..</li>
-  </ul>
-  <p>This is just a placeholder, and will be removed when implementing the real component.</p>
+<div class="holder">
+  <!-- TODO: the condition need to be modified -->
+  <ng-container *ngIf="1 != 1; else loggedIn">
+    <div class="authentication">
+      Here the authentication
+    </div>
+  </ng-container>
+
+
+  <ng-template #loggedIn>
+    <div class="staff-main-page">
+
+      <div class="header">
+        <h1>Staff Dashboard</h1>
+      </div>
+
+
+      <div class="sidebar">
+        <ul class="nav-links">
+          <li><a (click)="selectSection(0)">Staff Home Page</a></li>
+          <li><a (click)="selectSection(1)">Manage Pets</a></li>
+          <!-- Add more navigation links as needed -->
+        </ul>
+      </div>
+
+      <div class="main-content">
+
+        <ng-container *ngIf="selectedSection == 0">
+          This is the staff home page!
+        </ng-container>
+
+        <ng-container *ngIf="selectedSection == 1">
+          This is the Pet Managment page!
+        </ng-container>
+
+      </div>
+
+    </div>
+
+  </ng-template>
+
 </div>
