@@ -1,0 +1,15 @@
+<!-- adopter-info.component.html -->
+
+<div *ngIf="adopterInfo">
+    <h2>Adopter Information</h2>
+    <p><strong>Adopter ID:</strong> {{ adopterInfo.id }}</p>
+    <p><strong>First Name:</strong> {{ adopterInfo.firstName }}</p>
+    <p><strong>Last Name:</strong> {{ adopterInfo.lastName }}</p>
+    <p><strong>Email:</strong> {{ adopterInfo.email }}</p>
+    <p><strong>Address:</strong> {{ adopterInfo.address }}</p>
+    <p><strong>Phone Number:</strong> {{ adopterInfo.phone }}</p>
+    <p><strong>Birthdate:</strong> {{ adopterInfo.birthDate }}</p>
+    <p><strong>Gender:</strong> {{ adopterInfo.gender ? "Male" : "Female" }}</p>
+    <!-- Display other adopter information fields as needed -->
+</div>
+  
