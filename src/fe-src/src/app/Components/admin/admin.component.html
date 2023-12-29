@@ -1,5 +1,36 @@
 <div class="container">
-  <h2>Admin</h2>
+
+  <h1>Admin Page</h1>
+
+  <ng-container *ngIf="admin == null; else signedInView">
+    <div class="center">
+      <h2>Admin Sign In</h2>
+      <form [formGroup]="signInForm" (ngSubmit)="signIn()" class="form">
+        <div class="form-group">
+          <label for="id">ID:</label>
+          <input type="number" id="id" formControlName="id" placeholder="Enter your ID" required>
+          <div class="error" *ngIf="signInForm.get('id')?.invalid && (signInForm.get('id')?.dirty || signInForm.get('id')?.touched)">
+            Please enter a valid ID.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" formControlName="password" placeholder="Enter your password" required>
+          <div class="error" *ngIf="signInForm.get('password')?.invalid && (signInForm.get('password')?.dirty || signInForm.get('password')?.touched)">
+            Please enter a password.
+          </div>
+        </div>
+        <button type="submit" [disabled]="signInForm.invalid">Sign In</button>
+      </form>
+    </div>
+  </ng-container>
+
+  <ng-template #signedInView>
+    <!-- Display different content once admin is signed in -->
+    <p>Welcome, Admin!</p>
+    <!-- Other content for signed-in admin -->
+  </ng-template>
+
   <p>
     This page should contain a sidebar for the different subpages that provide the admin functionalities,
     such as:
