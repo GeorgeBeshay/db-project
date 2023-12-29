@@ -1,16 +1,45 @@
-<div class="container">
-  <h2>Adopter</h2>
-  <p>
-    This page should contain a sidebar for the different subpages that provide the adopter functionalities,
-    such as:
-  </p>
-  <ul>
-    <li>Sign Up</li>
-    <li>Sign In</li>
-    After signing in, the following operations will be available:
-    <li>Create Adoption Application</li>
-    <li>View Adoption Applications Submitted</li>
-    <li>etc..</li>
-  </ul>
-  <p>This is just a placeholder, and will be removed when implementing the real component.</p>
-</div>
+  <div class="holder">
+    <!-- TODO: the condition need to be modified -->
+    <ng-container *ngIf="1 != 1; else loggedIn">
+      <div class="authentication">
+        Here the authentication
+      </div>
+    </ng-container>
+  
+  
+    <ng-template #loggedIn>
+      <div class="adopter-main-page">
+  
+        <div class="header">
+          <h1>Adopter Dashboard</h1>
+        </div>
+  
+  
+        <div class="sidebar">
+          <ul class="nav-links">
+            <li><a (click)="selectSection(0)">Home Page</a></li>
+            <li><a (click)="selectSection(1)">New Application</a></li>
+            <li><a (click)="selectSection(2)">My Applications</a></li>
+          </ul>
+        </div>
+  
+        <div class="main-content">
+  
+          <ng-container *ngIf="currentSection == 0">
+            This is the adopter home page!
+          </ng-container>
+  
+          <ng-container *ngIf="currentSection == 1">
+            This is the adoption application submission page!
+          </ng-container>
+
+          <ng-container *ngIf="currentSection == 2">
+            This is the adoption applications history page!
+          </ng-container>
+  
+        </div>
+  
+      </div>
+  
+    </ng-template>
+  </div>
