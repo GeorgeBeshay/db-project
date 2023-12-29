@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {firstValueFrom} from "rxjs";
 import {Admin} from "../Entities/Admin";
+import { Shelter } from '../Entities/Shelter';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,20 @@ export class AdminServicesService {
       return null
     }
 
+  }
+  async createShelter(shelter: Shelter) {
+    
+    try {
+      return await firstValueFrom(
+      this.http.post<boolean>(`${this.adminEndpointUrl}createShelter`,shelter,{responseType:'json'})
+      );
+    } catch(error){
+      if(error instanceof HttpErrorResponse)
+        console.error('Bad Request');
+      else
+        console.error('Error');
+      return null
+    }
   }
 
 }

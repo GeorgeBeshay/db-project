@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, Validators } from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {AdminServicesService} from "../../Services/admin-services.service";
 import {UtilitiesService} from "../../Services/utilities.service";
+import { Shelter } from 'src/app/Entities/Shelter';
 
 @Component({
   selector: 'app-admin',
@@ -17,6 +18,7 @@ export class AdminComponent implements OnInit {
   adminService!: AdminServicesService;
   utilitiesService!: UtilitiesService;
   selectedSection!: number;
+  shelterCreationForm!: FormGroup;
   //  ---------------------------- Constructor ----------------------------
   constructor(private formBuilder: FormBuilder, private http: HttpClient) {
     this.adminService = new AdminServicesService(http);
@@ -27,6 +29,14 @@ export class AdminComponent implements OnInit {
     this.signInForm = this.formBuilder.group({
       id: ['', [Validators.required]],
       password: ['', Validators.required]
+    });
+    this.shelterCreationForm = this.formBuilder.group({
+      shelterId:['',Validators.required],
+      shelterName:['',Validators.required],
+      shelterLocation:['',Validators.required],
+      shelterEmail:['',Validators.required],
+      shelterPhone:['',Validators.required],
+      shelterManager:['',Validators.required]
     });
 
     let tempObj = sessionStorage.getItem("adminObject");
@@ -54,6 +64,18 @@ export class AdminComponent implements OnInit {
       await this.utilitiesService.sweetAlertFailure("Authentication Failed.")
     }
 
+  }
+  async createShelter()
+  {
+    const id = this.shelterCreationForm.get('shelterId')?.value;
+    const name = this.shelterCreationForm.get('shelterName')?.value;
+    const location = this.shelterCreationForm.get('shelterLocation')?.value;
+    const email = this.shelterCreationForm.get('shelterEmail')?.value;
+    const phone = this.shelterCreationForm.get('shelterPhone')?.value;
+    const manager = this.shelterCreationForm.get('shelterManager')?.value;
+    let shelter = new Shelter(id,name,location,email,phone,manager);
+    console.log(shelter);
+    await this.adminService.createShelter(shelter);
   }
 
   selectSection(sectionNumber: number) {
