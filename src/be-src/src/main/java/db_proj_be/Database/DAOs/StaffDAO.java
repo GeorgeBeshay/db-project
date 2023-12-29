@@ -24,7 +24,7 @@ public class StaffDAO extends DAO<Staff>{
                     UPDATE STAFF
                     SET first_name = ?, last_name = ?, role = ?, phone = ?, email = ?, password_hash = ?, shelter_id = ? 
                     WHERE id = ?""";
-            int rowsAffected = jdbcTemplate.update(sql,staff.getFirstName(),staff.getLastName(),staff.getRole(),staff.getPhone(),staff.getEmail(),staff.getPaswordHash(),staff.getId());
+            int rowsAffected = jdbcTemplate.update(sql,staff.getFirstName(),staff.getLastName(),staff.getRole(),staff.getPhone(),staff.getEmail(),staff.getPaswordHash(),staff.getShelterId());
             return rowsAffected > 0;
         }catch (Exception e){
             Logger.logMsgFrom(this.getClass().getName(),"Error in updating Staff member "+e.getMessage(),1);

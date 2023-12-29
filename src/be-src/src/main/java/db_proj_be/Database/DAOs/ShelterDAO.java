@@ -45,7 +45,7 @@ public class ShelterDAO extends DAO<Shelter>{
         }
         try {
             String sql = "DELETE FROM SHELTER WHERE name = ?";
-            int rowsAffected = jdbcTemplate.update(sql,rowMapper,name);
+            int rowsAffected = jdbcTemplate.update(sql,name);
             return rowsAffected>0;
         }catch (Exception e){
             return false;
