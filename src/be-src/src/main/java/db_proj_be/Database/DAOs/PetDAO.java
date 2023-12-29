@@ -3,6 +3,7 @@ package db_proj_be.Database.DAOs;
 import db_proj_be.BusinessLogic.EntityModels.Pet;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
@@ -102,6 +103,37 @@ public class PetDAO extends DAO<Pet> {
 
         catch (Exception e) {
             Logger.logMsgFrom(this.getClass().getName(), "Error in getting the unAdopted pets" + e.getMessage(), -1);
+            return null;
+        }
+    }
+
+    public List<Pet> getPetsWithOptionsAndSorted(List<Integer> shelterIds, Map<String, Object> criteria, List<String> orderByColumns) {
+        try {
+            StringBuilder sql = new StringBuilder("SELECT * FROM PET P ");
+            sql.append("LEFT JOIN ADOPTION A ON P.id = A.pet_id WHERE A.pet_id IS NULL ");
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+
+            if (shelterIds != null && !shelterIds.isEmpty()) {
+                sql.append("AND P.shelter_id IN (:shelterIds) ");
+                parameters.addValue("shelterIds", shelterIds);
+            }
+
+            if (criteria != null) {
+                criteria.forEach((key, value) -> {
+                    sql.append(" AND P.").append(key).append(" = :").append(key);
+                    parameters.addValue(key, value);
+                });
+            }
+
+            if (orderByColumns != null && !orderByColumns.isEmpty()) {
+                sql.append(" ORDER BY ").append(String.join(", ", orderByColumns));
+            }
+
+            return namedParameterJdbcTemplate.query(sql.toString(), parameters, rowMapper);
+        }
+
+        catch (Exception e) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in getting pets filtered and sorted" + e.getMessage(), -1);
             return null;
         }
     }
