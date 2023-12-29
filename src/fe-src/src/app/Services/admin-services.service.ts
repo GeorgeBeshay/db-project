@@ -8,6 +8,7 @@ import { Shelter } from '../Entities/Shelter';
   providedIn: 'root'
 })
 export class AdminServicesService {
+
   //  ---------------------------- Component Fields ----------------------------
   adminEndpointUrl = "http://localhost:8081/pasms-server/admin-api/"
 
@@ -48,5 +49,15 @@ export class AdminServicesService {
       return null
     }
   }
-
+  async getAllAvailableShelters(): Promise<Shelter[]> {
+    try{ 
+      return await firstValueFrom(this.http.post<Shelter[]>(`${this.adminEndpointUrl}getAllAvailableShelters`,{},{responseType:'json'}));
+  }catch(error){
+    if(error instanceof HttpErrorResponse){
+      console.error('Bad Request');
+    }
+    console.error('Error');
+  }
+  return [];
+}
 }

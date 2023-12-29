@@ -19,6 +19,7 @@ export class AdminComponent implements OnInit {
   utilitiesService!: UtilitiesService;
   selectedSection!: number;
   shelterCreationForm!: FormGroup;
+  systemShelters: Shelter[] | null = null;
   //  ---------------------------- Constructor ----------------------------
   constructor(private formBuilder: FormBuilder, private http: HttpClient) {
     this.adminService = new AdminServicesService(http);
@@ -81,6 +82,9 @@ export class AdminComponent implements OnInit {
   selectSection(sectionNumber: number) {
     this.selectedSection = sectionNumber;
     console.log(this.selectedSection)
+  }
+  async getAllAvailableShelters(){
+    this.systemShelters = await this.adminService.getAllAvailableShelters();
   }
 
 }

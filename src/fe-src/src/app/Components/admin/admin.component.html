@@ -33,6 +33,7 @@
         <ul><a (click)="selectSection(1)">Create Admin</a></ul>
         <ul><a (click)="selectSection(2)">Create Staff</a></ul>
         <ul><a (click)="selectSection(3)">Create Shelter</a></ul>
+        <ul><a (click)="selectSection(4)">Display System Available Shelters</a></ul>
       </aside>
       <div class="main-content">
 
@@ -95,7 +96,18 @@
             <button type="submit" [disabled]="shelterCreationForm.invalid">Create Shelter</button>
           </form>
         </ng-container>
-
+        <ng-container *ngIf="selectedSection == 4">
+          <div class="border">
+            <div *ngFor="let shelter of systemShelters " class="button">
+              <div class="container">
+                  <div class="from">Shelter Name: {{shelter.name}}</div>
+                  <div class="from">Shelter Location: {{shelter.location}}</div>
+                  <div class="from">Shelter Phone: {{shelter.phone}}</div>
+                  <div class="from">Shelter Email: {{shelter.email}}</div>
+              </div> 
+          </div>
+        </div>
+        </ng-container>
       </div>
 
     </div>
