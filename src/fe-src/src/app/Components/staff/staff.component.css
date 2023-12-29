@@ -7,3 +7,105 @@
 h2 {
   margin-bottom: 20px;
 }
+
+.holder {
+  display: flex;
+  width: 100%;
+}
+
+.form-group {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px; /* Adjust as needed for spacing between form groups */
+  max-width: 500px; /* Set a maximum width for the form groups */
+}
+
+label {
+  margin-bottom: 5px; /* Adjust as needed for spacing between label and input */
+}
+
+input {
+  width: 100%; /* Force the input fields to take full width within their container */
+  box-sizing: border-box; /* Include padding and border within the width */
+  padding: 5px;
+}
+
+.input-error {
+  color: red;
+}
+
+.authentication {
+  width: 100%;
+}
+
+.staff-main-page {
+  display: grid;
+  height: 1000px;
+  width: 100%;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 0.2fr repeat(4, 1fr);
+  grid-column-gap: 0;
+  grid-row-gap: 0;
+}
+
+.staff-main-page .header {
+  grid-area: 1 / 1 / 2 / 7;
+}
+
+.staff-main-page .sidebar {
+  grid-area: 2 / 1 / 6 / 2;
+  background-color: var(--dark-brown);
+  padding: 20px;
+  border-radius: 10px 10px 0 0;
+}
+
+.staff-main-page .main-content {
+  grid-area: 2 / 2 / 6 / 7;
+  padding: 20px;
+  border-radius: 10px 0 0 0;
+}
+
+.staff-main-page .header h1 {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 40px;
+  padding: 5px;
+  width: fit-content;
+  margin: 15px auto;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Navigation links styles */
+.staff-main-page .sidebar .nav-links {
+  list-style: none;
+  padding: 0;
+}
+
+.staff-main-page .sidebar .nav-links li {
+  margin-bottom: 10px;
+}
+
+.staff-main-page .sidebar .nav-links a {
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+  color: var(--beige);
+}
+
+.staff-main-page .sidebar .nav-links a:hover {
+  background-color: var(--beige);
+  color: var(--dark-brown);
+  border-radius: 3px;
+}
+
+
+.staff-main-page .box {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-inline: 10px;
+}
