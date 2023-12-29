@@ -1,5 +1,6 @@
 package db_proj_be.APIs;
 
+import db_proj_be.BusinessLogic.EntityModels.Adopter;
 import db_proj_be.BusinessLogic.EntityModels.AdoptionApplication;
 import db_proj_be.BusinessLogic.Services.AdopterService;
 import db_proj_be.BusinessLogic.Utilities.Logger;
@@ -46,5 +47,16 @@ public class AdopterAPI {
         return (adoptionApplications != null)
                 ? new ResponseEntity<>(adoptionApplications, HttpStatus.OK)
                 : new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("get-by-id/{id}")
+    public ResponseEntity<Adopter> findById(@PathVariable("id") int adopterId) {
+        Logger.logMsgFrom(this.getClass().getName(), "Adopter requested with id " + adopterId, -1);
+
+        Adopter adopter = this.adopterService.findById(adopterId);
+
+        return (adopter != null)
+                ? new ResponseEntity<>(adopter, HttpStatus.OK)
+                : new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 }
