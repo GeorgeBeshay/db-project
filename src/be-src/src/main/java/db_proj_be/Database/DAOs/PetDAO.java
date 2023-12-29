@@ -111,20 +111,21 @@ public class PetDAO extends DAO<Pet> {
         try {
             StringBuilder sql = new StringBuilder("SELECT * FROM PET P ");
             sql.append("LEFT JOIN ADOPTION A ON P.id = A.pet_id WHERE A.pet_id IS NULL ");
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-            if (!shelterIds.isEmpty()) {
+            if (shelterIds != null && !shelterIds.isEmpty()) {
                 sql.append("AND P.shelter_id IN (:shelterIds) ");
+                parameters.addValue("shelterIds", shelterIds);
             }
 
-            MapSqlParameterSource parameters = new MapSqlParameterSource();
-            parameters.addValue("shelterIds", shelterIds);
+            if (criteria != null) {
+                criteria.forEach((key, value) -> {
+                    sql.append(" AND P.").append(key).append(" = :").append(key);
+                    parameters.addValue(key, value);
+                });
+            }
 
-            criteria.forEach((key, value) -> {
-                sql.append(" AND P.").append(key).append(" = :").append(key);
-                parameters.addValue(key, value);
-            });
-
-            if (!orderByColumns.isEmpty()) {
+            if (orderByColumns != null && !orderByColumns.isEmpty()) {
                 sql.append(" ORDER BY ").append(String.join(", ", orderByColumns));
             }
 
