@@ -50,10 +50,10 @@ public class ShelterDAOTests {
         expectedShelter.setId(shelterId);
 
         // Act
-        Shelter actualShelter = shelterDAO.findByName(shelterName);
+        List<Shelter> actualShelters = shelterDAO.findByName(shelterName);
 
         // Assert
-        assertEquals(expectedShelter, actualShelter);
+        assertTrue(actualShelters.contains(expectedShelter));
 
         // Clean
         assertEquals(1, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId));

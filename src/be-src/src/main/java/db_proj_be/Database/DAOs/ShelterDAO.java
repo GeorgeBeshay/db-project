@@ -13,7 +13,7 @@ public class ShelterDAO extends DAO<Shelter>{
     }
 
     @Transactional
-    public Shelter findByName(String name){
+    public List<Shelter> findByName(String name){
 
         if (name == null) {
             throw new IllegalArgumentException("Shelter name to find can't be null");
@@ -21,7 +21,7 @@ public class ShelterDAO extends DAO<Shelter>{
 
         try {
             String sql = "SELECT * FROM SHELTER WHERE name = ?;";
-            return jdbcTemplate.queryForObject(sql, rowMapper, name);
+            return jdbcTemplate.query(sql, rowMapper, name);
 
         } catch (Exception e){
             Logger.logMsgFrom(this.getClass().getName(), "Error in SHELTER findByName(): " + e.getMessage(), 1);
