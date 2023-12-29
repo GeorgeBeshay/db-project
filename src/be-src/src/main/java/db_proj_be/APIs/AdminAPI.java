@@ -1,6 +1,7 @@
 package db_proj_be.APIs;
 
 import db_proj_be.BusinessLogic.EntityModels.Admin;
+import db_proj_be.BusinessLogic.EntityModels.Shelter;
 import db_proj_be.BusinessLogic.EntityModels.Staff;
 import db_proj_be.BusinessLogic.Services.AdminService;
 import db_proj_be.BusinessLogic.Utilities.Logger;
@@ -36,14 +37,13 @@ public class AdminAPI {
     }
     @PostMapping("createShelter")
     @ResponseBody
-    public ResponseEntity<Boolean> createShelter(@RequestBody Shelter shelter){
+    public ResponseEntity<Shelter> createShelter(@RequestBody Shelter shelterToBeCreated){
         Logger.logMsgFrom(this.getClass().getName(),"An Admin has requested to create a new shelter .."
         + "processing the request.",-1);
 
-        Boolean result = this.adminServices.createShelter(shelter);
+        Shelter createdShelter = this.adminService.createShelter(shelterToBeCreated);
 
-        return new ResponseEntity<>(result,
-                (result)? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createdShelter,(createdShelter != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("createStaff")
@@ -54,5 +54,11 @@ public class AdminAPI {
         Staff createdStaff = this.adminService.createStaff(staffToBeCreated);
         return new ResponseEntity<>(createdStaff, (createdStaff != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
-
+    @PostMapping("deleteShelter")
+    @ResponseBody
+    public ResponseEntity<Boolean> deleteShelter(@RequestBody Shelter shelterToBeDeleted){
+        Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to delete a shelter.",0);
+        boolean result = this.adminService.deleteShelter(shelterToBeDeleted);
+        return new ResponseEntity<>(result,(result) ? HttpStatus.OK:HttpStatus.BAD_REQUEST);
+    }
 }

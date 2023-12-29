@@ -1,13 +1,18 @@
 package db_proj_be.BusinessLogic.Services;
 
 import db_proj_be.BusinessLogic.EntityModels.Admin;
+import db_proj_be.BusinessLogic.EntityModels.Shelter;
 import db_proj_be.BusinessLogic.EntityModels.Staff;
 import db_proj_be.BusinessLogic.Utilities.Hasher;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import db_proj_be.Database.DAOs.AdminDAO;
+import db_proj_be.Database.DAOs.ShelterDAO;
 import db_proj_be.Database.DAOs.StaffDAO;
+import org.apache.juli.logging.Log;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service class providing methods to handle administrative functionalities.
@@ -20,6 +25,7 @@ public class AdminService {
     private final JdbcTemplate jdbcTemplate;
     private final AdminDAO adminDAO;
     private final StaffDAO staffDAO;
+    private final ShelterDAO shelterDAO;
 
     /**
      * Constructor for AdminServices class initializing necessary dependencies.
@@ -30,6 +36,7 @@ public class AdminService {
         this.jdbcTemplate = jdbcTemplate;
         this.adminDAO = new AdminDAO(jdbcTemplate);
         this.staffDAO = new StaffDAO(jdbcTemplate);
+        this.shelterDAO = new ShelterDAO(jdbcTemplate);
     }
 
     /**
@@ -94,5 +101,38 @@ public class AdminService {
         Logger.logMsgFrom(this.getClass().getName(), "Something had went wrong ..", 1);
         return null;
     }
-
+    public Shelter createShelter(Shelter shelter) {
+        if(shelter == null){
+            Logger.logMsgFrom(this.getClass().getName(),"Shelter creation failed .. shelter object sent is null",1);
+            return null;
+        }
+        int createdShelterId = this.shelterDAO.create(shelter);
+        if(createdShelterId < 1){
+            Logger.logMsgFrom(this.getClass().getName(),"Failed to create a shelter record",1);
+            return null;
+        }
+        Shelter createdShelter = this.shelterDAO.findById(createdShelterId);
+        if(createdShelter != null){
+            Logger.logMsgFrom(this.getClass().getName(),"Created a shelter record with id "+createdShelterId + " successfully. ",0);
+            return createdShelter;
+        }
+        Logger.logMsgFrom(this.getClass().getName(),"Something went wrong .. ",1);
+        return null;
+    }
+    public List<Shelter> findAllShelters(){
+        Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to get all system shelters .. processing the request .. ",0);
+        return this.shelterDAO.findAll();
+    }
+    public boolean deleteShelter(Shelter shelter){
+        if(shelter == null ){
+            Logger.logMsgFrom(this.getClass().getName(),"Shelter object to be deleted was sent null",1);
+            return false;
+        }
+        Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to deleter shelter with id: "+shelter.getId()+" processing the request .. ",0);
+        return this.shelterDAO.delete(shelter);
+    }
+    public boolean deleteShelterByName(String name){
+        Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to deleter shelter with id: "+name+" processing the request .. ",0);
+        return this.shelterDAO.deleteByName(name);
+    }
 }
