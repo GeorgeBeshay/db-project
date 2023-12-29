@@ -1,5 +1,7 @@
 package db_proj_be.Database.DAOs;
 
+import db_proj_be.BusinessLogic.EntityModels.Adopter;
+import db_proj_be.BusinessLogic.EntityModels.Pet;
 import db_proj_be.BusinessLogic.EntityModels.PetAvailabilityNotification;
 import db_proj_be.besrc.BeSrcApplication;
 import org.junit.jupiter.api.AfterAll;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.sql.Date;
 import java.util.List;
@@ -21,6 +24,8 @@ public class PetAvailabilityNotificationDAOTests {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private PetAvailabilityNotificationDAO petAvailabilityNotificationDao;
 
     @BeforeEach
@@ -34,13 +39,55 @@ public class PetAvailabilityNotificationDAOTests {
         System.out.println("PetAvailabilityNotificationDAOTests finished.");
     }
 
+    // Creation methods for referenced entities to satisfy foreign key constraints
+    private int createAdopter(String email) {
+        String firstName = "John";
+        String lastName = "Doe";
+        String passwordHash = "hashedpassword";
+        String address = "123 Main St, City";
+
+        Adopter adopter = new Adopter();
+        adopter.setFirstName(firstName);
+        adopter.setLastName(lastName);
+        adopter.setEmail(email);
+        adopter.setPasswordHash(passwordHash);
+        adopter.setAddress(address);
+
+        AdopterDAO adopterDAO = new AdopterDAO(jdbcTemplate);
+        int adopterId = adopterDAO.create(adopter);
+        assertTrue(adopterId > 0);
+        return adopterId;
+    }
+
+    private int createPet() {
+        Pet pet = new Pet();
+        pet.setName("Dog");
+        pet.setSpecie("test");
+        pet.setBreed("test");
+        pet.setGender(true);
+        pet.setHealthStatus("test");
+
+        PetDAO petDAO = new PetDAO(jdbcTemplate, namedParameterJdbcTemplate);
+        int petId = petDAO.create(pet);
+
+        assertTrue(petId > 0);
+        return petId;
+    }
+
+    // helper method to clean database after each test
+    private void clean(int petId, int adopterId) {
+        jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE pet_id = ? and adopter_id = ?", petId, adopterId);
+        jdbcTemplate.update("DELETE FROM PET WHERE id = ?", petId);
+        jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", adopterId);
+    }
+
     // ------------------------- Creation Tests -------------------------
 
     @Test
     public void testPetAvailabilityNotificationCreationAllArguments() {
         // Arrange
-        int petId = 30_000;
-        int adopterId = 20_000;
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe31@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -53,14 +100,14 @@ public class PetAvailabilityNotificationDAOTests {
         assertTrue(isSuccess);
 
         // Clean (to prevent modifying the DB current state)
-        jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE pet_id = ? and adopter_id = ?", petId, adopterId);
+        this.clean(petId, adopterId);
     }
 
     @Test
     public void testPetAvailabilityNotificationCreationDuplicateObjects() {
         // Arrange
-        int petId = 30_000;
-        int adopterId = 20_000;
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe32@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -77,14 +124,14 @@ public class PetAvailabilityNotificationDAOTests {
         assertFalse(isSuccess);
 
         // Clean (to prevent modifying the DB current state)
-        jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE pet_id = ? and adopter_id = ?", petId, adopterId);
+        this.clean(petId, adopterId);
     }
 
     @Test
     public void testPetAvailabilityNotificationCreationMissingAttributes() {
         // Arrange
-        int petId = 20_003;
-        int adopterId = 30_003;
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe33@example.com");
 
         PetAvailabilityNotification petAvailabilityNotification = new PetAvailabilityNotification();
         petAvailabilityNotification.setAdopterId(adopterId);
@@ -96,6 +143,8 @@ public class PetAvailabilityNotificationDAOTests {
 
         // Assert
         assertFalse(isSuccess);
+
+        this.clean(petId, adopterId);
     }
 
     @Test
@@ -119,21 +168,27 @@ public class PetAvailabilityNotificationDAOTests {
     @Test
     public void testPetAvailabilityNotificationDeletionObjectDoesntExist() {
         // Arrange - none
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe34@example.com");
+
         PetAvailabilityNotification petAvailabilityNotification = new PetAvailabilityNotification();
-        petAvailabilityNotification.setPetId(20_004);
-        petAvailabilityNotification.setAdopterId(30_004);
+        petAvailabilityNotification.setPetId(petId);
+        petAvailabilityNotification.setAdopterId(adopterId);
 
         // Act
         boolean isSuccess = petAvailabilityNotificationDao.delete(petAvailabilityNotification);
 
         // Assert
         assertFalse(isSuccess);
+
+        // Clean
+        this.clean(petId, adopterId);
     }
 
     @Test
     public void testPetAvailabilityNotificationDeletionValidObject() {
-        int petId = 30_005;
-        int adopterId = 20_005;
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe35@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -147,6 +202,9 @@ public class PetAvailabilityNotificationDAOTests {
 
         // Assert
         assertTrue(isSuccess);
+
+        // Clean
+        this.clean(petId, adopterId);
     }
 
     // ------------------------- Find Tests -------------------------
@@ -162,8 +220,8 @@ public class PetAvailabilityNotificationDAOTests {
 
     @Test
     public void testPetAvailabilityNotificationFindAdopterIdValid() {
-        int petId = 30_006;
-        int adopterId = 20_006;
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe36@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -181,7 +239,7 @@ public class PetAvailabilityNotificationDAOTests {
         assertTrue(fetchedNot.contains(petAvailabilityNotification));
 
         // clean
-        jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE adopter_id = ? and pet_id = ?", adopterId, petId);
+        this.clean(petId, adopterId);
     }
 
     @Test
@@ -196,8 +254,8 @@ public class PetAvailabilityNotificationDAOTests {
     @Test
     public void testPetAvailabilityNotificationFindAppIdValid() {
         // Arrange
-        int petId = 30_007;
-        int adopterId = 20_007;
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe37@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -215,14 +273,14 @@ public class PetAvailabilityNotificationDAOTests {
         assertTrue(fetchedNot.contains(petAvailabilityNotification));
 
         // clean
-        jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE adopter_id = ? and pet_id = ?", adopterId, petId);
+        this.clean(petId, adopterId);
     }
 
     @Test
     public void testPetAvailabilityNotificationFindStatusValid() {
         // Arrange
-        int petId = 30_009;
-        int adopterId = 20_009;
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe38@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -232,8 +290,8 @@ public class PetAvailabilityNotificationDAOTests {
         boolean isSuccess = petAvailabilityNotificationDao.create(petAvailabilityNotification);
         assertTrue(isSuccess);
 
-        int petId2 = 30_010;
-        int adopterId2 = 20_010;
+        int petId2 = this.createPet();
+        int adopterId2 = this.createAdopter("john.Doe39@example.com");
         boolean status2 = true;
         Date date2 = Date.valueOf("2006-03-15");
 
@@ -257,15 +315,15 @@ public class PetAvailabilityNotificationDAOTests {
         assertTrue(fetchedNot.contains(petAvailabilityNotification1));
 
         // clean
-        jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE adopter_id = ? and pet_id = ?", adopterId, petId);
-        jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE adopter_id = ? and pet_id = ?", adopterId2, petId2);
+        this.clean(petId, adopterId);
+        this.clean(petId2, adopterId2);
     }
 
     @Test
     public void testPetAvailabilityNotificationFindAll() {
         // Arrange
-        int petId = 30_011;
-        int adopterId = 20_011;
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe40@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -275,8 +333,8 @@ public class PetAvailabilityNotificationDAOTests {
         boolean isSuccess = petAvailabilityNotificationDao.create(petAvailabilityNotification);
         assertTrue(isSuccess);
 
-        int petId2 = 30_012;
-        int adopterId2 = 20_012;
+        int petId2 = this.createPet();
+        int adopterId2 = this.createAdopter("john.Doe41@example.com");
         boolean status2 = true;
         Date date2 = Date.valueOf("2006-03-15");
 
@@ -295,7 +353,7 @@ public class PetAvailabilityNotificationDAOTests {
         assertTrue(fetchedNots.contains(petAvailabilityNotification2));
 
         // clean
-        jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE adopter_id = ? and pet_id = ?", adopterId, petId);
-        jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE adopter_id = ? and pet_id = ?", adopterId2, petId2);
+        this.clean(petId, adopterId);
+        this.clean(petId2, adopterId2);
     }
 }

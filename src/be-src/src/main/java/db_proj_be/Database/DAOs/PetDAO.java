@@ -92,4 +92,17 @@ public class PetDAO extends DAO<Pet> {
             return null;
         }
     }
+
+    @Transactional
+    public List<Pet> getUnAdoptedPets() {
+        try {
+            String sql = "EXEC GetUnAdoptedPets";
+            return jdbcTemplate.query(sql, rowMapper);
+        }
+
+        catch (Exception e) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in getting the unAdopted pets" + e.getMessage(), -1);
+            return null;
+        }
+    }
 }

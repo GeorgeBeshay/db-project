@@ -1,0 +1,85 @@
+/* styles.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background-color: var(--dark-brown);
+  color: var(--beige);
+  /*background-color: #333;*/
+  /*color: white;*/
+  text-align: center;
+}
+
+.header-content {
+  position: relative;
+}
+
+.background-img {
+  background-image: url('../assets/images/banner-picture.jpg');
+  height: 300px; /* Adjust as needed */
+  background-size: cover;
+  background-position: center 27%;
+  background-repeat: no-repeat;
+
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Adjust opacity as needed */
+}
+
+.header-content h1 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+.overlay h1 {
+  text-transform: uppercase; /* Convert text to uppercase */
+  font-size: 3rem; /* Adjust font size as needed */
+  top: 40%;
+  text-align: center; /* Center align the text */
+  font-weight: bold; /* Optional: Set font weight */
+}
+
+nav {
+  background-color: var(--beige);
+  color: var(--dark-brown);
+  padding: 10px 0;
+  text-align: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: #333;
+  margin: 0 10px;
+}
+
+nav a:hover {
+  color: #555;
+}
+
+main {
+  padding: 20px;
+  background-color: var(--main-content-bg);
+  color: var(--dark-brown);
+  height: fit-content;
+  min-height: 300px;
+}
+
+footer {
+  background-color: var(--dark-brown);
+  color: var(--beige);
+  text-align: center;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
