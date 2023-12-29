@@ -1,7 +1,8 @@
 package db_proj_be.APIs;
 
 import db_proj_be.BusinessLogic.EntityModels.Admin;
-import db_proj_be.BusinessLogic.Services.AdminServices;
+import db_proj_be.BusinessLogic.EntityModels.Staff;
+import db_proj_be.BusinessLogic.Services.AdminService;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,13 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/pasms-server/admin-api/")
 public class AdminAPI {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final AdminServices adminServices;
+    private final AdminService adminService;
 
     @Autowired
     public AdminAPI(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.adminServices = new AdminServices(jdbcTemplate);
+        this.adminService = new AdminService(jdbcTemplate);
     }
 
     @PostMapping("adminSignIn")
@@ -31,10 +30,18 @@ public class AdminAPI {
         Logger.logMsgFrom(this.getClass().getName(), "An admin has requested to sign in .. " +
                 "processing the request.", -1);
 
-        Admin resultAdminObject = this.adminServices.SignInLogic(admin);
-
+        Admin resultAdminObject = this.adminService.SignInLogic(admin);
         return new ResponseEntity<>(resultAdminObject,
                 (resultAdminObject != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("createStaff")
+    @ResponseBody
+    public ResponseEntity<Staff> createStaff(@RequestBody Staff staffToBeCreated) {
+        Logger.logMsgFrom(this.getClass().getName(), "An admin has requested to create a new staff record .. " +
+                "processing the request.", -1);
+        Staff createdStaff = this.adminService.createStaff(staffToBeCreated);
+        return new ResponseEntity<>(createdStaff, (createdStaff != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -5,18 +5,39 @@ import db_proj_be.BusinessLogic.EntityModels.Staff;
 import db_proj_be.BusinessLogic.Utilities.Hasher;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import db_proj_be.Database.DAOs.AdminDAO;
+import db_proj_be.Database.DAOs.StaffDAO;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 
-public class AdminServices {
+/**
+ * Service class providing methods to handle administrative functionalities.
+ * 1. Manages authentication and operations related to administrators.
+ * 2. Manages administrative operations such as creating a staff or a shelter.
+ */
+
+@Service
+public class AdminService {
     private final JdbcTemplate jdbcTemplate;
     private final AdminDAO adminDAO;
-//    private final StaffDAO staffDAO;
+    private final StaffDAO staffDAO;
 
-    public AdminServices(JdbcTemplate jdbcTemplate) {
+    /**
+     * Constructor for AdminServices class initializing necessary dependencies.
+     *
+     * @param jdbcTemplate JDBC template for database interaction.
+     */
+    public AdminService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.adminDAO = new AdminDAO(jdbcTemplate);
+        this.staffDAO = new StaffDAO(jdbcTemplate);
     }
 
+    /**
+     * Validates administrator credentials for sign-in.
+     *
+     * @param actualAdmin Administrator object with login details.
+     * @return Admin object if authentication is successful, otherwise null.
+     */
     public Admin SignInLogic(Admin actualAdmin) {
 
         if (actualAdmin == null) {
@@ -45,6 +66,12 @@ public class AdminServices {
         return null;
     }
 
+    /**
+     * Creates a new staff member record.
+     *
+     * @param staff Staff object containing details of the staff member to be created.
+     * @return Staff object representing the created staff member, or null if creation fails.
+     */
     public Staff createStaff(Staff staff) {
 
         if (staff == null) {
@@ -52,43 +79,19 @@ public class AdminServices {
             return null;
         }
 
-//        int createdStaffId = this.staffDAO.create(staff);
-        int createdStaffId = -1;
-
+        int createdStaffId = this.staffDAO.create(staff);
         if (createdStaffId < 1) {
             Logger.logMsgFrom(this.getClass().getName(), "Failed to create a staff record.", 1);
             return null;
         }
 
-//        Staff createdStaff = this.staffDAO.findById(createdStaffId);
-        Staff createdStaff = null;
-
+        Staff createdStaff = this.staffDAO.findById(createdStaffId);
         if (createdStaff != null) {
-            Logger.logMsgFrom(this.getClass().getName(), "Created a staff record with id " + createdStaffId + "successfully.", 0);
+            Logger.logMsgFrom(this.getClass().getName(), "Created a staff record with id " + createdStaffId + " successfully.", 0);
             return createdStaff;
         }
 
         Logger.logMsgFrom(this.getClass().getName(), "Something had went wrong ..", 1);
-        return null;
-    }
-
-    public Staff updateStaff(Staff staff) {
-
-        if (staff == null) {
-            Logger.logMsgFrom(this.getClass().getName(), "Staff object can't be null.", 1);
-            return null;
-        }
-
-//        Staff staffRecordToBeUpdated = this.staffDAO.findById(staff.getId())
-        Staff staffRecordToBeUpdated = null;
-
-        if (staffRecordToBeUpdated == null) {
-            Logger.logMsgFrom(this.getClass().getName(), "Staff record couldn't be found.", 1);
-            return null;
-        }
-
-
-
         return null;
     }
 
