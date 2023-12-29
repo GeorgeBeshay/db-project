@@ -11,7 +11,7 @@ export class AdoptionApplication {
     closingDate: string
 
     constructor(id: number, adopterId: number, petId: number, status: ApplicationStatus,
-        description: string, experience: boolean, creationDate: string, closingDate: string = "") {
+        description: string, experience: boolean, creationDate: string = "", closingDate: string = "") {
 
         this.id = id;
         this.adopterId = adopterId;
