@@ -30,7 +30,7 @@ public class AdminAPI {
         Logger.logMsgFrom(this.getClass().getName(), "An admin has requested to sign in .. " +
                 "processing the request.", -1);
 
-        Admin resultAdminObject = this.adminService.SignInLogic(admin);
+        Admin resultAdminObject = this.adminService.signInLogic(admin);
         return new ResponseEntity<>(resultAdminObject,
                 (resultAdminObject != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }

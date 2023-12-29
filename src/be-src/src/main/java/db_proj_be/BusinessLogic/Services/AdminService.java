@@ -38,7 +38,7 @@ public class AdminService {
      * @param actualAdmin Administrator object with login details.
      * @return Admin object if authentication is successful, otherwise null.
      */
-    public Admin SignInLogic(Admin actualAdmin) {
+    public Admin signInLogic(Admin actualAdmin) {
 
         if (actualAdmin == null) {
             Logger.logMsgFrom(this.getClass().getName(), "Admin object can't be null.", 1);

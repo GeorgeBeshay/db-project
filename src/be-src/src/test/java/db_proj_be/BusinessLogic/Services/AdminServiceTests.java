@@ -38,7 +38,7 @@ public class AdminServiceTests {
         Admin admin = null;
 
         // Act
-        Admin resultAdmin = this.adminService.SignInLogic(admin);
+        Admin resultAdmin = this.adminService.signInLogic(admin);
 
         // Assert
         assertNull(resultAdmin);
@@ -62,7 +62,7 @@ public class AdminServiceTests {
         assertTrue(id >= 1);
 
         // Act
-        Admin actualAdmin = this.adminService.SignInLogic(expectedAdmin);
+        Admin actualAdmin = this.adminService.signInLogic(expectedAdmin);
 
         // Assert
         expectedAdmin.setPasswordHash(Hasher.hash(passwordHash));
@@ -90,7 +90,7 @@ public class AdminServiceTests {
         assertTrue(id >= 1);
 
         // Act
-        Admin actualAdmin = this.adminService.SignInLogic(expectedAdmin);
+        Admin actualAdmin = this.adminService.signInLogic(expectedAdmin);
 
         // Assert
         assertNull(actualAdmin);
