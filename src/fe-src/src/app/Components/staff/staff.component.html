@@ -1,8 +1,27 @@
-<div class="holder">
-  <!-- TODO: the condition need to be modified -->
-  <ng-container *ngIf="1 != 1; else loggedIn">
-    <div class="authentication">
-      Here the authentication
+<div class="container">
+
+  <h1>STAFF DASHBOARD</h1>
+
+  <ng-container *ngIf="staff == null; else loggedIn">
+    <div class="center">
+      <h2>Staff Sign In</h2>
+      <form [formGroup]="signInForm" (ngSubmit)="signIn()" class="form">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" formControlName="email" placeholder="Enter your Email" required>
+          <div class="error" *ngIf="signInForm.get('email')?.invalid && (signInForm.get('email')?.dirty || signInForm.get('email')?.touched)">
+            Please enter a valid Email.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" formControlName="password" placeholder="Enter your password" required>
+          <div class="error" *ngIf="signInForm.get('password')?.invalid && (signInForm.get('password')?.dirty || signInForm.get('password')?.touched)">
+            Please enter a password.
+          </div>
+        </div>
+        <button type="submit" [disabled]="signInForm.invalid">Sign In</button>
+      </form>
     </div>
   </ng-container>
 
@@ -10,15 +29,17 @@
   <ng-template #loggedIn>
     <div class="staff-main-page">
 
-      <div class="header">
-        <h1>Staff Dashboard</h1>
-      </div>
+<!--      <div class="header">-->
+<!--        <h1>Staff Dashboard</h1>-->
+<!--      </div>-->
 
 
       <div class="sidebar">
         <ul class="nav-links">
           <li><a (click)="selectSection(0)">Staff Home Page</a></li>
           <li><a (click)="selectSection(1)">Manage Pets</a></li>
+          <li><a (click)="selectSection(2)">Edit Profile</a></li>
+          <li><a (click)="signOut()">Sign Out</a></li>
           <!-- Add more navigation links as needed -->
         </ul>
       </div>

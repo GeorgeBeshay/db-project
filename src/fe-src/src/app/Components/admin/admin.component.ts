@@ -93,6 +93,11 @@ export class AdminComponent implements OnInit {
 
   }
 
+  signOut() {
+    this.admin = null;
+    sessionStorage.removeItem("adminObject");
+  }
+
   selectSection(sectionNumber: number) {
     this.selectedSection = sectionNumber;
     console.log(this.selectedSection)

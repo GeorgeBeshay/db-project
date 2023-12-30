@@ -116,4 +116,19 @@ export class StaffServicesService {
     }
   }
 
+  async signIn(staff: Staff) {
+
+    try {
+      return await firstValueFrom (
+        this.http.post<Staff>(`${this.staffEndpointURL}sign-in`, staff, {responseType:'json'})
+      );
+
+    } catch (error) {
+      console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
+      return null
+
+    }
+
+  }
+
 }
