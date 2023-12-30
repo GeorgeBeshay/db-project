@@ -49,7 +49,7 @@ Utilizing modern web technologies and an intuitive user interface, the project a
 
 The development of the Pet Adoption and Shelter Management System was accomplished through collaborative efforts from the following team members:
 
-- [Mariam Aziz]([https://github.com/bangkook](https://github.com/MariamAziz0))
+- [Mariam Aziz](https://github.com/MariamAziz0)
 - [Mariam Hossam](https://github.com/bangkook)
 - [Patrick Georges](https://github.com/Patrick-Geo7)
 - [George Beshay](https://github.com/GeorgeBeshay)
