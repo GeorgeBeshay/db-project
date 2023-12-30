@@ -147,6 +147,7 @@ public class AdminAPITests {
         assertNotNull(resultStaff);
         staffId = resultStaff.getId();
         staff.setId(staffId);
+        staff.setPasswordHash(Hasher.hash(passwordHash));
         assertEquals(staff, resultStaff);
 
         // Clean
@@ -210,6 +211,7 @@ public class AdminAPITests {
         assertNotNull(resultStaff);
         staffId = resultStaff.getId();
         staff.setId(staffId);
+        staff.setPasswordHash(Hasher.hash(passwordHash));
         assertEquals(staff, resultStaff);
 
         // Try to create a duplicate (because they have the same email.)

@@ -63,9 +63,21 @@ public class StaffAPI {
     @PostMapping("updateStaff")
     @ResponseBody
     public ResponseEntity<Staff> updateStaff(@RequestBody Staff staffToBeUpdated) {
-        Logger.logMsgFrom(this.getClass().getName(), "An admin has requested to update an existing staff record .. " +
+        Logger.logMsgFrom(this.getClass().getName(), "A staff has requested to update his record .. " +
                 "processing the request.", -1);
         Staff updatedStaff = this.staffService.updateStaff(staffToBeUpdated);
         return new ResponseEntity<>(updatedStaff, (updatedStaff != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("sign-in")
+    @ResponseBody
+    public ResponseEntity<Staff> signIn(@RequestBody Staff staff) {
+        Logger.logMsgFrom(this.getClass().getName(), "A staff has requested to sign in .. " +
+                "processing the request.", -1);
+
+        Staff resultStaffObject = this.staffService.signInLogic(staff);
+        return new ResponseEntity<>(resultStaffObject,
+                (resultStaffObject != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
 }
