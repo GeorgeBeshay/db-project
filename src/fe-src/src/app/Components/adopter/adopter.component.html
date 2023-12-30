@@ -86,6 +86,7 @@
           <div>
             <h2>Application Notifications</h2>
             <ul class="not-list">
+              <!-- TODO update notification status in BE -->
               <li *ngFor="let notification of applicationNotifications" (click)="currentSection = 2">
                 You have an update in the status of your application with id {{ notification.applicationId }}
                 <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
