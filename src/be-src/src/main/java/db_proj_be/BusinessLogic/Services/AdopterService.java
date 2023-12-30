@@ -1,7 +1,9 @@
 package db_proj_be.BusinessLogic.Services;
 
+import db_proj_be.BusinessLogic.EntityModels.Admin;
 import db_proj_be.BusinessLogic.EntityModels.Adopter;
 import db_proj_be.BusinessLogic.EntityModels.AdoptionApplication;
+import db_proj_be.BusinessLogic.Utilities.Hasher;
 import db_proj_be.BusinessLogic.EntityModels.ApplicationNotification;
 import db_proj_be.BusinessLogic.EntityModels.PetAvailabilityNotification;
 import db_proj_be.BusinessLogic.Utilities.Logger;
@@ -56,6 +58,56 @@ public class AdopterService {
         return adopter;
     }
 
+    public Adopter signInLogic(Adopter actualAdopter) {
+
+        if (actualAdopter == null) {
+            Logger.logMsgFrom(this.getClass().getName(), "Adopter object can't be null.", 1);
+            return null;
+        }
+
+        Adopter expectedAdopter = adopterDAO.findByEmail(actualAdopter.getEmail());
+
+        if (expectedAdopter == null) {
+            Logger.logMsgFrom(this.getClass().getName(), "Adopter record doesn't exist.", 1);
+            return null;
+        }
+
+        if (!Hasher.hash(actualAdopter.getPasswordHash()).equals(expectedAdopter.getPasswordHash())) {
+            Logger.logMsgFrom(this.getClass().getName(), "Adopter Authentication Failure.", 1);
+            return null;
+        }
+
+        if (Hasher.hash(actualAdopter.getPasswordHash()).equals(expectedAdopter.getPasswordHash())) {
+            Logger.logMsgFrom(this.getClass().getName(), "Adopter Successful Authentication", 0);
+            return expectedAdopter;
+        }
+
+        Logger.logMsgFrom(this.getClass().getName(), "Something had went wrong ..", 1);
+        return null;
+    }
+
+    public Adopter signUpLogic(Adopter newAdopter) {
+
+        if (newAdopter == null) {
+            Logger.logMsgFrom(this.getClass().getName(), "Adopter object can't be null.", 1);
+            return null;
+        }
+
+        // hash the password.
+        newAdopter.setPasswordHash(Hasher.hash(newAdopter.getPasswordHash()));
+
+        int adopterId = this.adopterDAO.create(newAdopter);
+
+        if (adopterId >= 1) {
+            Logger.logMsgFrom(this.getClass().getName(), "Adopter Record Created Successfully with ID = " +
+                    adopterId, 0);
+            return this.adopterDAO.findById(adopterId);
+        }
+
+        Logger.logMsgFrom(this.getClass().getName(), "Something had went wrong ..", 1);
+        return null;
+    }
+
     public List<ApplicationNotification> fetchAppNotifications(int adopterId) {
         List<ApplicationNotification> applicationNotifications = this.applicationNotificationDAO.findByAdopterId(adopterId);
 
@@ -77,4 +129,5 @@ public class AdopterService {
 
         return petNotifications;
     }
+  
 }

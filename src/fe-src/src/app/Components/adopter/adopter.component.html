@@ -1,8 +1,64 @@
 <div class="holder">
-  <!-- TODO: the condition need to be modified -->
-  <ng-container *ngIf="1 != 1; else loggedIn">
-    <div class="authentication">
-      Here the authentication
+
+<!--  <h1>ADOPTER DASHBOARD</h1>-->
+
+  <ng-container *ngIf="adopter == null; else loggedIn">
+    <div class="center">
+      <h2>Adopter Sign In</h2>
+      <form class="formGroup" [formGroup]="signInForm" (ngSubmit)="signIn()">
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" formControlName="email" required />
+        </div>
+        <div>
+          <label for="password">Password:</label>
+          <input type="password" id="password" formControlName="password" placeholder="Enter your password" required>
+        </div>
+        <div>
+          <button type="submit" [disabled]="!signInForm.valid">Sign In</button>
+        </div>
+      </form>
+
+
+      <form class="formGroup" [formGroup]="signUpForm" (ngSubmit)="signUp()">
+        <div>
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" formControlName="firstName" required />
+        </div>
+        <div>
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" formControlName="lastName" required />
+        </div>
+        <div>
+          <label for="emailSignUp">Email</label>
+          <input type="email" id="emailSignUp" formControlName="email" required />
+        </div>
+        <div>
+          <label for="phone">Phone</label>
+          <input type="text" id="phone" formControlName="phone" />
+        </div>
+        <div>
+          <label for="passwordSignUp">Password</label>
+          <input type="password" id="passwordSignUp" formControlName="password" required />
+        </div>
+        <div>
+          <label for="birthDate">Birth Date</label>
+          <input type="text" id="birthDate" formControlName="birthDate" required />
+        </div>
+        <div>
+          <label for="gender">Gender</label>
+          <input type="text" id="gender" formControlName="gender" required />
+        </div>
+        <div>
+          <label for="address">Address</label>
+          <input type="text" id="address" formControlName="address" required />
+        </div>
+        <div>
+          <button type="submit" [disabled]="!signUpForm.valid">Sign Up</button>
+        </div>
+      </form>
+
+
     </div>
   </ng-container>
 
@@ -21,6 +77,7 @@
           <li><a (click)="selectSection(1)">New Application</a></li>
           <li><a (click)="selectSection(2)">My Applications</a></li>
           <li><a (click)="selectSection(3)">Notifications</a></li>
+          <ul><a (click)="signOut()">Sign Out</a></ul>
         </ul>
       </div>
 
@@ -79,7 +136,7 @@
               </tbody>
             </table>
           </div>
-          
+
         </ng-container>
 
         <ng-container *ngIf="currentSection == 3">

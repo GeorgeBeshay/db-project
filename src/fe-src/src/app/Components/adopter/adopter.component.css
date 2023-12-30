@@ -12,6 +12,7 @@ h2 {
 .holder {
   display: flex;
   width: 100%;
+  margin-bottom: 100px;
 }
 
 .form-group {
@@ -262,3 +263,4 @@ input {
   font-size: 0.8em;
   margin-top: 5px;
 }
+

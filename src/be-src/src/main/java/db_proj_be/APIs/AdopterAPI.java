@@ -1,5 +1,6 @@
 package db_proj_be.APIs;
 
+import db_proj_be.BusinessLogic.EntityModels.Admin;
 import db_proj_be.BusinessLogic.EntityModels.Adopter;
 import db_proj_be.BusinessLogic.EntityModels.AdoptionApplication;
 import db_proj_be.BusinessLogic.EntityModels.ApplicationNotification;
@@ -64,6 +65,29 @@ public class AdopterAPI {
                 : new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
+
+    @PostMapping("sign-in")
+    @ResponseBody
+    public ResponseEntity<Adopter> signIn(@RequestBody Adopter adopter) {
+        Logger.logMsgFrom(this.getClass().getName(), "An adopter has requested to sign in .. " +
+                "processing the request.", -1);
+
+        Adopter resultAdopterObject = this.adopterService.signInLogic(adopter);
+        return new ResponseEntity<>(resultAdopterObject,
+                (resultAdopterObject != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("sign-up")
+    @ResponseBody
+    public ResponseEntity<Adopter> signUp(@RequestBody Adopter adopter) {
+        Logger.logMsgFrom(this.getClass().getName(), "An adopter has requested to sign up .. " +
+                "processing the request.", -1);
+
+        Adopter resultAdopterObject = this.adopterService.signUpLogic(adopter);
+        return new ResponseEntity<>(resultAdopterObject,
+                (resultAdopterObject != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping("fetch-app-notifications/{id}")
     @ResponseBody
     public ResponseEntity<List<ApplicationNotification>> fetchAppNotifications(@PathVariable("id") int adopterId) {
@@ -87,4 +111,5 @@ public class AdopterAPI {
                 ? new ResponseEntity<>(petNotifications, HttpStatus.OK)
                 : new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
+
 }
