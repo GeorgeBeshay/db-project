@@ -4,7 +4,11 @@ import {FormBuilder, FormGroup, Validators } from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {AdminServicesService} from "../../Services/admin-services.service";
 import {UtilitiesService} from "../../Services/utilities.service";
+
+import { Shelter } from 'src/app/Entities/Shelter';
+
 import {Staff} from "../../Entities/Staff";
+
 
 @Component({
   selector: 'app-admin',
@@ -19,6 +23,8 @@ export class AdminComponent implements OnInit {
   adminService!: AdminServicesService;
   utilitiesService!: UtilitiesService;
   selectedSection!: number;
+  shelterCreationForm!: FormGroup;
+  systemShelters: Shelter[] = [];
   //  ---------------------------- Constructor ----------------------------
   constructor(private formBuilder: FormBuilder, private http: HttpClient) {
     this.adminService = new AdminServicesService(http);
@@ -30,6 +36,13 @@ export class AdminComponent implements OnInit {
     this.signInForm = this.formBuilder.group({
       id: ['', [Validators.required]],
       password: ['', Validators.required]
+    });
+    this.shelterCreationForm = this.formBuilder.group({
+      shelterName:['',Validators.required],
+      shelterLocation:['',Validators.required],
+      shelterEmail:['',Validators.required],
+      shelterPhone:['',Validators.required],
+      shelterManager:['',Validators.required]
     });
 
     this.createStaffForm = this.formBuilder.group({
@@ -47,7 +60,7 @@ export class AdminComponent implements OnInit {
       this.admin = JSON.parse(tempObj);
       this.selectSection(0);
     }
-
+    this.getAllAvailableShelters();
   }
 
   //  ---------------------------- Component Methods ----------------------------
@@ -67,6 +80,17 @@ export class AdminComponent implements OnInit {
       await this.utilitiesService.sweetAlertFailure("Authentication Failed.")
     }
 
+  }
+  async createShelter()
+  {
+    const name = this.shelterCreationForm.get('shelterName')?.value;
+    const location = this.shelterCreationForm.get('shelterLocation')?.value;
+    const email = this.shelterCreationForm.get('shelterEmail')?.value;
+    const phone = this.shelterCreationForm.get('shelterPhone')?.value;
+    const manager = this.shelterCreationForm.get('shelterManager')?.value;
+    let shelter = new Shelter(0,name,location,email,phone,manager);
+    console.log(shelter);
+    await this.adminService.createShelter(shelter);
   }
 
   async createStaff() {
@@ -102,5 +126,11 @@ export class AdminComponent implements OnInit {
     this.selectedSection = sectionNumber;
     console.log(this.selectedSection)
   }
-
+  async getAllAvailableShelters(){
+    this.systemShelters = await this.adminService.getAllAvailableShelters();
+    
+  }
+  printShelters(){
+  console.log(this.systemShelters);
+  }
 }

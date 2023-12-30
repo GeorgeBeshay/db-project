@@ -33,7 +33,12 @@
         <ul><a (click)="selectSection(1)">Create Admin</a></ul>
         <ul><a (click)="selectSection(2)">Create Staff</a></ul>
         <ul><a (click)="selectSection(3)">Create Shelter</a></ul>
+
+        <ul><a (click)="selectSection(4)">Display System Available Shelters</a></ul>
+        <ul><a (click)="selectSection(5)">Delete Shelters</a></ul>
+
         <ul><a (click)="signOut()">Sign Out</a></ul>
+
       </aside>
       <div class="main-content">
 
@@ -101,9 +106,57 @@
         </ng-container>
 
         <ng-container *ngIf="selectedSection == 3">
-          <p>This is the shelter creation sub-page.</p>
+          <form [formGroup]="shelterCreationForm" (ngSubmit)="createShelter()" class="form">
+            <div class="form-group">
+              <label for="name">Name:</label>
+              <input type="text" id="Name" formControlName="shelterName" placeholder="Enter Shelter Name" required>
+              <div class="error" *ngIf="signInForm.get('shelterName')?.invalid && (signInForm.get('shelterName')?.dirty || signInForm.get('shelterName')?.touched)">
+                Please enter a name.
+              </div>
+            </div>
+              <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="Location" formControlName="shelterLocation" placeholder="Enter Shelter Location" required>
+                <div class="error" *ngIf="signInForm.get('shelterLocation')?.invalid && (signInForm.get('shelterLocation')?.dirty || signInForm.get('shelterLocation')?.touched)">
+                  Please enter a valid location.
+                </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="text" id="email" formControlName="shelterEmail" placeholder="Enter Shelter Email" required>
+              <div class="error" *ngIf="signInForm.get('shelterEmail')?.invalid && (signInForm.get('shelterEmail')?.dirty || signInForm.get('shelterEmail')?.touched)">
+                Please enter a valid email.
+              </div>
+            </div>
+              <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="number" id="phone" formControlName="shelterPhone" placeholder="Enter Shelter Phone" required>
+                <div class="error" *ngIf="signInForm.get('shelterPhone')?.invalid && (signInForm.get('shelterPhone')?.dirty || signInForm.get('shelterPhone')?.touched)">
+                  Please enter a valid phone number.
+                </div>
+              </div>
+                <div class="form-group">
+                  <label for="Manager">Manager's ID:</label>
+                  <input type="text" id="manager" formControlName="shelterManager" placeholder="Enter Shelter Manager's ID" required>
+                  <div class="error" *ngIf="signInForm.get('shelterManager')?.invalid && (signInForm.get('shelterManager')?.dirty || signInForm.get('shelterManager')?.touched)">
+                    Please enter shelter manager's ID.
+                  </div>
+                </div>
+            <button type="submit" [disabled]="shelterCreationForm.invalid">Create Shelter</button>
+          </form>
         </ng-container>
-
+        <ng-container *ngIf="selectedSection == 4">
+          <div class="border">
+            <div *ngFor="let shelter of systemShelters " class="button">
+              <div class="container">
+                  <div class="from">Shelter Name: {{shelter.name}}</div>
+                  <div class="from">Shelter Location: {{shelter.location}}</div>
+                  <div class="from">Shelter Phone: {{shelter.phone}}</div>
+                  <div class="from">Shelter Email: {{shelter.email}}</div>
+              </div> 
+          </div>
+        </div>
+        </ng-container>
       </div>
 
     </div>

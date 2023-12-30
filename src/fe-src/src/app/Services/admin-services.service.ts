@@ -3,11 +3,13 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {firstValueFrom} from "rxjs";
 import {Admin} from "../Entities/Admin";
 import {Staff} from "../Entities/Staff";
+import { Shelter } from '../Entities/Shelter';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminServicesService {
+
   //  ---------------------------- Component Fields ----------------------------
   adminEndpointUrl = "http://localhost:8081/pasms-server/admin-api/"
 
@@ -29,7 +31,34 @@ export class AdminServicesService {
     }
 
   }
-
+  async createShelter(shelter: Shelter) {
+    
+    try {
+      return await firstValueFrom(
+      this.http.post<boolean>(`${this.adminEndpointUrl}createShelter`,shelter,{responseType:'json'})
+      );
+    } catch(error){
+      if(error instanceof HttpErrorResponse)
+        console.error('Bad Request');
+      else
+        console.error('Error');
+      return null
+    }
+  }
+  async getAllAvailableShelters(): Promise<Shelter[]> {
+    try{ 
+      console.log('getting all shelters');
+      return await firstValueFrom(
+        this.http.post<Shelter[]>(`${this.adminEndpointUrl}findAllShelters`,{},{responseType:'json'})
+        );
+  }catch(error){
+    if(error instanceof HttpErrorResponse){
+      console.error('Bad Request');
+    }
+    console.error('Error');
+  }
+  return [];
+}
   async createStaff(staff: Staff) {
 
     try {
