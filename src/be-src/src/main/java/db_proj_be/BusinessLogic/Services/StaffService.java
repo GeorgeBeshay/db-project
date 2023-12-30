@@ -1,13 +1,11 @@
 package db_proj_be.BusinessLogic.Services;
 
-import db_proj_be.BusinessLogic.EntityModels.Adoption;
-import db_proj_be.BusinessLogic.EntityModels.AdoptionApplication;
-import db_proj_be.BusinessLogic.EntityModels.ApplicationNotification;
-import db_proj_be.BusinessLogic.EntityModels.ApplicationStatus;
+import db_proj_be.BusinessLogic.EntityModels.*;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import db_proj_be.Database.DAOs.AdoptionApplicationDAO;
 import db_proj_be.Database.DAOs.AdoptionDAO;
 import db_proj_be.Database.DAOs.ApplicationNotificationDAO;
+import db_proj_be.Database.DAOs.StaffDAO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -98,7 +96,7 @@ public class StaffService {
             Logger.logMsgFrom(this.getClass().getName(), "Failed to create application notification", 1);
         }
     }
-  
+
     /**
      * Updates an existing staff member record.
      *
@@ -136,5 +134,5 @@ public class StaffService {
 
         return updatedStaffRecord;
     }
-  
+
 }
