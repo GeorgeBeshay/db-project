@@ -1,12 +1,17 @@
 package db_proj_be.BusinessLogic.Services;
 
 import db_proj_be.BusinessLogic.EntityModels.Pet;
+import db_proj_be.BusinessLogic.EntityModels.PetAvailabilityNotification;
 import db_proj_be.BusinessLogic.Utilities.Logger;
+import db_proj_be.Database.DAOs.AdopterDAO;
+import db_proj_be.Database.DAOs.PetAvailabilityNotificationDAO;
 import db_proj_be.Database.DAOs.PetDAO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
-import java.util.*;
+
+import java.sql.Date;
+import java.util.List;
 
 @Service
 public class PetService {
@@ -14,20 +19,25 @@ public class PetService {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final PetDAO petDAO;
+    private final AdopterDAO adopterDAO;
+    private final PetAvailabilityNotificationDAO petAvailabilityNotificationDAO;
 
     public PetService(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.petDAO = new PetDAO(jdbcTemplate, namedParameterJdbcTemplate);
+        this.adopterDAO = new AdopterDAO(jdbcTemplate);
+        this.petAvailabilityNotificationDAO = new PetAvailabilityNotificationDAO(jdbcTemplate);
     }
 
     public int createPet(Pet pet) {
         int petCreatedId = petDAO.create(pet);
-        if (petCreatedId > 0)
+        if (petCreatedId > 0) {
             Logger.logMsgFrom(this.getClass().getName(), "A pet is created successfully", 0);
-
-        else
+            this.notifyAdopters(petCreatedId);
+        } else {
             Logger.logMsgFrom(this.getClass().getName(), "A pet is failed to be created", 1);
+        }
 
         return petCreatedId;
     }
@@ -76,4 +86,20 @@ public class PetService {
         return pet;
     }
 
+    public void notifyAdopters(int petId) {
+        List<Integer> adoptersIds = this.adopterDAO.getAdoptersIDs();
+
+        for (int adopterId : adoptersIds) {
+            PetAvailabilityNotification petAvailabilityNotification =
+                    new PetAvailabilityNotification(petId, adopterId, false, new Date(System.currentTimeMillis()));
+
+            boolean isCreated = this.petAvailabilityNotificationDAO.create(petAvailabilityNotification);
+
+            if (isCreated)
+                Logger.logMsgFrom(this.getClass().getName(), "Successfully created pet availability notification", 0);
+            else
+                Logger.logMsgFrom(this.getClass().getName(), "Failed to create pet availability notification", 1);
+
+        }
+    }
 }

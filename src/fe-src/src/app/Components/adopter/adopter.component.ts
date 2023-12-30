@@ -1,3 +1,5 @@
+import { PetAvailabilityNotification } from './../../Entities/PetAvailabilityNotification';
+import { ApplicationNotification } from './../../Entities/ApplicationNotification';
 import { AdoptionApplication } from './../../Entities/AdoptionApplication';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
@@ -20,9 +22,11 @@ export class AdopterComponent implements OnInit{
   adopterService: AdopterServicesService
   utilitiesService!: UtilitiesService;
   adoptionApplications : AdoptionApplication[]
+  applicationNotifications: ApplicationNotification[]
+  petAvailabilityNotifications: PetAvailabilityNotification[]
   applicationForm: FormGroup;
   petId = 0
-  adopterId = 11
+  adopterId = 200
 
   constructor(private http: HttpClient, private formBuilder: FormBuilder, private datePipe: DatePipe) {
     this.currentSection = 0
@@ -35,21 +39,19 @@ export class AdopterComponent implements OnInit{
       experience: [false] // Default value for the checkbox
     });
     this.adoptionApplications = []
+    this.applicationNotifications = []
+    this.petAvailabilityNotifications = []
   }
 
   ngOnInit(): void {
-      
+    this.loadApplications()
+    this.loadAppNotifications()
+    this.loadPetNotifications()
   }
 
   async selectSection(sectionNumber: number) {
     this.currentSection = sectionNumber
     console.log("Navigating to section", sectionNumber);
-
-    if(this.currentSection == 2) { // Fetch applications
-      this.adoptionApplications = await this.adopterService.fetchApplications(this.adopterId)
-      console.log('Recieved', this.adoptionApplications)
-    }
-
   }
 
   async submitApplication() {
@@ -71,5 +73,17 @@ export class AdopterComponent implements OnInit{
     } else {
       console.error('Adoption application form not valid')
     }
+  }
+
+  async loadApplications() {
+    this.adoptionApplications = await this.adopterService.fetchApplications(this.adopterId)
+  }
+
+  async loadAppNotifications() {
+    this.applicationNotifications = await this.adopterService.fetchAppNotifications(this.adopterId)
+  }
+
+  async loadPetNotifications() {
+    this.petAvailabilityNotifications = await this.adopterService.fetchPetNotifications(this.adopterId)
   }
 }
