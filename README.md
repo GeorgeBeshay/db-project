@@ -18,15 +18,14 @@ Utilizing modern web technologies and an intuitive user interface, the project a
 ### For Adopters:
 - **Animal Browsing:** Explore available animals for adoption, filter by species, age, and location.
 - **Adoption Application:** Submit adoption applications for desired animals directly through the platform.
+- **Adoption Progress Tracking:** Monitor the status of adoption applications.
 
 ### For Shelter Staff:
 - **Staff Dashboard:** Manage animal listings, process adoption requests, and view applicant profiles.
 - **Shelter Profile Management:** Update shelter information, add new animals, and track adoption statuses.
 
 ### Common Features:
-- **User Authentication:** Secure user accounts for adopters, shelter staff and administrators.
-- **Search Functionality:** Efficiently search for animals based on specific criteria.
-- **Adoption Progress Tracking:** Monitor the status of adoption applications.
+- **Sign Up / Sign In**: Users can register or log in using their credentials.
 
 
 ## Installation
@@ -37,13 +36,6 @@ Utilizing modern web technologies and an intuitive user interface, the project a
 4. Setup the DB on your machine.
 4. Run the backend server.
 6. Run the frontend application: `ng serve`.
-
-## Usage
-
-1. **Sign Up / Sign In**: Users can register or log in using their credentials.
-2. **Browse Animals**: View available animals, their profiles, and adoption information.
-3. **Apply for Adoption**: Submit adoption applications for selected animals.
-4. **Admin Dashboard**: Shelter administrators can log in to manage animal listings and process adoption requests.
 
 ## Team Members
 
