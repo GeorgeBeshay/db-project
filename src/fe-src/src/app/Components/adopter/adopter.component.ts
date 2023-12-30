@@ -25,7 +25,6 @@ export class AdopterComponent implements OnInit{
   applicationNotifications: ApplicationNotification[]
   petAvailabilityNotifications: PetAvailabilityNotification[]
   applicationForm: FormGroup;
-  petId = 0
   adopterId = 200
 
   constructor(private http: HttpClient, private formBuilder: FormBuilder, private datePipe: DatePipe) {
@@ -33,8 +32,8 @@ export class AdopterComponent implements OnInit{
     this.adopterService = new AdopterServicesService(http);
     this.utilitiesService = new UtilitiesService();
     this.applicationForm = this.formBuilder.group({
-      adopterId: [{ value: this.adopterId, disabled: true }],
-      petId: [{ value: this.petId, disabled: true }],
+      adopterId: [this.adopterId, Validators.required],
+      petId: [0, Validators.required],
       description: ['', Validators.required],
       experience: [false] // Default value for the checkbox
     });
@@ -60,7 +59,7 @@ export class AdopterComponent implements OnInit{
 
       // Send to back
       const date = this.datePipe.transform(new Date(), 'yyyy-MM-dd')!;
-      const app = new AdoptionApplication(0, this.adopterId, this.petId, ApplicationStatus.Pending, 
+      const app = new AdoptionApplication(0, this.applicationForm.value.adopterId, this.applicationForm.value.petId, ApplicationStatus.Pending, 
         this.applicationForm.value.description, this.applicationForm.value.experience, date);
       const result = await this.adopterService.submitApplication(app)
 
