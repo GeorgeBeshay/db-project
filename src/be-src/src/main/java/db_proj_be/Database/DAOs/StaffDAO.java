@@ -3,12 +3,14 @@ package db_proj_be.Database.DAOs;
 import db_proj_be.BusinessLogic.EntityModels.Staff;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 public class StaffDAO extends DAO<Staff>{
     public StaffDAO(JdbcTemplate jdbcTemplate) {
         super(jdbcTemplate, Staff.class, "STAFF");
     }
 
+    @Transactional
     public boolean update(Staff staff){
 
         if(staff == null){
@@ -48,6 +50,21 @@ public class StaffDAO extends DAO<Staff>{
             return false;
 
         }
+    }
+
+    @Transactional
+    public Staff findByEmail(String email) {
+
+        try {
+            String sql = "SELECT * FROM STAFF WHERE email = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, email);
+
+        } catch (Exception e) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in STAFF findByEmail(): " + e.getMessage(), 1);
+            return null;
+
+        }
+
     }
 
 }

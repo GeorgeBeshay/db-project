@@ -1,6 +1,7 @@
 package db_proj_be.BusinessLogic.Services;
 
 import db_proj_be.BusinessLogic.EntityModels.Staff;
+import db_proj_be.BusinessLogic.Utilities.Hasher;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import db_proj_be.Database.DAOs.StaffDAO;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,6 +52,39 @@ public class StaffService {
         }
 
         return updatedStaffRecord;
+    }
+
+    /**
+     * Validates and authenticates staff member login based on provided credentials.
+     *
+     * @param actualStaff The Staff object containing login credentials. (email and password)
+     * @return The authenticated Staff object if successful, null otherwise.
+     */
+    public Staff signInLogic(Staff actualStaff) {
+        if (actualStaff == null) {
+            Logger.logMsgFrom(this.getClass().getName(), "Staff object can't be null.", 1);
+            return null;
+        }
+
+        Staff expectedStaff = staffDAO.findByEmail(actualStaff.getEmail());
+
+        if (expectedStaff == null) {
+            Logger.logMsgFrom(this.getClass().getName(), "Staff record doesn't exist.", 1);
+            return null;
+        }
+
+        if (!Hasher.hash(actualStaff.getPasswordHash()).equals(expectedStaff.getPasswordHash())) {
+            Logger.logMsgFrom(this.getClass().getName(), "Staff Authentication Failure.", 1);
+            return null;
+        }
+
+        if (Hasher.hash(actualStaff.getPasswordHash()).equals(expectedStaff.getPasswordHash())) {
+            Logger.logMsgFrom(this.getClass().getName(), "Staff Successful Authentication", 0);
+            return expectedStaff;
+        }
+
+        Logger.logMsgFrom(this.getClass().getName(), "Something had went wrong ..", 1);
+        return null;
     }
 
 }

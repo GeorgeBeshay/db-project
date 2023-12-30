@@ -29,7 +29,7 @@ BEGIN
         id int primary key IDENTITY(1, 1),
         name varchar(50) not null,
         location varchar(255) not null,
-        email varchar(255) not null,
+        email varchar(255) not null UNIQUE,
         phone varchar(15) not null,
         manager int)
     END

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import db_proj_be.BusinessLogic.EntityModels.Shelter;
 import db_proj_be.BusinessLogic.EntityModels.Staff;
 import db_proj_be.BusinessLogic.EntityModels.StaffRole;
+import db_proj_be.BusinessLogic.Utilities.Hasher;
 import db_proj_be.Database.DAOs.ShelterDAO;
 import db_proj_be.Database.DAOs.StaffDAO;
 import db_proj_be.besrc.BeSrcApplication;
@@ -210,6 +211,150 @@ public class StaffAPITests {
         staff.setShelterId(shelterId); // reset the object to its initial state before modification.
         retrievedStaffFromDB = staffDAO.findById(staffId);
         assertEquals(staff, retrievedStaffFromDB);
+
+        // Clean
+        assertEquals(1, jdbcTemplate.update("DELETE FROM STAFF WHERE id = ?", staffId));
+        assertEquals(1, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId));
+    }
+
+    @Test
+    @DisplayName("Staff Sign in - Successful")
+    public void testSignInSuccessful() throws Exception {
+        // Arrange
+
+        // creating shelter
+        int shelterId;
+        String shelterName = "SHELTER X";
+        String shelterLocation = "SHELTER X LOCATION";
+        String shelterPhone = "123456789";
+        String shelterEmail = "shelterX@gmail.com";
+
+        Shelter shelter = new Shelter();
+        shelter.setName(shelterName);
+        shelter.setLocation(shelterLocation);
+        shelter.setPhone(shelterPhone);
+        shelter.setEmail(shelterEmail);
+
+        ShelterDAO shelterDAO = new ShelterDAO(jdbcTemplate);
+        shelterId = shelterDAO.create(shelter);
+        assertTrue(shelterId >= 1);
+        shelter.setId(shelterId);
+
+        // prepare a staff object
+        int staffId = -1; // will be ignored.
+        String firstName = "John";
+        String lastName = "Doe";
+        StaffRole role = StaffRole.MANAGER;
+        String email = "johnDoe@gmail.com";
+        String passwordHash = "This is the password hash";
+
+        Staff staff = new Staff();
+        staff.setFirstName(firstName);
+        staff.setLastName(lastName);
+        staff.setRole(role.getValue());
+        staff.setEmail(email);
+        staff.setPasswordHash(Hasher.hash(passwordHash));
+        staff.setShelterId(shelterId);
+
+        StaffDAO staffDAO = new StaffDAO(jdbcTemplate);
+        staffId = staffDAO.create(staff);
+        assertTrue(staffId >= 1);
+        staff.setId(staffId);
+
+        // use the original password
+        staff.setPasswordHash(passwordHash);
+
+        // suppose that the ID is unknown
+        staff.setId(-1);
+
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/staff-api/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(staff)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int status = result.getResponse().getStatus();
+
+        // Retrieve the response content as an Admin object
+        Staff resultStaff = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Staff.class);
+
+        // Assert the status code and Admin object
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(resultStaff);
+        staff.setPasswordHash(Hasher.hash(passwordHash));
+        staff.setId(staffId);
+        assertEquals(staff, resultStaff);
+
+        // Clean
+        assertEquals(1, jdbcTemplate.update("DELETE FROM STAFF WHERE id = ?", staffId));
+        assertEquals(1, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId));
+    }
+
+    @Test
+    @DisplayName("Staff Sign in - Failure")
+    public void testSignInFailure() throws Exception {
+        // Arrange
+
+        // creating shelter
+        int shelterId;
+        String shelterName = "SHELTER X";
+        String shelterLocation = "SHELTER X LOCATION";
+        String shelterPhone = "123456789";
+        String shelterEmail = "shelterX@gmail.com";
+
+        Shelter shelter = new Shelter();
+        shelter.setName(shelterName);
+        shelter.setLocation(shelterLocation);
+        shelter.setPhone(shelterPhone);
+        shelter.setEmail(shelterEmail);
+
+        ShelterDAO shelterDAO = new ShelterDAO(jdbcTemplate);
+        shelterId = shelterDAO.create(shelter);
+        assertTrue(shelterId >= 1);
+        shelter.setId(shelterId);
+
+        // prepare a staff object
+        int staffId = -1; // will be ignored.
+        String firstName = "John";
+        String lastName = "Doe";
+        StaffRole role = StaffRole.MANAGER;
+        String email = "johnDoe@gmail.com";
+        String passwordHash = "This is the password hash";
+
+        Staff staff = new Staff();
+        staff.setFirstName(firstName);
+        staff.setLastName(lastName);
+        staff.setRole(role.getValue());
+        staff.setEmail(email);
+        staff.setPasswordHash(Hasher.hash(passwordHash));
+        staff.setShelterId(shelterId);
+
+        StaffDAO staffDAO = new StaffDAO(jdbcTemplate);
+        staffId = staffDAO.create(staff);
+        assertTrue(staffId >= 1);
+        staff.setId(staffId);
+
+        // use the original password
+        staff.setPasswordHash(passwordHash + "modified");
+
+        // suppose that the ID is unknown
+        staff.setId(-1);
+
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/staff-api/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(staff)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int status = result.getResponse().getStatus();
+
+        // Assert the status code and Admin object
+        assertEquals(HttpStatus.BAD_REQUEST.value(), status);
+        assertEquals("", result.getResponse().getContentAsString());
 
         // Clean
         assertEquals(1, jdbcTemplate.update("DELETE FROM STAFF WHERE id = ?", staffId));
