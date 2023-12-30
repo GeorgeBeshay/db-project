@@ -6,6 +6,8 @@ import { AdopterServicesService } from 'src/app/Services/adopter-services.servic
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import {UtilitiesService} from "../../Services/utilities.service";
+import {Admin} from "../../Entities/Admin";
+import {Adopter} from "../../Entities/Adopter";
 
 
 @Component({
@@ -15,7 +17,7 @@ import {UtilitiesService} from "../../Services/utilities.service";
 })
 export class AdopterComponent implements OnInit{
 
-  // adopter: Adopter | null; 
+  adopter: Adopter | null = null;
   currentSection: number
   adopterService: AdopterServicesService
   utilitiesService!: UtilitiesService;
@@ -23,6 +25,8 @@ export class AdopterComponent implements OnInit{
   applicationForm: FormGroup;
   petId = 0
   adopterId = 11
+  signInForm!: FormGroup;
+  signUpForm!:FormGroup;
 
   constructor(private http: HttpClient, private formBuilder: FormBuilder, private datePipe: DatePipe) {
     this.currentSection = 0
@@ -38,7 +42,29 @@ export class AdopterComponent implements OnInit{
   }
 
   ngOnInit(): void {
-      
+
+    this.signInForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+
+    this.signUpForm = this.formBuilder.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: [''],
+      password: ['', [Validators.required, Validators.minLength(4)]],
+      birthDate: ['', Validators.required],
+      gender: [false, Validators.required],
+      address: ['']
+    });
+
+    let tempObj = sessionStorage.getItem("adopterObject");
+    if(tempObj != null) {
+      this.adopter = JSON.parse(tempObj);
+      this.selectSection(0);
+    }
+
   }
 
   async selectSection(sectionNumber: number) {
@@ -58,7 +84,7 @@ export class AdopterComponent implements OnInit{
 
       // Send to back
       const date = this.datePipe.transform(new Date(), 'yyyy-MM-dd')!;
-      const app = new AdoptionApplication(0, this.adopterId, this.petId, ApplicationStatus.Pending, 
+      const app = new AdoptionApplication(0, this.adopterId, this.petId, ApplicationStatus.Pending,
         this.applicationForm.value.description, this.applicationForm.value.experience, date);
       const result = await this.adopterService.submitApplication(app)
 
@@ -72,4 +98,58 @@ export class AdopterComponent implements OnInit{
       console.error('Adoption application form not valid')
     }
   }
+
+  async signIn() {
+
+    const email = this.signInForm.get('email')?.value;
+    const password = this.signInForm.get('password')?.value;
+
+    let tempAdopter = new Adopter(undefined, undefined, undefined, email, undefined, password, undefined, undefined, undefined);
+
+    this.adopter = await this.adopterService.signIn(tempAdopter)
+
+    if (this.adopter != null) {
+      sessionStorage.clear();
+      sessionStorage.setItem("adopterObject", JSON.stringify(this.adopter));
+      await this.utilitiesService.sweetAlertSuccess("Successful Authentication.")
+      this.selectSection(0);
+    } else {
+      await this.utilitiesService.sweetAlertFailure("Authentication Failed.")
+    }
+
+  }
+
+  async signUp() {
+
+    const email = this.signUpForm.get('email')?.value;
+    const password = this.signUpForm.get('password')?.value;
+    const firstName = this.signUpForm.get('firstName')?.value;
+    const lastName = this.signUpForm.get('lastName')?.value;
+    const phone = this.signUpForm.get('phone')?.value;
+    const birthDate = this.signUpForm.get('birthDate')?.value;
+    const gender = this.signUpForm.get('gender')?.value;
+    const address = this.signUpForm.get('address')?.value;
+
+
+    let tempAdopter = new Adopter(undefined, firstName, lastName, email, phone, password, birthDate, gender, address);
+    console.log(tempAdopter);
+    this.adopter = await this.adopterService.signUp(tempAdopter)
+
+    if (this.adopter != null) {
+      sessionStorage.clear();
+      sessionStorage.setItem("adopterObject", JSON.stringify(this.adopter));
+      await this.utilitiesService.sweetAlertSuccess("Successful Authentication.")
+      this.selectSection(0);
+    } else {
+      await this.utilitiesService.sweetAlertFailure("Authentication Failed.")
+    }
+
+  }
+
+  signOut() {
+    this.adopter = null;
+    sessionStorage.removeItem("adopterObject");
+  }
+
+
 }

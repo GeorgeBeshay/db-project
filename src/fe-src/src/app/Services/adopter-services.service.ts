@@ -19,7 +19,7 @@ export class AdopterServicesService {
   async submitApplication(application: AdoptionApplication) {
     try {
       return await firstValueFrom(this.http.post<number>(
-        this.baseUrl + 'submit-application', application, 
+        this.baseUrl + 'submit-application', application,
         {responseType: 'json'})
         );
     } catch (error) {
@@ -34,7 +34,7 @@ export class AdopterServicesService {
   async fetchApplications(adopterId: number) {
     try {
       return await firstValueFrom(this.http.get<AdoptionApplication[]>(
-        this.baseUrl + 'fetch-applications/' + adopterId, 
+        this.baseUrl + 'fetch-applications/' + adopterId,
         {responseType: 'json'})
         );
     } catch (error) {
@@ -49,7 +49,7 @@ export class AdopterServicesService {
   async getById(adopterId: number) {
     try {
       return await firstValueFrom(this.http.get<Adopter>(
-        this.baseUrl + 'get-by-id/' + adopterId, 
+        this.baseUrl + 'get-by-id/' + adopterId,
         {responseType: 'json'})
         );
     } catch (error) {
@@ -60,4 +60,37 @@ export class AdopterServicesService {
       return null;
     }
   }
+
+  async signIn(adopter: Adopter) {
+
+    try {
+      return await firstValueFrom (
+        this.http.post<Adopter>(`${this.baseUrl}sign-in`, adopter, {responseType:'json'})
+      );
+
+    } catch (error) {
+      console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
+      return null
+
+    }
+
+
+  }
+
+  async signUp(adopter: Adopter) {
+
+    try {
+      return await firstValueFrom(
+        this.http.post<Adopter>(`${this.baseUrl}sign-up`, adopter, {responseType: 'json'})
+      );
+
+    } catch (error) {
+      console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
+      return null
+
+    }
+
+  }
+
+
 }

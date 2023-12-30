@@ -65,4 +65,19 @@ public class AdopterDAO extends DAO<Adopter> {
 
     }
 
+    @Transactional
+    public Adopter findByEmail(String email) {
+
+        try {
+            String sql = "SELECT * FROM ADOPTER WHERE email = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, email);
+
+        } catch (Exception e) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTER findById(): " + e.getMessage(), 1);
+            return null;
+
+        }
+
+    }
+
 }
