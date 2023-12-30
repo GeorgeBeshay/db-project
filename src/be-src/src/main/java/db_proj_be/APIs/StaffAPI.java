@@ -2,6 +2,7 @@ package db_proj_be.APIs;
 
 import db_proj_be.BusinessLogic.EntityModels.AdoptionApplication;
 import db_proj_be.BusinessLogic.EntityModels.ApplicationStatus;
+import db_proj_be.BusinessLogic.EntityModels.Staff;
 import db_proj_be.BusinessLogic.Services.StaffService;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @ComponentScan(basePackages = {"db_proj_be.BusinessLogic.Services", "db_proj_be.APIs"})
 @RestController
-@CrossOrigin()
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/pasms-server/staff-api/")
 public class StaffAPI {
 
@@ -56,5 +58,14 @@ public class StaffAPI {
         return (this.staffService.updateApplication(adoptionApplication))
                 ? new ResponseEntity<>(true, HttpStatus.OK)
                 : new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
+  
+    @PostMapping("updateStaff")
+    @ResponseBody
+    public ResponseEntity<Staff> updateStaff(@RequestBody Staff staffToBeUpdated) {
+        Logger.logMsgFrom(this.getClass().getName(), "An admin has requested to update an existing staff record .. " +
+                "processing the request.", -1);
+        Staff updatedStaff = this.staffService.updateStaff(staffToBeUpdated);
+        return new ResponseEntity<>(updatedStaff, (updatedStaff != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 }

@@ -45,7 +45,58 @@
         </ng-container>
 
         <ng-container *ngIf="selectedSection == 2">
-          <p>This is the staff creation sub-page.</p>
+          <div class="create-staff">
+            <h3>Create Staff</h3>
+            <form [formGroup]="createStaffForm" (ngSubmit)="createStaff()">
+              <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" formControlName="firstName" placeholder="Enter first name" required>
+                <div class="error" *ngIf="createStaffForm.get('firstName')?.invalid && (createStaffForm.get('firstName')?.dirty || createStaffForm.get('firstName')?.touched)">
+                  Please Enter a Valid First Name.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" formControlName="lastName" placeholder="Enter last name" required>
+                <div class="error" *ngIf="createStaffForm.get('lastName')?.invalid && (createStaffForm.get('lastName')?.dirty || createStaffForm.get('lastName')?.touched)">
+                  Please Enter a Valid Last Name.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="role">Role:</label>
+                <select id="role" formControlName="role" required>
+                  <option value="Manager">Manager</option>
+                  <option value="Member">Member</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" formControlName="phone" placeholder="Enter phone number">
+              </div>
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" formControlName="email" placeholder="Enter email" required>
+                <div class="error" *ngIf="createStaffForm.get('email')?.invalid && (createStaffForm.get('email')?.dirty || createStaffForm.get('email')?.touched)">
+                  Please Enter a Valid Email.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="shelterId">Shelter ID:</label>
+                <input type="number" id="shelterId" formControlName="shelterId" placeholder="Enter Shelter ID" required>
+                <div class="error" *ngIf="createStaffForm.get('shelterId')?.invalid && (createStaffForm.get('shelterId')?.dirty || createStaffForm.get('shelterId')?.touched)">
+                  Please Enter a Valid Shelter ID.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="staffPassword">Password:</label>
+                <input type="password" id="staffPassword" formControlName="staffPassword" placeholder="Enter password" required>
+                <div class="error" *ngIf="createStaffForm.get('staffPassword')?.invalid && (createStaffForm.get('staffPassword')?.dirty || createStaffForm.get('staffPassword')?.touched)">
+                  Please Enter a Valid Password (Not less than 4 characters).
+                </div>
+              </div>
+              <button type="submit" [disabled]="createStaffForm.invalid">Create Staff</button>
+            </form>
+          </div>
         </ng-container>
 
         <ng-container *ngIf="selectedSection == 3">

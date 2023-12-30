@@ -426,4 +426,18 @@ public class PetDAOTests {
 
     }
 
+//    @Test
+//    public void test() {
+//        List<Integer> shelterIds = Arrays.asList(1, 2);
+//        Map<String, Object> criteria = new HashMap<>();
+//        criteria.put("specie", "dog");
+//        criteria.put("gender", true);
+//        List<String> columns = Arrays.asList("neutering", "house_training");
+//
+//        List<Pet> pets = petDAO.getPetsWithOptionsAndSorted(shelterIds, criteria, columns);
+//
+//        System.out.println(pets);
+//
+//    }
+
 }
