@@ -1,3 +1,5 @@
+import { PetAvailabilityNotification } from './../../Entities/PetAvailabilityNotification';
+import { ApplicationNotification } from './../../Entities/ApplicationNotification';
 import { AdoptionApplication } from './../../Entities/AdoptionApplication';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
@@ -22,9 +24,11 @@ export class AdopterComponent implements OnInit{
   adopterService: AdopterServicesService
   utilitiesService!: UtilitiesService;
   adoptionApplications : AdoptionApplication[]
+  applicationNotifications: ApplicationNotification[]
+  petAvailabilityNotifications: PetAvailabilityNotification[]
   applicationForm: FormGroup;
   petId = 0
-  adopterId = 11
+  adopterId = 200
   signInForm!: FormGroup;
   signUpForm!:FormGroup;
 
@@ -33,12 +37,14 @@ export class AdopterComponent implements OnInit{
     this.adopterService = new AdopterServicesService(http);
     this.utilitiesService = new UtilitiesService();
     this.applicationForm = this.formBuilder.group({
-      adopterId: [{ value: this.adopterId, disabled: true }],
-      petId: [{ value: this.petId, disabled: true }],
+      adopterId: [this.adopterId, Validators.required],
+      petId: [0, Validators.required],
       description: ['', Validators.required],
       experience: [false] // Default value for the checkbox
     });
     this.adoptionApplications = []
+    this.applicationNotifications = []
+    this.petAvailabilityNotifications = []
   }
 
   ngOnInit(): void {
@@ -65,17 +71,15 @@ export class AdopterComponent implements OnInit{
       this.selectSection(0);
     }
 
+    this.loadApplications()
+    this.loadAppNotifications()
+    this.loadPetNotifications()
+
   }
 
   async selectSection(sectionNumber: number) {
     this.currentSection = sectionNumber
     console.log("Navigating to section", sectionNumber);
-
-    if(this.currentSection == 2) { // Fetch applications
-      this.adoptionApplications = await this.adopterService.fetchApplications(this.adopterId)
-      console.log('Recieved', this.adoptionApplications)
-    }
-
   }
 
   async submitApplication() {
@@ -84,7 +88,8 @@ export class AdopterComponent implements OnInit{
 
       // Send to back
       const date = this.datePipe.transform(new Date(), 'yyyy-MM-dd')!;
-      const app = new AdoptionApplication(0, this.adopterId, this.petId, ApplicationStatus.Pending,
+      const app = new AdoptionApplication(0, this.applicationForm.value.adopterId, this.applicationForm.value.petId, ApplicationStatus.Pending, 
+
         this.applicationForm.value.description, this.applicationForm.value.experience, date);
       const result = await this.adopterService.submitApplication(app)
 
@@ -151,5 +156,16 @@ export class AdopterComponent implements OnInit{
     sessionStorage.removeItem("adopterObject");
   }
 
+  async loadApplications() {
+    this.adoptionApplications = await this.adopterService.fetchApplications(this.adopterId)
+  }
+
+  async loadAppNotifications() {
+    this.applicationNotifications = await this.adopterService.fetchAppNotifications(this.adopterId)
+  }
+
+  async loadPetNotifications() {
+    this.petAvailabilityNotifications = await this.adopterService.fetchPetNotifications(this.adopterId)
+  }
 
 }

@@ -3,6 +3,8 @@ package db_proj_be.APIs;
 import db_proj_be.BusinessLogic.EntityModels.Admin;
 import db_proj_be.BusinessLogic.EntityModels.Adopter;
 import db_proj_be.BusinessLogic.EntityModels.AdoptionApplication;
+import db_proj_be.BusinessLogic.EntityModels.ApplicationNotification;
+import db_proj_be.BusinessLogic.EntityModels.PetAvailabilityNotification;
 import db_proj_be.BusinessLogic.Services.AdopterService;
 import db_proj_be.BusinessLogic.Utilities.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,7 @@ public class AdopterAPI {
     }
 
     @GetMapping("fetch-applications/{id}")
+    @ResponseBody
     public ResponseEntity<List<AdoptionApplication>> fetchAdoptionApplications(@PathVariable("id") int adopterId) {
         Logger.logMsgFrom(this.getClass().getName(), "Adoption applications requested by adopter " + adopterId, -1);
 
@@ -62,6 +65,7 @@ public class AdopterAPI {
                 : new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
+
     @PostMapping("sign-in")
     @ResponseBody
     public ResponseEntity<Adopter> signIn(@RequestBody Adopter adopter) {
@@ -82,6 +86,30 @@ public class AdopterAPI {
         Adopter resultAdopterObject = this.adopterService.signUpLogic(adopter);
         return new ResponseEntity<>(resultAdopterObject,
                 (resultAdopterObject != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("fetch-app-notifications/{id}")
+    @ResponseBody
+    public ResponseEntity<List<ApplicationNotification>> fetchAppNotifications(@PathVariable("id") int adopterId) {
+        Logger.logMsgFrom(this.getClass().getName(), "App notifications requested by adopter " + adopterId, -1);
+
+        List<ApplicationNotification> applicationNotifications = this.adopterService.fetchAppNotifications(adopterId);
+
+        return (applicationNotifications != null)
+                ? new ResponseEntity<>(applicationNotifications, HttpStatus.OK)
+                : new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("fetch-pet-notifications/{id}")
+    @ResponseBody
+    public ResponseEntity<List<PetAvailabilityNotification>> fetchPetNotifications(@PathVariable("id") int adopterId) {
+        Logger.logMsgFrom(this.getClass().getName(), "Pet notifications requested by adopter " + adopterId, -1);
+
+        List<PetAvailabilityNotification> petNotifications = this.adopterService.fetchPetNotifications(adopterId);
+
+        return (petNotifications != null)
+                ? new ResponseEntity<>(petNotifications, HttpStatus.OK)
+                : new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 
 }

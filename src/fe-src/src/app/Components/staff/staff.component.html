@@ -40,6 +40,7 @@
           <li><a (click)="selectSection(1)">Manage Pets</a></li>
           <li><a (click)="selectSection(2)">Review Applications</a></li>
           <li><a (click)="selectSection(3)">Edit Profile</a></li>
+          <li><a (click)="selectSection(4)">Manage Document</a></li>
           <li><a (click)="signOut()">Sign Out</a></li>
           <!-- Add more navigation links as needed -->
         </ul>
@@ -205,6 +206,49 @@
               </tbody>
             </table>
           </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSection == 4">
+          <div class="pet-form-container">
+            <div class="pet-form">
+              <h3>{{ selectedPetView.name }}</h3>
+              <p><strong>Specie:</strong> {{ selectedPetView.specie }}</p>
+              <p><strong>Breed:</strong> {{ selectedPetView.breed }}</p>
+              <p><strong>Birthdate:</strong> {{ selectedPetView.birthdate }}</p>
+              <p><strong>Gender:</strong> {{ selectedPetView.gender ? 'Male' : 'Female' }}</p>
+              <p><strong>Health Status:</strong> {{ selectedPetView.healthStatus }}</p>
+              <p><strong>Behaviour:</strong> {{ selectedPetView.behaviour }}</p>
+              <p><strong>Description:</strong> {{ selectedPetView.description }}</p>
+              <p><strong>Shelter ID:</strong> {{ selectedPetView.shelterId }}</p>
+              <p><strong>Neutering:</strong> {{ selectedPetView.neutering ? 'Yes' : 'No' }}</p>
+              <p><strong>House Training:</strong> {{ selectedPetView.houseTraining ? 'Yes' : 'No' }}</p>
+              <p><strong>Vaccination:</strong> {{ selectedPetView.vaccination ? 'Yes' : 'No' }}</p>
+
+              <h2>Document List</h2>
+
+                <ul>
+                  <li *ngFor="let document of selectedDocuments" (click)="onDocumentSelected(document)">
+                    {{ document.name }}
+                  </li>
+                </ul>
+
+                <h3>Upload New Documents</h3>
+
+                <input type="file" (change)="onFilesSelected($event)" multiple />
+                <button (click)="onUpload()">Upload</button>
+
+            </div>
+
+            <div class="pet-list">
+              <ul>
+                <li *ngFor="let pet of availablePetsForAdoption" (click)="onSelectPetView(pet)">
+                  {{ pet.name }} (ID: {{ pet.id }})
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
         </ng-container>
 
       </div>

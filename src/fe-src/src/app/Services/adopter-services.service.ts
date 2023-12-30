@@ -5,6 +5,8 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { AdoptionApplication } from './../Entities/AdoptionApplication';
 import { Admin } from '../Entities/Admin';
 import { Adopter } from '../Entities/Adopter';
+import { ApplicationNotification } from '../Entities/ApplicationNotification';
+import { PetAvailabilityNotification } from '../Entities/PetAvailabilityNotification';
 
 @Injectable({
   providedIn: 'root'
@@ -92,5 +94,34 @@ export class AdopterServicesService {
 
   }
 
+  async fetchAppNotifications(adopterId: number) {
+    try {
+      return await firstValueFrom(this.http.get<ApplicationNotification[]>(
+        this.baseUrl + 'fetch-app-notifications/' + adopterId, 
+        {responseType: 'json'})
+        );
+    } catch (error) {
+      if(error instanceof HttpErrorResponse)
+        console.error('Fetching application notifications failed for adopter ' + adopterId);
+      else
+        console.error('Unexpected error occured')
+      return [];
+    }
+  }
+
+  async fetchPetNotifications(adopterId: number) {
+    try {
+      return await firstValueFrom(this.http.get<PetAvailabilityNotification[]>(
+        this.baseUrl + 'fetch-pet-notifications/' + adopterId, 
+        {responseType: 'json'})
+        );
+    } catch (error) {
+      if(error instanceof HttpErrorResponse)
+        console.error('Fetching pet availability notifications failed for adopter ' + adopterId);
+      else
+        console.error('Unexpected error occured')
+      return [];
+    }
+  }
 
 }
