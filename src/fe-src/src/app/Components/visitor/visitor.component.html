@@ -68,11 +68,13 @@
 
         <h2>Document List</h2>
 
-                <ul>
-                  <li *ngFor="let document of selectedDocuments" (click)="onDocumentSelected(document)">
-                    {{ document.name }}
-                  </li>
-                </ul>
+        <ul>
+          <ng-container *ngFor="let document of selectedDocuments">
+            <li *ngIf="pet.id === selectedPetView.id" (click)="onDocumentSelected(document)">
+              {{ document.name }}
+            </li>
+          </ng-container>
+        </ul>
         <hr class="pet-divider">
       </div>
     </div>
