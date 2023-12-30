@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UtilitiesService} from "../../Services/utilities.service";
 import { Pet } from '../../Entities/Pet';
+import { PetDocument } from 'src/app/Entities/PetDocument';
 import { HttpClient } from '@angular/common/http';
 import { VisitorServicesService } from 'src/app/Services/visitor-services.service';
 
@@ -12,6 +13,10 @@ import { VisitorServicesService } from 'src/app/Services/visitor-services.servic
 export class VisitorComponent implements OnInit{
 
   pets: any[] | null = [];
+
+  selectedDocuments: PetDocument[] | null = [];
+  currentDocument: PetDocument | null = null;
+  selectedPetView: Pet = new Pet(0, "", "", "", "", false, "", "", "", 1);
 
   visitorService: VisitorServicesService;
   searchParams: any = {
@@ -81,5 +86,29 @@ export class VisitorComponent implements OnInit{
     this.pets = await this.visitorService.getSearchedAndSortedPets(criteria, shelterLocation, orderedByColumns);
     console.log(this.pets);
   }
+
+  async onDocumentSelected(petDocument: PetDocument) {
+    this.currentDocument = petDocument;
+    try {
+      this.currentDocument = petDocument;
+      const blob = await this.visitorService.downloadFile(petDocument.id);
+
+      // Create a link element and trigger the download
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = petDocument.name;
+      link.click();
+
+    } catch (error) {
+      console.error('Error downloading document', error);
+      // Handle the error as needed (e.g., show an error message to the user)
+    }
+  }
+
+  async onSelectPetView(pet: Pet) {
+    this.selectedPetView = pet;
+    this.selectedDocuments = await this.visitorService.findByPetId(pet.id);
+  }
+
 
 }

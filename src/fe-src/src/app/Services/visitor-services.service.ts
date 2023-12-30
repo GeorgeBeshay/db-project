@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Pet } from '../Entities/Pet';
+import { PetDocument } from '../Entities/PetDocument';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import { Pet } from '../Entities/Pet';
 export class VisitorServicesService {
 
   visitorURL = 'http://localhost:8081/pasms-server/visitor-api/';
+  petDocumentURL = `http://localhost:8081/pasms-server/pet-document-api/`;
 
 
   constructor(private http: HttpClient) { }
@@ -36,5 +38,29 @@ export class VisitorServicesService {
         console.error('Error');
     }
     return null;
+  }
+
+  async downloadFile(documentId: number) {
+    try {
+      return await firstValueFrom (
+        this.http.get(`${this.petDocumentURL}download/${documentId}`, {responseType:'blob'})
+      );
+
+    } catch (error) {
+      console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
+      throw new Error('Error downloading document');
+    }
+  }
+
+  async findByPetId(petId: number) {
+    try {
+      return await firstValueFrom (
+        this.http.get<PetDocument[]>(`${this.petDocumentURL}findAllDocuments/${petId}`, {responseType:'json'})
+      );
+
+    } catch (error) {
+      console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
+      return null;
+    }
   }
 }
