@@ -104,11 +104,6 @@
 
         <ng-container *ngIf="selectedSection == 3">
           <form [formGroup]="shelterCreationForm" (ngSubmit)="createShelter()" class="form">
-              <label for="id">Shelter ID:</label>
-              <input type="number" id="id" formControlName="shelterId" placeholder="Enter the shelter ID" required>
-              <div class="error" *ngIf="shelterCreationForm.get('shelterId')?.invalid && (shelterCreationForm.get('shelterId')?.dirty || shelterCreationForm.get('shelterId')?.touched)">
-                Please enter a valid ID.
-              </div>
             <div class="form-group">
               <label for="name">Name:</label>
               <input type="text" id="Name" formControlName="shelterName" placeholder="Enter Shelter Name" required>
