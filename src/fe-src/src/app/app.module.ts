@@ -12,7 +12,8 @@ import { StaffComponent } from './Components/staff/staff.component';
 
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-
+import { DatePipe } from '@angular/common';
+import { AdopterInfoComponent } from './Components/adopter-info/adopter-info.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     VisitorComponent,
     AdminComponent,
     AdopterComponent,
-    StaffComponent
+    StaffComponent,
+    AdopterInfoComponent
   ],
     imports: [
         BrowserModule,
@@ -30,8 +32,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
         FormsModule,
       ReactiveFormsModule,
       HttpClientModule,
+      DatePipe,
     ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

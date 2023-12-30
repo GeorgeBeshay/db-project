@@ -1,8 +1,27 @@
-<div class="holder">
-  <!-- TODO: the condition need to be modified -->
-  <ng-container *ngIf="1 != 1; else loggedIn">
-    <div class="authentication">
-      Here the authentication
+<div class="container">
+
+  <h1>STAFF DASHBOARD</h1>
+
+  <ng-container *ngIf="staff == null; else loggedIn">
+    <div class="center">
+      <h2>Staff Sign In</h2>
+      <form [formGroup]="signInForm" (ngSubmit)="signIn()" class="form">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" formControlName="email" placeholder="Enter your Email" required>
+          <div class="error" *ngIf="signInForm.get('email')?.invalid && (signInForm.get('email')?.dirty || signInForm.get('email')?.touched)">
+            Please enter a valid Email.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" formControlName="password" placeholder="Enter your password" required>
+          <div class="error" *ngIf="signInForm.get('password')?.invalid && (signInForm.get('password')?.dirty || signInForm.get('password')?.touched)">
+            Please enter a password.
+          </div>
+        </div>
+        <button type="submit" [disabled]="signInForm.invalid">Sign In</button>
+      </form>
     </div>
   </ng-container>
 
@@ -10,15 +29,18 @@
   <ng-template #loggedIn>
     <div class="staff-main-page">
 
-      <div class="header">
-        <h1>Staff Dashboard</h1>
-      </div>
+<!--      <div class="header">-->
+<!--        <h1>Staff Dashboard</h1>-->
+<!--      </div>-->
 
 
       <div class="sidebar">
         <ul class="nav-links">
           <li><a (click)="selectSection(0)">Staff Home Page</a></li>
           <li><a (click)="selectSection(1)">Manage Pets</a></li>
+          <li><a (click)="selectSection(2)">Review Applications</a></li>
+          <li><a (click)="selectSection(3)">Edit Profile</a></li>
+          <li><a (click)="signOut()">Sign Out</a></li>
           <!-- Add more navigation links as needed -->
         </ul>
       </div>
@@ -30,7 +52,159 @@
         </ng-container>
 
         <ng-container *ngIf="selectedSection == 1">
-          This is the Pet Managment page!
+
+          <div class="pet-form-container">
+
+            <!-- pet-form -->
+            <form [formGroup]="petForm" class="pet-form">
+              <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" formControlName="name">
+                <div *ngIf="petForm.get('name')?.hasError('required') && petForm.get('name')?.touched" class="input-error">
+                  Name is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="specie">Specie:</label>
+                <input type="text" id="specie" formControlName="specie">
+                <div *ngIf="petForm.get('specie')?.hasError('required') && petForm.get('specie')?.touched" class="input-error">
+                  Species is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="breed">Breed:</label>
+                <input type="text" id="breed" formControlName="breed">
+                <div *ngIf="petForm.get('breed')?.hasError('required') && petForm.get('breed')?.touched" class="input-error">
+                  Breed is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="birthdate">Birthdate:</label>
+                <input type="date" id="birthdate" formControlName="birthdate">
+                <div *ngIf="petForm.get('birthdate')?.hasError('required') && petForm.get('birthdate')?.touched" class="input-error">
+                  Birthdate is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender" formControlName="gender">
+                  <option value="true">Male</option>
+                  <option value="false">Female</option>
+                </select>
+                <div *ngIf="petForm.get('gender')?.hasError('required') && petForm.get('gender')?.touched" class="input-error">
+                  Gender is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="healthStatus">Health Status:</label>
+                <input type="text" id="healthStatus" formControlName="healthStatus">
+                <div *ngIf="petForm.get('healthStatus')?.hasError('required') && petForm.get('healthStatus')?.touched" class="input-error">
+                  Health Status is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="behaviour">Behaviour:</label>
+                <input type="text" id="behaviour" formControlName="behaviour">
+                <div *ngIf="petForm.get('behaviour')?.hasError('required') && petForm.get('behaviour')?.touched" class="input-error">
+                  Behaviour is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" formControlName="description"></textarea>
+                <div *ngIf="petForm.get('description')?.hasError('required') && petForm.get('description')?.touched" class="input-error">
+                  Description is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="shelterId">Shelter ID:</label>
+                <input type="number" id="shelterId" formControlName="shelterId">
+                <div *ngIf="petForm.get('shelterId')?.hasError('required') && petForm.get('shelterId')?.touched" class="input-error">
+                  Shelter ID is required.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="neutering">Neutering:</label>
+                <input type="checkbox" id="neutering" formControlName="neutering">
+              </div>
+
+              <div class="form-group">
+                <label for="houseTraining">House Training:</label>
+                <input type="checkbox" id="houseTraining" formControlName="houseTraining">
+              </div>
+
+              <div class="form-group">
+                <label for="vaccination">Vaccination:</label>
+                <input type="checkbox" id="vaccination" formControlName="vaccination">
+              </div>
+
+              <div class="form-group">
+                <button mat-raised-button type="submit" [disabled]="!petForm.valid" (click)="onCreatePet()">Create Pet</button>
+              </div>
+
+              <div class="form-group">
+                <button mat-raised-button type="submit" [disabled]="!petForm.valid" (click)="onUpdatePet()">Update Pet</button>
+              </div>
+
+              <div class="form-group">
+                <button mat-raised-button type="submit" [disabled]="!petForm.valid" (click)="onDeletePet()">Delete Pet</button>
+              </div>
+            </form>
+
+            <div class="pet-list">
+              <ul>
+                <li *ngFor="let pet of availablePetsForAdoption" (click)="onSelectPet(pet)">
+                  {{ pet.name }} (ID: {{ pet.id }})
+                </li>
+              </ul>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSection == 2">
+          <div class="adoption-list">
+            <h2>Adoption Applications</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Adopter ID</th>
+                  <th>Pet ID</th>
+                  <th>Submission Date</th>
+                  <th>Experience</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let application of adoptionApplications">
+                  <td>{{ application.id }}</td>
+                  <td><a [routerLink]="['/adopter', application.adopterId]">{{ application.adopterId }}</a></td>
+                  <td>{{ application.petId }}</td>
+                  <td>{{ application.creationDate | date: 'short' }}</td>
+                  <td>{{ application.experience ? 'Yes' : 'No' }}</td>
+                  <td>{{ application.description }}</td>
+                  <td>{{ application.status }}</td>
+                  <td>
+                    <select [(ngModel)]="application.status" (change)="updateApplication(application)">
+                      <option value="APPROVED" [disabled]="application.status !== 'PENDING'">Approve</option>
+                      <option value="REJECTED" [disabled]="application.status !== 'PENDING'">Reject</option>
+                    </select>
+                </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </ng-container>
 
       </div>

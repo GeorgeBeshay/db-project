@@ -3,6 +3,8 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {firstValueFrom} from "rxjs";
 import {Admin} from "../Entities/Admin";
 import { Shelter } from '../Entities/Shelter';
+import {Staff} from "../Entities/Staff";
+
 
 @Injectable({
   providedIn: 'root'
@@ -19,22 +21,18 @@ export class AdminServicesService {
   async adminSignIn(admin: Admin) {
 
     try {
-
       return await firstValueFrom (
         this.http.post<Admin>(`${this.adminEndpointUrl}adminSignIn`, admin, {responseType:'json'})
       );
 
     } catch (error) {
-
-      if(error instanceof HttpErrorResponse)
-        console.error('Bad request');
-      else
-        console.error('Error');
-
+      console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
       return null
+
     }
 
   }
+
   async createShelter(shelter: Shelter) {
     
     try {
@@ -60,4 +58,21 @@ export class AdminServicesService {
   }
   return [];
 }
+
+
+  async createStaff(staff: Staff) {
+
+    try {
+      return await firstValueFrom (
+        this.http.post<Staff>(`${this.adminEndpointUrl}createStaff`, staff, {responseType:'json'})
+      );
+
+    } catch (error) {
+      console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
+      return null;
+
+    }
+  }
+
+
 }
