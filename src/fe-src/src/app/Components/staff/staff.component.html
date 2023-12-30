@@ -1,8 +1,27 @@
-<div class="holder">
-  <!-- TODO: the condition need to be modified -->
-  <ng-container *ngIf="1 != 1; else loggedIn">
-    <div class="authentication">
-      Here the authentication
+<div class="container">
+
+  <h1>STAFF DASHBOARD</h1>
+
+  <ng-container *ngIf="staff == null; else loggedIn">
+    <div class="center">
+      <h2>Staff Sign In</h2>
+      <form [formGroup]="signInForm" (ngSubmit)="signIn()" class="form">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" formControlName="email" placeholder="Enter your Email" required>
+          <div class="error" *ngIf="signInForm.get('email')?.invalid && (signInForm.get('email')?.dirty || signInForm.get('email')?.touched)">
+            Please enter a valid Email.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" formControlName="password" placeholder="Enter your password" required>
+          <div class="error" *ngIf="signInForm.get('password')?.invalid && (signInForm.get('password')?.dirty || signInForm.get('password')?.touched)">
+            Please enter a password.
+          </div>
+        </div>
+        <button type="submit" [disabled]="signInForm.invalid">Sign In</button>
+      </form>
     </div>
   </ng-container>
 
@@ -10,15 +29,19 @@
   <ng-template #loggedIn>
     <div class="staff-main-page">
 
-      <div class="header">
-        <h1>Staff Dashboard</h1>
-      </div>
+<!--      <div class="header">-->
+<!--        <h1>Staff Dashboard</h1>-->
+<!--      </div>-->
 
 
       <div class="sidebar">
         <ul class="nav-links">
           <li><a (click)="selectSection(0)">Staff Home Page</a></li>
           <li><a (click)="selectSection(1)">Manage Pets</a></li>
+          <li><a (click)="selectSection(2)">Review Applications</a></li>
+          <li><a (click)="selectSection(3)">Edit Profile</a></li>
+          <li><a (click)="selectSection(4)">Manage Document</a></li>
+          <li><a (click)="signOut()">Sign Out</a></li>
           <!-- Add more navigation links as needed -->
         </ul>
       </div>
@@ -146,6 +169,86 @@
               </ul>
             </div>
           </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSection == 2">
+          <div class="adoption-list">
+            <h2>Adoption Applications</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Adopter ID</th>
+                  <th>Pet ID</th>
+                  <th>Submission Date</th>
+                  <th>Experience</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let application of adoptionApplications">
+                  <td>{{ application.id }}</td>
+                  <td><a [routerLink]="['/adopter', application.adopterId]">{{ application.adopterId }}</a></td>
+                  <td>{{ application.petId }}</td>
+                  <td>{{ application.creationDate | date: 'short' }}</td>
+                  <td>{{ application.experience ? 'Yes' : 'No' }}</td>
+                  <td>{{ application.description }}</td>
+                  <td>{{ application.status }}</td>
+                  <td>
+                    <select [(ngModel)]="application.status" (change)="updateApplication(application)">
+                      <option value="APPROVED" [disabled]="application.status !== 'PENDING'">Approve</option>
+                      <option value="REJECTED" [disabled]="application.status !== 'PENDING'">Reject</option>
+                    </select>
+                </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSection == 4">
+          <div class="pet-form-container">
+            <div class="pet-form">
+              <h3>{{ selectedPetView.name }}</h3>
+              <p><strong>Specie:</strong> {{ selectedPetView.specie }}</p>
+              <p><strong>Breed:</strong> {{ selectedPetView.breed }}</p>
+              <p><strong>Birthdate:</strong> {{ selectedPetView.birthdate }}</p>
+              <p><strong>Gender:</strong> {{ selectedPetView.gender ? 'Male' : 'Female' }}</p>
+              <p><strong>Health Status:</strong> {{ selectedPetView.healthStatus }}</p>
+              <p><strong>Behaviour:</strong> {{ selectedPetView.behaviour }}</p>
+              <p><strong>Description:</strong> {{ selectedPetView.description }}</p>
+              <p><strong>Shelter ID:</strong> {{ selectedPetView.shelterId }}</p>
+              <p><strong>Neutering:</strong> {{ selectedPetView.neutering ? 'Yes' : 'No' }}</p>
+              <p><strong>House Training:</strong> {{ selectedPetView.houseTraining ? 'Yes' : 'No' }}</p>
+              <p><strong>Vaccination:</strong> {{ selectedPetView.vaccination ? 'Yes' : 'No' }}</p>
+
+              <h2>Document List</h2>
+
+                <ul>
+                  <li *ngFor="let document of selectedDocuments" (click)="onDocumentSelected(document)">
+                    {{ document.name }}
+                  </li>
+                </ul>
+
+                <h3>Upload New Documents</h3>
+
+                <input type="file" (change)="onFilesSelected($event)" multiple />
+                <button (click)="onUpload()">Upload</button>
+
+            </div>
+
+            <div class="pet-list">
+              <ul>
+                <li *ngFor="let pet of availablePetsForAdoption" (click)="onSelectPetView(pet)">
+                  {{ pet.name }} (ID: {{ pet.id }})
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
         </ng-container>
 
       </div>

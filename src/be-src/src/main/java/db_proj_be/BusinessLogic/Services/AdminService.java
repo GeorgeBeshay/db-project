@@ -86,6 +86,9 @@ public class AdminService {
             return null;
         }
 
+        // store the hash of the password, not the password itself.
+        staff.setPasswordHash(Hasher.hash(staff.getPasswordHash()));
+
         int createdStaffId = this.staffDAO.create(staff);
         if (createdStaffId < 1) {
             Logger.logMsgFrom(this.getClass().getName(), "Failed to create a staff record.", 1);
