@@ -32,7 +32,6 @@ export class AdminComponent implements OnInit {
       password: ['', Validators.required]
     });
     this.shelterCreationForm = this.formBuilder.group({
-      shelterId:['',Validators.required],
       shelterName:['',Validators.required],
       shelterLocation:['',Validators.required],
       shelterEmail:['',Validators.required],
@@ -68,13 +67,12 @@ export class AdminComponent implements OnInit {
   }
   async createShelter()
   {
-    const id = this.shelterCreationForm.get('shelterId')?.value;
     const name = this.shelterCreationForm.get('shelterName')?.value;
     const location = this.shelterCreationForm.get('shelterLocation')?.value;
     const email = this.shelterCreationForm.get('shelterEmail')?.value;
     const phone = this.shelterCreationForm.get('shelterPhone')?.value;
     const manager = this.shelterCreationForm.get('shelterManager')?.value;
-    let shelter = new Shelter(id,name,location,email,phone,manager);
+    let shelter = new Shelter(0,name,location,email,phone,manager);
     console.log(shelter);
     await this.adminService.createShelter(shelter);
   }
@@ -86,5 +84,4 @@ export class AdminComponent implements OnInit {
   async getAllAvailableShelters(){
     this.systemShelters = await this.adminService.getAllAvailableShelters();
   }
-
 }
