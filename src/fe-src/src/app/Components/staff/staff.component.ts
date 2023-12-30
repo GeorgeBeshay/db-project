@@ -4,6 +4,9 @@ import { StaffServicesService } from '../../Services/staff-services.service'
 import {UtilitiesService} from "../../Services/utilities.service";
 import { Pet } from '../../Entities/Pet'
 import {FormArray, FormControl, FormGroup, NonNullableFormBuilder, Validators, ReactiveFormsModule} from "@angular/forms";
+import { AdoptionApplication } from 'src/app/Entities/AdoptionApplication';
+import { ApplicationStatus } from 'src/app/Entities/ApplicationStatus';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-staff',
@@ -18,9 +21,10 @@ export class StaffComponent implements OnInit{
 
   petForm: FormGroup
   availablePetsForAdoption: Pet[] = [];
+  adoptionApplications: AdoptionApplication[] = [];
   selectedPet: Pet | null = null;
 
-  constructor(private http: HttpClient, private formBuilder: NonNullableFormBuilder) {
+  constructor(private http: HttpClient, private formBuilder: NonNullableFormBuilder, private datePipe: DatePipe) {
     this.selectedSection = 0
     this.staffService = new StaffServicesService(http);
     this.utilitiesService = new UtilitiesService();
@@ -44,6 +48,7 @@ export class StaffComponent implements OnInit{
 
   async ngOnInit() {
     this.loadAvailablePetsForAdoption()
+    this.loadApplications()
   }
 
   async selectSection (sectionIndex: number) {
@@ -123,4 +128,19 @@ export class StaffComponent implements OnInit{
     });
   }
 
+  async loadApplications() {
+    this.adoptionApplications = await this.staffService.fetchApplications();
+  }
+
+  async updateApplication(adoptionApplication: AdoptionApplication,) {
+    const confirmUpdate = window.confirm("Are you sure you want to update the application status ?")
+
+    if(confirmUpdate) {
+      adoptionApplication.closingDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd')!;
+      const result = await this.staffService.updateApplication(adoptionApplication)
+      console.log(result)
+    }
+    
+    this.loadApplications()
+  }
 }

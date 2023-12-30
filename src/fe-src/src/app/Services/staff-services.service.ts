@@ -1,8 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Pet } from '../Entities/Pet';
+import { AdoptionApplication } from '../Entities/AdoptionApplication';
+import { ApplicationStatus } from '../Entities/ApplicationStatus';
 import {Staff} from "../Entities/Staff";
 
 @Injectable({
@@ -10,7 +12,8 @@ import {Staff} from "../Entities/Staff";
 })
 export class StaffServicesService {
 
-  petURL = 'http://localhost:8081/pasms-server/pet-api/';
+  petURL = 'http://localhost:8081/pasms-server/pet-api/'
+  staffURL = 'http://localhost:8081/pasms-server/staff-api/'
   staffEndpointURL = 'http://localhost:8081/pasms-server/staff-api/';
 
   constructor(private http: HttpClient) { }
@@ -102,6 +105,56 @@ export class StaffServicesService {
     return false;
   }
 
+  async fetchApplications() {
+    try {
+      return await firstValueFrom(
+        this.http.get<AdoptionApplication[]>(this.staffURL + 'fetch-applications',
+        {responseType:'json'})
+      );
+    } catch (error) {
+      if(error instanceof HttpErrorResponse)
+        console.error('Error fetching adoption applications');
+
+      else
+        console.error('Error in client');
+    }
+    return []
+  }
+
+  async fetchApplicationsByStatus(status: ApplicationStatus) {
+    try {
+      let params = new HttpParams().set('status', status)
+      return await firstValueFrom(
+        this.http.get<AdoptionApplication[]>(this.staffURL + 'fetch-applications-by-status',
+        {params: params, responseType:'json'})
+      );
+    } catch (error) {
+      if(error instanceof HttpErrorResponse)
+        console.error('Error fetching adoption applications');
+
+      else
+        console.error('Error in client');
+    }
+    return []
+  }
+
+  async updateApplication(adoptionApplication: AdoptionApplication) {
+    try {
+      return await firstValueFrom(
+        this.http.put<boolean>(this.staffURL + 'update-application',
+        adoptionApplication,
+        {responseType:'json'})
+      );
+    } catch (error) {
+      if(error instanceof HttpErrorResponse)
+        console.error('Error updating adoption application');
+
+      else
+        console.error('Error in client');
+    }
+    return false
+  }
+  
   async updateStaff(staff: Staff) {
 
     try {
@@ -115,5 +168,4 @@ export class StaffServicesService {
 
     }
   }
-
 }

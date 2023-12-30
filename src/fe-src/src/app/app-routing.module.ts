@@ -6,6 +6,7 @@ import {StaffComponent} from "./Components/staff/staff.component";
 import {AdopterComponent} from "./Components/adopter/adopter.component";
 import {AdminComponent} from "./Components/admin/admin.component";
 import {VisitorComponent} from "./Components/visitor/visitor.component";
+import { AdopterInfoComponent } from './Components/adopter-info/adopter-info.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'admin', component: AdminComponent },
   { path: 'adopter', component: AdopterComponent },
   { path: 'staff', component: StaffComponent },
+  { path: 'adopter/:adopterId', component: AdopterInfoComponent },
   // Define routes for other components similarly
   { path: '', redirectTo: '/home', pathMatch: 'full' }, // Redirect to home by default
   { path: '**', redirectTo: '/home' } // Handle unknown routes
