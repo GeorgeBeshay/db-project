@@ -4,6 +4,13 @@
 
 The Pet Adoption and Shelter Management System, developed as part of the `CSE371 Database System` project at Alexandria University's Computer and Systems Engineering Department, is a comprehensive software solution aimed at streamlining the management of pet adoption and shelter operations. This system serves as a centralized platform, linking shelters, staff members, potential adopters, and pets to facilitate seamless pet adoption processes. By focusing on user-friendly interfaces and robust functionalities, it offers shelter staff tools to manage profiles efficiently, assists prospective adopters in submitting applications, and enables systematic approval management.
 
+
+## Application Frontend Display
+  
+  ![image](https://github.com/GeorgeBeshay/db-project/assets/90455303/2429a3d8-b995-421b-8169-e70e63bb3e4d)
+
+---
+
 ## Overview
 
 The project, is a comprehensive web application designed to facilitate animal adoption processes for shelters and potential adopters. It offers a user-friendly interface for shelter staff, adopters, administratos and visitors, aiming to streamline the adoption workflow and enhance user experience.
@@ -27,6 +34,7 @@ Utilizing modern web technologies and an intuitive user interface, the project a
 ### Common Features:
 - **Sign Up / Sign In**: Users can register or log in using their credentials.
 
+---
 
 ## Installation
 
