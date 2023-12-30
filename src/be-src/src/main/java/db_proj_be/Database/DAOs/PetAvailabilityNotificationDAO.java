@@ -96,6 +96,26 @@ public class PetAvailabilityNotificationDAO {
         }
     }
 
+    // Update the status of the given application notification in the database table
+    @Transactional
+    public boolean update(PetAvailabilityNotification petAvailabilityNotification) {
+        // Guard check for null
+        if (petAvailabilityNotification == null) {
+            throw new IllegalArgumentException("Argument can not be null");
+        }
+
+        try {
+            String sql = "UPDATE PET_AVAILABILITY_NOTIFICATION" +
+                    "SET status = ?" +
+                    " WHERE pet_id = ? and adopter_id = ?";
+            return jdbcTemplate.update(sql, petAvailabilityNotification.getStatus(),
+                    petAvailabilityNotification.getPetId(), petAvailabilityNotification.getAdopterId()) > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Delete the notification record with the
     // given primary key (pet_id, adopter_id)
     // Return true if a record was deleted,

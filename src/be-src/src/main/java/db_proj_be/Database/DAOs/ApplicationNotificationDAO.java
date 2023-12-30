@@ -95,6 +95,27 @@ public class ApplicationNotificationDAO {
         }
     }
 
+
+    // Update the status of the given application notification in the database table
+    @Transactional
+    public boolean update(ApplicationNotification applicationNotification) {
+        // Guard check for null
+        if (applicationNotification == null) {
+            throw new IllegalArgumentException("Argument can not be null");
+        }
+
+        try {
+            String sql = "UPDATE APPLICATION_NOTIFICATION" +
+                    "SET status = ?" +
+                    "WHERE application_id = ?";
+            return jdbcTemplate.update(sql, applicationNotification.getStatus(),
+                    applicationNotification.getApplicationId()) > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Delete the notification record with the
     // given primary key (adoption_app_id, adopter_id)
     // Return true if a record was deleted,
@@ -107,9 +128,8 @@ public class ApplicationNotificationDAO {
         }
 
         try {
-            String sql = "DELETE FROM APPLICATION_NOTIFICATION WHERE application_id = ? and adopter_id = ?";
-            return jdbcTemplate.update(sql, applicationNotification.getApplicationId(),
-                    applicationNotification.getAdopterId()) > 0;
+            String sql = "DELETE FROM APPLICATION_NOTIFICATION WHERE application_id = ?";
+            return jdbcTemplate.update(sql, applicationNotification.getApplicationId()) > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

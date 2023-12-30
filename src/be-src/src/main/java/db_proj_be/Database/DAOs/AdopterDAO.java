@@ -5,6 +5,8 @@ import db_proj_be.BusinessLogic.Utilities.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Data Access Object (DAO) for managing Adopter entities.
  * Extends the abstract DAO class to provide specific operations for Adopter entities.
@@ -13,6 +15,7 @@ public class AdopterDAO extends DAO<Adopter> {
 
     /**
      * Constructs an AdopterDAO instance with the provided JdbcTemplate.
+     *
      * @param jdbcTemplate The JdbcTemplate used for database interactions.
      */
     public AdopterDAO(JdbcTemplate jdbcTemplate) {
@@ -21,6 +24,7 @@ public class AdopterDAO extends DAO<Adopter> {
 
     /**
      * Updates an Adopter entity in the database.
+     *
      * @param adopter The Adopter entity to be updated.
      * @return True if the update is successful, false otherwise.
      * @throws IllegalArgumentException If adopter is null.
@@ -60,6 +64,38 @@ public class AdopterDAO extends DAO<Adopter> {
         } catch (Exception ex) {
             Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTER update(): " + ex.getMessage(), 1);
             return false; // Return a meaningful response indicating failure
+
+        }
+
+    }
+
+    @Transactional
+    public Adopter findByEmail(String email) {
+
+        try {
+            String sql = "SELECT * FROM ADOPTER WHERE email = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, email);
+
+        } catch (Exception e) {
+            Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTER findById(): " + e.getMessage(), 1);
+            return null;
+
+        }
+    }
+
+
+    @Transactional
+    public List<Integer> getAdoptersIDs() {
+
+        try {
+
+            String sql = "EXEC GetAdoptersIds";
+            return jdbcTemplate.queryForList(sql, Integer.class);
+
+        } catch (Exception e) {
+
+            Logger.logMsgFrom(this.getClass().getName(), "Error in getting adopters ids" + e.getMessage(), -1);
+            return null;
 
         }
 

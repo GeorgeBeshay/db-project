@@ -169,4 +169,23 @@ public class Pet implements Identifiable {
     public int hashCode() {
         return Objects.hash(id, name, specie, breed, birthdate, gender, healthStatus, behaviour, description, shelterId, neutering, houseTraining, vaccination);
     }
+
+    @Override
+    public String toString() {
+        return "Pet{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", specie='" + specie + '\'' +
+                ", breed='" + breed + '\'' +
+                ", birthdate='" + birthdate + '\'' +
+                ", gender=" + gender +
+                ", healthStatus='" + healthStatus + '\'' +
+                ", behaviour='" + behaviour + '\'' +
+                ", description='" + description + '\'' +
+                ", shelterId=" + shelterId +
+                ", neutering=" + neutering +
+                ", houseTraining=" + houseTraining +
+                ", vaccination=" + vaccination +
+                '}';
+    }
 }

@@ -1,0 +1,186 @@
+.container {
+  margin: 10px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  min-height: 600px;
+}
+
+.center {
+  text-align: left;
+  width: 50%;
+  padding: 20px;
+  margin: 5px auto;
+  background-color: var(--beige);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-height: 250px;
+}
+
+h1 {
+  width: 100%;
+  text-align: center;
+  color: var(--dark-brown);
+}
+
+.form-group {
+  margin-bottom: 15px;
+  max-width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="number"],
+input[type="email"],
+input[type="password"] {
+  width: calc(100% - 12px);
+  padding: 6px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.center button {
+  padding: 10px 25px;
+  background-color: var(--dark-brown);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center;
+  margin-left: 50%;
+  transform: translate(-50%);
+}
+
+button:hover {
+  padding: 12px 28px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+form div.error {
+  color: red;
+  margin-block: 5px;
+}
+
+.content-wrapper {
+  display: flex;
+  width: 80%;
+  margin-bottom: 100px;
+}
+
+.sidebar {
+  font-size: 20px;
+  align-self: flex-start;
+  width: 200px;
+  background-color: var(--dark-brown2);
+  border-right: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: white;
+}
+
+.sidebar a:hover {
+  color: var(--beige);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  min-width: 80%;
+  background-color: var(--dark-brown2);
+  min-height: 500px;
+  border-radius: 5px;
+  margin-left: 10px;
+  color: white;
+}
+
+/* Add this to your existing CSS or in a separate file */
+
+.create-staff {
+  background-color: var(--main-content-bg);
+  color: var(--dark-brown);
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.create-staff h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 25px;
+}
+
+.create-staff form {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.create-staff .form-group {
+  margin-bottom: 15px;
+}
+
+.create-staff label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.create-staff input[type="text"],
+.create-staff input[type="email"],
+.create-staff input[type="password"] {
+  width: calc(100% - 12px);
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.create-staff select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.create-staff button {
+  padding: 10px 25px;
+  background-color: var(--dark-brown);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-end;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.create-staff button:hover {
+  margin-right: 10px;
+  padding: 10px 28px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}

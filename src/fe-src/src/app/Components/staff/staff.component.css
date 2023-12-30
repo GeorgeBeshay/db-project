@@ -1,0 +1,247 @@
+.container {
+  margin: 10px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  min-height: 600px;
+}
+
+h1 {
+  width: 80%;
+  text-align: center;
+  color: var(--dark-brown);
+}
+
+.center {
+  text-align: left;
+  width: 50%;
+  padding: 20px;
+  margin: 5px auto;
+  background-color: var(--beige);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-height: 250px;
+}
+
+.center label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.center input[type="number"],
+.center input[type="email"],
+.center input[type="password"] {
+  width: calc(100% - 12px);
+  padding: 6px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  max-width: 100%;
+}
+
+.center button {
+  padding: 10px 25px;
+  background-color: var(--dark-brown);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center;
+  margin-left: 50%;
+  transform: translate(-50%);
+}
+
+.center button:hover {
+  padding: 12px 28px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.center form div.error {
+  color: red;
+  margin-block: 5px;
+}
+
+.center {
+  margin-bottom: 20px;
+}
+
+
+.holder {
+  display: flex;
+  width: 100%;
+}
+
+.form-group {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px; /* Adjust as needed for spacing between form groups */
+  max-width: 500px; /* Set a maximum width for the form groups */
+}
+
+label {
+  margin-bottom: 5px; /* Adjust as needed for spacing between label and input */
+}
+
+input {
+  width: 100%; /* Force the input fields to take full width within their container */
+  box-sizing: border-box; /* Include padding and border within the width */
+  padding: 5px;
+}
+
+.input-error {
+  color: red;
+}
+
+.authentication {
+  width: 100%;
+}
+
+.staff-main-page {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 0.2fr repeat(4, 1fr);
+  grid-column-gap: 0;
+  grid-row-gap: 0;
+}
+
+.staff-main-page .header {
+  grid-area: 1 / 1 / 2 / 7;
+}
+
+.staff-main-page .sidebar {
+  grid-area: 2 / 1 / 6 / 2;
+  background-color: var(--dark-brown);
+  padding: 20px;
+  border-radius: 10px 10px 0 0;
+}
+
+.staff-main-page .main-content {
+  grid-area: 2 / 2 / 6 / 7;
+  padding: 20px;
+  border-radius: 10px 0 0 0;
+}
+
+.staff-main-page .header h1 {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 40px;
+  padding: 5px;
+  width: fit-content;
+  margin: 15px auto;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Navigation links styles */
+.staff-main-page .sidebar .nav-links {
+  list-style: none;
+  padding: 0;
+}
+
+.staff-main-page .sidebar .nav-links li {
+  margin-bottom: 10px;
+}
+
+.staff-main-page .sidebar .nav-links a {
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+  color: var(--beige);
+}
+
+.staff-main-page .sidebar .nav-links a:hover {
+  background-color: var(--beige);
+  color: var(--dark-brown);
+  border-radius: 3px;
+}
+
+
+.staff-main-page .box {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-inline: 10px;
+}
+
+.staff-main-page .adoption-list {
+  max-width: 1000px;
+  margin: 20px auto;
+}
+
+.staff-main-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.staff-main-page th, td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.staff-main-page th {
+  background-color: #f2f2f2;
+}
+
+.pet-form-container {
+  display: flex;
+}
+
+.pet-form-container .pet-form {
+  flex: 1;
+  margin-right: 20px;
+  margin-bottom: 50px;
+}
+
+.pet-form-container .pet-list {
+  flex: 1;
+}
+
+.pet-form-container .pet-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.pet-form-container .pet-list li {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  transition: background-color 0.3s;
+}
+
+.pet-form-container .pet-list li:hover {
+  background-color: var(--dark-brown);
+  color: var(--beige);
+}
+
+.pet-form ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.pet-form li {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  transition: background-color 0.3s;
+}
+
+.pet-form li:hover {
+  background-color: var(--dark-brown);
+  color: var(--beige);
+}
+

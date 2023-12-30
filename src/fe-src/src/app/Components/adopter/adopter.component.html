@@ -1,0 +1,169 @@
+<div class="holder">
+
+<!--  <h1>ADOPTER DASHBOARD</h1>-->
+
+  <ng-container *ngIf="adopter == null; else loggedIn">
+    <div class="center">
+      <h2>Adopter Sign In</h2>
+      <form class="formGroup" [formGroup]="signInForm" (ngSubmit)="signIn()">
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" formControlName="email" required />
+        </div>
+        <div>
+          <label for="password">Password:</label>
+          <input type="password" id="password" formControlName="password" placeholder="Enter your password" required>
+        </div>
+        <div>
+          <button type="submit" [disabled]="!signInForm.valid">Sign In</button>
+        </div>
+      </form>
+
+
+      <form class="formGroup" [formGroup]="signUpForm" (ngSubmit)="signUp()">
+        <div>
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" formControlName="firstName" required />
+        </div>
+        <div>
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" formControlName="lastName" required />
+        </div>
+        <div>
+          <label for="emailSignUp">Email</label>
+          <input type="email" id="emailSignUp" formControlName="email" required />
+        </div>
+        <div>
+          <label for="phone">Phone</label>
+          <input type="text" id="phone" formControlName="phone" />
+        </div>
+        <div>
+          <label for="passwordSignUp">Password</label>
+          <input type="password" id="passwordSignUp" formControlName="password" required />
+        </div>
+        <div>
+          <label for="birthDate">Birth Date</label>
+          <input type="text" id="birthDate" formControlName="birthDate" required />
+        </div>
+        <div>
+          <label for="gender">Gender</label>
+          <input type="text" id="gender" formControlName="gender" required />
+        </div>
+        <div>
+          <label for="address">Address</label>
+          <input type="text" id="address" formControlName="address" required />
+        </div>
+        <div>
+          <button type="submit" [disabled]="!signUpForm.valid">Sign Up</button>
+        </div>
+      </form>
+
+
+    </div>
+  </ng-container>
+
+
+  <ng-template #loggedIn>
+    <div class="adopter-main-page">
+
+      <div class="header">
+        <h1>Adopter Dashboard</h1>
+      </div>
+
+
+      <div class="sidebar">
+        <ul class="nav-links">
+          <li><a (click)="selectSection(0)">Home Page</a></li>
+          <li><a (click)="selectSection(1)">New Application</a></li>
+          <li><a (click)="selectSection(2)">My Applications</a></li>
+          <li><a (click)="selectSection(3)">Notifications</a></li>
+          <ul><a (click)="signOut()">Sign Out</a></ul>
+        </ul>
+      </div>
+
+      <div class="main-content">
+
+        <ng-container *ngIf="currentSection == 0">
+          This is the adopter home page!
+        </ng-container>
+
+        <ng-container *ngIf="currentSection == 1">
+          <form class="formGroup" [formGroup]="applicationForm" (ngSubmit)="submitApplication()">
+            <div>
+              <label for="adopterId">Adopter ID</label>
+              <input type="text" id="adopterId" formControlName="adopterId" [attr.disabled]="true" />
+            </div>
+            <div>
+              <label for="petId">Pet ID:</label>
+              <input type="text" id="petId" formControlName="petId" [attr.disabled]="true" />
+            </div>
+            <div class="toggle-switch">
+              <label for="experience">Have Previous Experience With Pet Adoption </label>
+              <label>
+                <input type="checkbox" id="experience" formControlName="experience" />
+                <div class="slider"></div>
+              </label>
+            </div>
+            <div>
+              <label for="description">Description *</label>
+              <textarea id="description" formControlName="description" rows="4" placeholder="Tell us about your experience with pets, your living situation, and any preferences you have for the adoption."></textarea>
+            </div>
+            <div>
+              <button type="submit" [disabled]="!applicationForm.valid">Submit Application</button>
+            </div>
+          </form>
+        </ng-container>
+
+        <ng-container *ngIf="currentSection == 2">
+          <div class="adoption-list">
+            <h2>Adoption Applications</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Pet ID</th>
+                  <th>Submission Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let application of adoptionApplications">
+                  <td>{{ application.id }}</td>
+                  <td>{{ application.petId }}</td>
+                  <td>{{ application.creationDate | date: 'short' }}</td>
+                  <td>{{ application.status }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </ng-container>
+
+        <ng-container *ngIf="currentSection == 3">
+          <div>
+            <h2>Application Notifications</h2>
+            <ul class="not-list">
+              <!-- TODO update notification status in BE -->
+              <li *ngFor="let notification of applicationNotifications" (click)="currentSection = 2">
+                You have an update in the status of your application with id {{ notification.applicationId }}
+                <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
+                <!-- Display other notification details as needed -->
+              </li>
+            </ul>
+          
+            <h2>Pet Availability Notifications</h2>
+            <ul class="not-list">
+              <li *ngFor="let notification of petAvailabilityNotifications" (click)="currentSection = 0">
+                We just got a new pet whose id is {{ notification.petId }}. Don't miss to check it out!!
+                <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
+              </li>
+            </ul>
+          </div>
+        </ng-container>
+
+      </div>
+
+    </div>
+
+  </ng-template>
+</div>
