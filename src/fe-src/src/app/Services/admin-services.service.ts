@@ -47,7 +47,10 @@ export class AdminServicesService {
   }
   async getAllAvailableShelters(): Promise<Shelter[]> {
     try{ 
-      return await firstValueFrom(this.http.post<Shelter[]>(`${this.adminEndpointUrl}getAllAvailableShelters`,{},{responseType:'json'}));
+      console.log('getting all shelters');
+      return await firstValueFrom(
+        this.http.post<Shelter[]>(`${this.adminEndpointUrl}findAllShelters`,{},{responseType:'json'})
+        );
   }catch(error){
     if(error instanceof HttpErrorResponse){
       console.error('Bad Request');

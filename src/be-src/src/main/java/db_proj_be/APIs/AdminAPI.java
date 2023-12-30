@@ -67,7 +67,6 @@ public class AdminAPI {
     @ResponseBody
     public ResponseEntity<List<Shelter>> findAllShelters(){
         Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to display all shelters.",0);
-        List<Shelter> shelters = this.adminService.findAllShelters();
-        return new ResponseEntity<>(shelters,(shelters != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(this.adminService.findAllShelters(),HttpStatus.OK);
     }
 }
