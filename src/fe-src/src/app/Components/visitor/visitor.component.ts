@@ -56,7 +56,7 @@ export class VisitorComponent implements OnInit{
         continue;
       }
 
-      if (param === 'gender') {
+      if (param === 'gender' && this.searchParams[param]) {
         if (this.searchParams[param] == 'Male') {
           criteria[param] = true;
         }
