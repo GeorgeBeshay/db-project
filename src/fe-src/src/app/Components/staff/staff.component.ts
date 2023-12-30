@@ -6,6 +6,9 @@ import { Pet } from '../../Entities/Pet'
 import {FormArray, FormControl, FormGroup, NonNullableFormBuilder, Validators, ReactiveFormsModule} from "@angular/forms";
 import {Staff} from "../../Entities/Staff";
 import {Admin} from "../../Entities/Admin";
+import { AdoptionApplication } from 'src/app/Entities/AdoptionApplication';
+import { ApplicationStatus } from 'src/app/Entities/ApplicationStatus';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-staff',
@@ -21,10 +24,11 @@ export class StaffComponent implements OnInit{
 
   petForm: FormGroup
   availablePetsForAdoption: Pet[] = [];
+  adoptionApplications: AdoptionApplication[] = [];
   selectedPet: Pet | null = null;
   signInForm!: FormGroup;
 
-  constructor(private http: HttpClient, private formBuilder: NonNullableFormBuilder) {
+  constructor(private http: HttpClient, private formBuilder: NonNullableFormBuilder, private datePipe: DatePipe) {
     this.selectedSection = 0
     this.staffService = new StaffServicesService(http);
     this.utilitiesService = new UtilitiesService();
@@ -52,13 +56,16 @@ export class StaffComponent implements OnInit{
   }
 
   async ngOnInit() {
+    
     await this.loadAvailablePetsForAdoption();
+    this.loadApplications()
 
     let tempObj = sessionStorage.getItem("staffObject");
     if(tempObj != null) {
       this.staff = JSON.parse(tempObj);
       this.selectSection(0);
     }
+    
   }
 
   selectSection (sectionIndex: number) {
@@ -138,6 +145,22 @@ export class StaffComponent implements OnInit{
     });
   }
 
+  async loadApplications() {
+    this.adoptionApplications = await this.staffService.fetchApplications();
+  }
+
+  async updateApplication(adoptionApplication: AdoptionApplication,) {
+    const confirmUpdate = window.confirm("Are you sure you want to update the application status ?")
+
+    if(confirmUpdate) {
+      adoptionApplication.closingDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd')!;
+      const result = await this.staffService.updateApplication(adoptionApplication)
+      console.log(result)
+    }
+    
+    this.loadApplications()
+  }
+  
   async signIn() {
 
     const email = this.signInForm.get('email')?.value;

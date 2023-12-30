@@ -13,6 +13,7 @@ import { StaffComponent } from './Components/staff/staff.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { AdopterInfoComponent } from './Components/adopter-info/adopter-info.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { DatePipe } from '@angular/common';
     VisitorComponent,
     AdminComponent,
     AdopterComponent,
-    StaffComponent
+    StaffComponent,
+    AdopterInfoComponent
   ],
     imports: [
         BrowserModule,

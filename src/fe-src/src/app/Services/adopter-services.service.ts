@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, firstValueFrom } from 'rxjs';
 import { AdoptionApplication } from './../Entities/AdoptionApplication';
+import { Admin } from '../Entities/Admin';
+import { Adopter } from '../Entities/Adopter';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +43,21 @@ export class AdopterServicesService {
       else
         console.error('Unexpected error occured')
       return [];
+    }
+  }
+
+  async getById(adopterId: number) {
+    try {
+      return await firstValueFrom(this.http.get<Adopter>(
+        this.baseUrl + 'get-by-id/' + adopterId, 
+        {responseType: 'json'})
+        );
+    } catch (error) {
+      if(error instanceof HttpErrorResponse)
+        console.error('Fetching failed for info of adopter ' + adopterId);
+      else
+        console.error('Unexpected error occured')
+      return null;
     }
   }
 }
