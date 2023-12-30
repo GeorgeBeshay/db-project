@@ -163,15 +163,18 @@ export class AdopterComponent implements OnInit{
   }
 
   async loadApplications() {
-    this.adoptionApplications = await this.adopterService.fetchApplications(this.adopterId)
+    if(this.adopter?.id)
+      this.adoptionApplications = await this.adopterService.fetchApplications(this.adopter?.id)
   }
 
   async loadAppNotifications() {
-    this.applicationNotifications = await this.adopterService.fetchAppNotifications(this.adopterId)
+    if(this.adopter?.id)
+      this.applicationNotifications = await this.adopterService.fetchAppNotifications(this.adopter?.id)
   }
 
   async loadPetNotifications() {
-    this.petAvailabilityNotifications = await this.adopterService.fetchPetNotifications(this.adopterId)
+    if(this.adopter?.id)
+      this.petAvailabilityNotifications = await this.adopterService.fetchPetNotifications(this.adopter?.id)
   }
 
 }

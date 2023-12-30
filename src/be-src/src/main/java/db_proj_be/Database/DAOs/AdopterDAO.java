@@ -81,6 +81,7 @@ public class AdopterDAO extends DAO<Adopter> {
             return null;
 
         }
+    }
 
 
     @Transactional
