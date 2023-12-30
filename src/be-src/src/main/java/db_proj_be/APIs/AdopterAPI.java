@@ -50,6 +50,7 @@ public class AdopterAPI {
     }
 
     @GetMapping("get-by-id/{id}")
+    @ResponseBody
     public ResponseEntity<Adopter> findById(@PathVariable("id") int adopterId) {
         Logger.logMsgFrom(this.getClass().getName(), "Adopter requested with id " + adopterId, -1);
 
