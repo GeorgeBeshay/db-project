@@ -69,6 +69,8 @@ export class AdopterComponent implements OnInit{
     if(tempObj != null) {
       this.adopter = JSON.parse(tempObj);
       this.selectSection(0);
+      if (this.adopter?.id)
+        this.adopterId = this.adopter?.id;
     }
 
     this.loadApplications()
@@ -88,7 +90,7 @@ export class AdopterComponent implements OnInit{
 
       // Send to back
       const date = this.datePipe.transform(new Date(), 'yyyy-MM-dd')!;
-      const app = new AdoptionApplication(0, this.applicationForm.value.adopterId, this.applicationForm.value.petId, ApplicationStatus.Pending, 
+      const app = new AdoptionApplication(0, this.applicationForm.value.adopterId, this.applicationForm.value.petId, ApplicationStatus.Pending,
 
         this.applicationForm.value.description, this.applicationForm.value.experience, date);
       const result = await this.adopterService.submitApplication(app)
@@ -118,6 +120,8 @@ export class AdopterComponent implements OnInit{
       sessionStorage.setItem("adopterObject", JSON.stringify(this.adopter));
       await this.utilitiesService.sweetAlertSuccess("Successful Authentication.")
       this.selectSection(0);
+      if (this.adopter?.id)
+        this.adopterId = this.adopter?.id;
     } else {
       await this.utilitiesService.sweetAlertFailure("Authentication Failed.")
     }
@@ -145,6 +149,8 @@ export class AdopterComponent implements OnInit{
       sessionStorage.setItem("adopterObject", JSON.stringify(this.adopter));
       await this.utilitiesService.sweetAlertSuccess("Successful Authentication.")
       this.selectSection(0);
+      if (this.adopter?.id)
+        this.adopterId = this.adopter?.id;
     } else {
       await this.utilitiesService.sweetAlertFailure("Authentication Failed.")
     }
