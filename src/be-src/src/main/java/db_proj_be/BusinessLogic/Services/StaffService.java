@@ -57,9 +57,6 @@ public class StaffService {
             Logger.logMsgFrom(this.getClass().getName(), "Successfully updated adoption application with id "
                     + adoptionApplication.getId(), 0);
 
-            // Create a notification record
-            this.notifyAdopter(adoptionApplication.getId(), adoptionApplication.getAdopterId());
-
             // If approved, create adoption record
             if (adoptionApplication.getStatus() == ApplicationStatus.APPROVED)
                 return this.createAdoptionRecord(adoptionApplication.getPetId(), adoptionApplication.getAdopterId());
