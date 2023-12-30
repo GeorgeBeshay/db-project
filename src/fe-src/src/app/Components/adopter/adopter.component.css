@@ -170,7 +170,7 @@ input {
 
 .adopter-main-page th, td {
   padding: 10px;
-  text-align: left;
+  text-align: center;
   border: 1px solid #ddd;
 }
 
@@ -235,4 +235,32 @@ input {
 
 .adopter-main-page input:focus + .slider {
   box-shadow: 0 0 1px #2196F3;
+}
+
+.adopter-main-page .not-list {
+  flex: 1;
+}
+
+.adopter-main-page .not-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.adopter-main-page .not-list li {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  transition: background-color 0.3s;
+}
+
+.adopter-main-page .not-list li:hover {
+  background-color: var(--dark-brown);
+  color: var(--beige);
+}
+
+.adopter-main-page .not-list .notification-date {
+  color: #888;
+  font-size: 0.8em;
+  margin-top: 5px;
 }

@@ -83,7 +83,24 @@
         </ng-container>
 
         <ng-container *ngIf="currentSection == 3">
-          This is the notifications page!
+          <div>
+            <h2>Application Notifications</h2>
+            <ul class="not-list">
+              <li *ngFor="let notification of applicationNotifications" (click)="currentSection = 2">
+                You have an update in the status of your application with id {{ notification.applicationId }}
+                <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
+                <!-- Display other notification details as needed -->
+              </li>
+            </ul>
+          
+            <h2>Pet Availability Notifications</h2>
+            <ul class="not-list">
+              <li *ngFor="let notification of petAvailabilityNotifications" (click)="currentSection = 0">
+                We just got a new pet whose id is {{ notification.petId }}. Don't miss to check it out!!
+                <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
+              </li>
+            </ul>
+          </div>
         </ng-container>
 
       </div>
