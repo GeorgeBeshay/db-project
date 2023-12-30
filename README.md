@@ -6,9 +6,9 @@ The Pet Adoption and Shelter Management System, developed as part of the `CSE371
 
 ## Overview
 
-The project, [Project Name], is a comprehensive web application designed to facilitate animal adoption processes for shelters and potential adopters. It offers a user-friendly interface for shelter staf, adopters, administratos and visitors, aiming to streamline the adoption workflow and enhance user experience.
+The project, is a comprehensive web application designed to facilitate animal adoption processes for shelters and potential adopters. It offers a user-friendly interface for shelter staff, adopters, administratos and visitors, aiming to streamline the adoption workflow and enhance user experience.
 
-This platform enables potential adopters to browse available animals, submit adoption applications, and interact with shelter profiles. Additionally, shelter staff have access to an admin dashboard to manage animal listings, process adoption requests, and oversee the overall adoption process.
+This platform enables potential adopters to browse available animals, submit adoption applications, and interact with shelter profiles. Additionally, shelter staff have access to a dashboard to manage animal listings, process adoption requests, and oversee the overall adoption process.
 
 Utilizing modern web technologies and an intuitive user interface, the project aims to simplify animal adoption procedures, connect shelters with potential adopters, and promote the adoption of animals in need of loving homes.
 
