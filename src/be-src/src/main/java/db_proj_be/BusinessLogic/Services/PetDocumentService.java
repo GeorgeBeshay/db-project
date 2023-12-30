@@ -6,6 +6,7 @@ import db_proj_be.Database.DAOs.PetDocumentDAO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.*;
 
 @Service
 public class PetDocumentService {
@@ -47,6 +48,10 @@ public class PetDocumentService {
         }
 
         return petDocument;
+    }
+
+    public List<PetDocument> findDocumentsByPetId(int petId) {
+        return this.petDocumentDAO.findByPetId(petId);
     }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import java.util.*;
 
 @ComponentScan(basePackages = {"db_proj_be.BusinessLogic.Services", "db_proj_be.APIs"})
 @RestController
@@ -53,6 +54,12 @@ public class PetDocumentAPI {
                 .contentType(MediaType.parseMediaType(petDocument.getDocumentType()))
                 .contentLength(petDocument.getDocument().length)
                 .body(resource);
+    }
+
+    @GetMapping("findAllDocuments/{petId}")
+    @ResponseBody
+    public ResponseEntity<List<PetDocument>> findAllDocuments(@PathVariable("petId") int petId) {
+        return new ResponseEntity<>(this.petDocumentService.findDocumentsByPetId(petId), HttpStatus.OK);
     }
 
 }

@@ -52,7 +52,7 @@
     <div class="search-content">
       <h2>The resulted pets</h2>
 
-      <div *ngFor="let pet of pets" class="pet-card">
+      <div *ngFor="let pet of pets" class="pet-card" (click)="onSelectPetView(pet)">
         <h3>{{ pet.name }}</h3>
         <p><strong>Specie:</strong> {{ pet.specie }}</p>
         <p><strong>Breed:</strong> {{ pet.breed }}</p>
@@ -65,6 +65,16 @@
         <p><strong>Neutering:</strong> {{ pet.neutering ? 'Yes' : 'No' }}</p>
         <p><strong>House Training:</strong> {{ pet.houseTraining ? 'Yes' : 'No' }}</p>
         <p><strong>Vaccination:</strong> {{ pet.vaccination ? 'Yes' : 'No' }}</p>
+
+        <h2>Document List</h2>
+
+        <ul>
+          <ng-container *ngFor="let document of selectedDocuments">
+            <li *ngIf="pet.id === selectedPetView.id" (click)="onDocumentSelected(document)">
+              {{ document.name }}
+            </li>
+          </ng-container>
+        </ul>
         <hr class="pet-divider">
       </div>
     </div>

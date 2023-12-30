@@ -9,6 +9,7 @@ import {Admin} from "../../Entities/Admin";
 import { AdoptionApplication } from 'src/app/Entities/AdoptionApplication';
 import { ApplicationStatus } from 'src/app/Entities/ApplicationStatus';
 import { DatePipe } from '@angular/common';
+import { PetDocument } from 'src/app/Entities/PetDocument';
 
 @Component({
   selector: 'app-staff',
@@ -27,11 +28,16 @@ export class StaffComponent implements OnInit{
   adoptionApplications: AdoptionApplication[] = [];
   selectedPet: Pet | null = null;
   signInForm!: FormGroup;
+  selectedPetView: Pet = new Pet(0, "", "", "", "", false, "", "", "", 1);
+  selectedDocuments: PetDocument[] | null = [];
+  currentDocument: PetDocument | null = null;
+  selectedFiles!: File[];
 
   constructor(private http: HttpClient, private formBuilder: NonNullableFormBuilder, private datePipe: DatePipe) {
     this.selectedSection = 0
     this.staffService = new StaffServicesService(http);
     this.utilitiesService = new UtilitiesService();
+
 
     this.petForm = this.formBuilder.group({
       id: [],
@@ -56,7 +62,7 @@ export class StaffComponent implements OnInit{
   }
 
   async ngOnInit() {
-    
+
     await this.loadAvailablePetsForAdoption();
     this.loadApplications()
 
@@ -65,7 +71,7 @@ export class StaffComponent implements OnInit{
       this.staff = JSON.parse(tempObj);
       this.selectSection(0);
     }
-    
+
   }
 
   selectSection (sectionIndex: number) {
@@ -157,10 +163,10 @@ export class StaffComponent implements OnInit{
       const result = await this.staffService.updateApplication(adoptionApplication)
       console.log(result)
     }
-    
+
     this.loadApplications()
   }
-  
+
   async signIn() {
 
     const email = this.signInForm.get('email')?.value;
@@ -185,4 +191,38 @@ export class StaffComponent implements OnInit{
     sessionStorage.removeItem("staffObject");
   }
 
+
+  async onSelectPetView(pet: Pet) {
+    this.selectedPetView = pet;
+    this.selectedDocuments = await this.staffService.findByPetId(pet.id);
+  }
+
+  async onDocumentSelected(petDocument: PetDocument) {
+    this.currentDocument = petDocument;
+    try {
+      this.currentDocument = petDocument;
+      const blob = await this.staffService.downloadFile(petDocument.id);
+
+      // Create a link element and trigger the download
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = petDocument.name;
+      link.click();
+
+    } catch (error) {
+      console.error('Error downloading document', error);
+      // Handle the error as needed (e.g., show an error message to the user)
+    }
+  }
+
+  onFilesSelected(event: any): void {
+    this.selectedFiles = Array.from(event.target.files);
+  }
+
+  async onUpload() {
+    if (!this.selectedFiles || this.selectedFiles.length === 0) {
+      return;
+    }
+    await this.staffService.uploadFiles(this.selectedPetView.id, this.selectedFiles);
+  }
 }
