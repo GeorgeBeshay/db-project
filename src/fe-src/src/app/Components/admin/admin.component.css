@@ -20,8 +20,8 @@
 }
 
 h1 {
-  width: 80%;
-  text-align: left;
+  width: 100%;
+  text-align: center;
   color: var(--dark-brown);
 }
 
