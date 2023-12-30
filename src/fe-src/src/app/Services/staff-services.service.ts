@@ -1,17 +1,21 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { Pet } from '../Entities/Pet';
+import {Staff} from "../Entities/Staff";
 
 @Injectable({
   providedIn: 'root'
 })
 export class StaffServicesService {
 
-  petURL = 'http://localhost:8081/pasms-server/pet-api/'
+  petURL = 'http://localhost:8081/pasms-server/pet-api/';
+  staffEndpointURL = 'http://localhost:8081/pasms-server/staff-api/';
 
   constructor(private http: HttpClient) { }
+
+  //  ---------------------------- Service Methods ----------------------------
 
   async getUnAdoptedPets() {
 
@@ -97,4 +101,19 @@ export class StaffServicesService {
     }
     return false;
   }
+
+  async updateStaff(staff: Staff) {
+
+    try {
+      return await firstValueFrom (
+        this.http.post<Staff>(`${this.staffEndpointURL}updateStaff`, staff, {responseType:'json'})
+      );
+
+    } catch (error) {
+      console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
+      return null
+
+    }
+  }
+
 }

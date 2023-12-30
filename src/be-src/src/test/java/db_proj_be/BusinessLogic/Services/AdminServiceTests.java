@@ -12,20 +12,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = BeSrcApplication.class)
-public class AdminServicesTests {
+public class AdminServiceTests {
 
     private final JdbcTemplate jdbcTemplate;
-    private AdminServices adminServices;
+    private AdminService adminService;
     private AdminDAO adminDAO;
 
     @Autowired
-    public AdminServicesTests(JdbcTemplate jdbcTemplate) {
+    public AdminServiceTests(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @BeforeEach
     public void setUpBeforeEach() {
-        this.adminServices = new AdminServices(jdbcTemplate);
+        this.adminService = new AdminService(jdbcTemplate);
         this.adminDAO = new AdminDAO(jdbcTemplate);
     }
 
@@ -38,7 +38,7 @@ public class AdminServicesTests {
         Admin admin = null;
 
         // Act
-        Admin resultAdmin = this.adminServices.adminSignInLogic(admin);
+        Admin resultAdmin = this.adminService.signInLogic(admin);
 
         // Assert
         assertNull(resultAdmin);
@@ -62,7 +62,7 @@ public class AdminServicesTests {
         assertTrue(id >= 1);
 
         // Act
-        Admin actualAdmin = this.adminServices.adminSignInLogic(expectedAdmin);
+        Admin actualAdmin = this.adminService.signInLogic(expectedAdmin);
 
         // Assert
         expectedAdmin.setPasswordHash(Hasher.hash(passwordHash));
@@ -90,7 +90,7 @@ public class AdminServicesTests {
         assertTrue(id >= 1);
 
         // Act
-        Admin actualAdmin = this.adminServices.adminSignInLogic(expectedAdmin);
+        Admin actualAdmin = this.adminService.signInLogic(expectedAdmin);
 
         // Assert
         assertNull(actualAdmin);

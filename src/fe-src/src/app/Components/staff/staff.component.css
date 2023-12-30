@@ -41,7 +41,6 @@ input {
 
 .staff-main-page {
   display: grid;
-  height: 1000px;
   width: 100%;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: 0.2fr repeat(4, 1fr);
@@ -109,3 +108,37 @@ input {
   border-radius: 8px;
   margin-inline: 10px;
 }
+
+.pet-form-container {
+  display: flex;
+}
+
+.pet-form-container .pet-form {
+  flex: 1;
+  margin-right: 20px;
+  margin-bottom: 50px;
+}
+
+.pet-form-container .pet-list {
+  flex: 1;
+}
+
+.pet-form-container .pet-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.pet-form-container .pet-list li {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  transition: background-color 0.3s;
+}
+
+.pet-form-container .pet-list li:hover {
+  background-color: var(--dark-brown);
+  color: var(--beige);
+}
+
+
