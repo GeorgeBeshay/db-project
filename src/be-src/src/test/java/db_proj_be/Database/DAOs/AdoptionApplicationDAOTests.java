@@ -249,7 +249,7 @@ public class AdoptionApplicationDAOTests {
     @Test
     public void testAdoptionApplicationUpdatingValidObject() {
         // Arrange
-        int adopterId = this.createAdopter("john.Doe5@example.com");
+        int adopterId = this.createAdopter("john.Doe20@example.com");
         int petId = this.createPet();
         ApplicationStatus status = ApplicationStatus.PENDING;
         String description = "I need to adopt this pet.";
@@ -284,6 +284,7 @@ public class AdoptionApplicationDAOTests {
         assertEquals(fetchedAdoptionApp.getClosingDate(), closingDate);
 
         // clean
+        jdbcTemplate.update("DELETE FROM APPLICATION_NOTIFICATION WHERE application_id = ?", id);
         jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", id);
         jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", adopterId);
         jdbcTemplate.update("DELETE FROM PET WHERE id = ?", petId);
