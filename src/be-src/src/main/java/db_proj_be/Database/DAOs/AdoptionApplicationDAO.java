@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.List;
 
 public class AdoptionApplicationDAO extends DAO<AdoptionApplication> {
@@ -28,18 +27,6 @@ public class AdoptionApplicationDAO extends DAO<AdoptionApplication> {
             return jdbcTemplate.query(sql, getRowMapper(), status.getValue());
         } catch (Exception ex) {
             Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTION_APPLICATION findByStatus(): " + ex.getMessage(), 1);
-            return null;
-        }
-    }
-
-    // Return all records with the given creation date
-    @Transactional
-    public List<AdoptionApplication> findByDateCreated(Date date) {
-        try {
-            String sql = "SELECT * FROM ADOPTION_APPLICATION WHERE date = ?";
-            return jdbcTemplate.query(sql, getRowMapper(), date);
-        } catch (Exception ex) {
-            Logger.logMsgFrom(this.getClass().getName(), "Error in ADOPTION_APPLICATION findByDateCreated(): " + ex.getMessage(), 1);
             return null;
         }
     }
@@ -75,7 +62,7 @@ public class AdoptionApplicationDAO extends DAO<AdoptionApplication> {
         if (adoptionApplication == null) {
             throw new IllegalArgumentException("Can't update an entity given a null object ..");
         }
-        
+
         try {
             String sql = "UPDATE ADOPTION_APPLICATION SET " +
                     "adopter_id = ?, " +
