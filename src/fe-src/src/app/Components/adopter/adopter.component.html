@@ -10,7 +10,7 @@
       <form class="glbFormGroup" [formGroup]="signInForm" (ngSubmit)="signIn()">
         <div>
           <label class="glbLabel" for="email">Email</label>
-          <input class="glbInput" type="email" id="email" formControlName="email" required />
+          <input class="glbInput" type="email" id="email" formControlName="email" placeholder="john.doe@example.com" required />
         </div>
         <div>
           <label class="glbLabel" for="password">Password:</label>
@@ -46,11 +46,18 @@
         </div>
         <div>
           <label class="glbLabel" for="birthDate">Birth Date</label>
-          <input class="glbInput" type="text" id="birthDate" formControlName="birthDate" required />
+          <input class="glbInput" type="date" id="birthDate" formControlName="birthDate" required />
+<!--          <input class="glbInput" type="text" id="birthDate" formControlName="birthDate" required />-->
         </div>
         <div>
           <label class="glbLabel" for="gender">Gender</label>
-          <input class="glbInput" type="text" id="gender" formControlName="gender" required />
+<!--          <input class="glbInput" type="text" id="gender" formControlName="gender" required />-->
+          <select class="glbInput" id="gender" formControlName="gender" required>
+            <!-- Male option -->
+            <option value="male">Male</option>
+            <!-- Female option -->
+            <option value="female">Female</option>
+          </select>
         </div>
         <div>
           <label class="glbLabel" for="address">Address</label>

@@ -248,3 +248,6 @@ input {
   margin-top: 5px;
 }
 
+option {
+  font-size: 15px;
+}
