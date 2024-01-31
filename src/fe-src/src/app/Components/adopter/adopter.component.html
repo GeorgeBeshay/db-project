@@ -2,7 +2,7 @@
 
 <!--  <h1>ADOPTER DASHBOARD</h1>-->
 
-  <ng-container *ngIf="adopter == null; else loggedIn">
+  <ng-container *ngIf="adopter != null; else loggedIn">
     <div class="center">
 
       <h2>Adopter Sign In</h2>
@@ -150,24 +150,28 @@
         </ng-container>
 
         <ng-container *ngIf="currentSection == 3">
-          <div>
-            <h2>Application Notifications</h2>
-            <ul class="not-list">
-              <!-- TODO update notification status in BE -->
-              <li *ngFor="let notification of applicationNotifications" (click)="currentSection = 2">
-                You have an update in the status of your application with id {{ notification.applicationId }}
-                <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
-                <!-- Display other notification details as needed -->
-              </li>
-            </ul>
+          <div class="not-list">
+            <div class="notification-column">
+              <h2>Application Notifications</h2>
+              <ul>
+                <!-- TODO update notification status in BE -->
+                <li *ngFor="let notification of applicationNotifications" (click)="currentSection = 2">
+                  You have an update in the status of your application (ID: {{ notification.applicationId }})
+                  <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
+                  <!-- Display other notification details as needed -->
+                </li>
+              </ul>
+            </div>
 
-            <h2>Pet Availability Notifications</h2>
-            <ul class="not-list">
-              <li *ngFor="let notification of petAvailabilityNotifications" (click)="currentSection = 0">
-                We just got a new pet whose id is {{ notification.petId }}. Don't miss to check it out!!
-                <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
-              </li>
-            </ul>
+            <div class="notification-column">
+              <h2>Pet Availability Notifications</h2>
+              <ul>
+                <li *ngFor="let notification of petAvailabilityNotifications" (click)="currentSection = 0">
+                  We just got a new pet whose ID is {{ notification.petId }}. Don't miss to check it out!!
+                  <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
+                </li>
+              </ul>
+            </div>
           </div>
         </ng-container>
 
