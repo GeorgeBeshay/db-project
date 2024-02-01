@@ -2,7 +2,7 @@
 
 <!--  <h1>ADOPTER DASHBOARD</h1>-->
 
-  <ng-container *ngIf="adopter != null; else loggedIn">
+  <ng-container *ngIf="adopter == null; else loggedIn">
     <div class="center">
 
       <h2>Adopter Sign In</h2>
@@ -87,7 +87,7 @@
           <li><a (click)="selectSection(1)">New Application</a></li>
           <li><a (click)="selectSection(2)">My Applications</a></li>
           <li><a (click)="selectSection(3)">Notifications</a></li>
-          <ul><a (click)="signOut()">Sign Out</a></ul>
+          <li><a (click)="signOut()">Sign Out</a></li>
         </ul>
       </div>
 
@@ -158,7 +158,6 @@
                 <li *ngFor="let notification of applicationNotifications" (click)="currentSection = 2">
                   You have an update in the status of your application (ID: {{ notification.applicationId }})
                   <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
-                  <!-- Display other notification details as needed -->
                 </li>
               </ul>
             </div>
@@ -166,7 +165,8 @@
             <div class="notification-column">
               <h2>Pet Availability Notifications</h2>
               <ul>
-                <li *ngFor="let notification of petAvailabilityNotifications" (click)="currentSection = 0">
+                <!-- TODO diplay pet's details when clicked on -->
+                <li *ngFor="let notification of petAvailabilityNotifications">
                   We just got a new pet whose ID is {{ notification.petId }}. Don't miss to check it out!!
                   <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
                 </li>
