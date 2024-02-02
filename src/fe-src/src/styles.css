@@ -46,6 +46,7 @@ body::-webkit-scrollbar-track {
   font-weight: bold;
   margin-bottom: 5px;
   margin-top: 5px;
+  white-space: nowrap;
 }
 
 .glbButton {
@@ -74,3 +75,22 @@ body::-webkit-scrollbar-track {
   margin-bottom: 5px;
 }
 
+.glbInput option {
+  font-size: 15px;
+}
+
+/* Style the custom checkbox */
+.glbCheckbox {
+  width: 20px !important;
+  height: 20px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+/* Style the checked state of the custom checkbox */
+.glbCheckbox.checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
