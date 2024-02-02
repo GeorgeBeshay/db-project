@@ -234,8 +234,16 @@
 
                 <h3>Upload New Documents</h3>
 
-                <input type="file" (change)="onFilesSelected($event)" multiple />
-                <button (click)="onUpload()">Upload</button>
+                <div
+                  class="drop-container"
+                  [ngClass]="{'drag-over': dragOver}"
+                  (dragover)="onDragOver($event)"
+                  (dragleave)="onDragLeave($event)"
+                  (drop)="onDrop($event)">
+                  <p>Drop files here or</p>
+                  <input type="file" (change)="onFilesSelected($event)" multiple />
+                  <button (click)="onUpload()">Upload</button>
+                </div>
 
             </div>
 

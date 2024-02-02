@@ -32,6 +32,7 @@ export class StaffComponent implements OnInit{
   selectedDocuments: PetDocument[] | null = [];
   currentDocument: PetDocument | null = null;
   selectedFiles!: File[];
+  dragOver: boolean = false;
 
   constructor(private http: HttpClient, private formBuilder: NonNullableFormBuilder, private datePipe: DatePipe) {
     this.selectedSection = 0
@@ -225,4 +226,28 @@ export class StaffComponent implements OnInit{
     }
     await this.staffService.uploadFiles(this.selectedPetView.id, this.selectedFiles);
   }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dragOver = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dragOver = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dragOver = false;
+
+    const files = event.dataTransfer?.files;
+    if (files) {
+      this.selectedFiles = Array.from(files);
+    }
+  }
+
 }
