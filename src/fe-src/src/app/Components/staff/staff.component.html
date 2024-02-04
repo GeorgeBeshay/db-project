@@ -29,11 +29,6 @@
   <ng-template #loggedIn>
     <div class="staff-main-page">
 
-<!--      <div class="header">-->
-<!--        <h1>Staff Dashboard</h1>-->
-<!--      </div>-->
-
-
       <div class="sidebar">
         <ul class="nav-links">
           <li><a (click)="selectSection(0)">Staff Home Page</a></li>
@@ -57,42 +52,49 @@
           <div class="pet-form-container">
 
             <!-- pet-form -->
-            <form [formGroup]="petForm" class="pet-form">
-              <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" formControlName="name">
-                <div *ngIf="petForm.get('name')?.hasError('required') && petForm.get('name')?.touched" class="input-error">
+            <form class="glbFormGroup" [formGroup]="petForm">
+
+              <div>
+                <label class="glbLabel" for="name">Name:</label>
+                <input class="glbInput" type="text" id="name" formControlName="name">
+
+                <div
+                  *ngIf=
+                    "petForm.get('name')?.hasError('required')
+                    && petForm.get('name')?.touched"
+                  class="input-error">
                   Name is required.
                 </div>
+
               </div>
 
-              <div class="form-group">
-                <label for="specie">Specie:</label>
-                <input type="text" id="specie" formControlName="specie">
+              <div>
+                <label class="glbLabel" for="specie">Specie:</label>
+                <input class="glbInput" type="text" id="specie" formControlName="specie">
                 <div *ngIf="petForm.get('specie')?.hasError('required') && petForm.get('specie')?.touched" class="input-error">
                   Species is required.
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="breed">Breed:</label>
-                <input type="text" id="breed" formControlName="breed">
+              <div>
+                <label class="glbLabel" for="breed">Breed:</label>
+                <input class="glbInput" type="text" id="breed" formControlName="breed">
                 <div *ngIf="petForm.get('breed')?.hasError('required') && petForm.get('breed')?.touched" class="input-error">
                   Breed is required.
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="birthdate">Birthdate:</label>
-                <input type="date" id="birthdate" formControlName="birthdate">
+              <div>
+                <label class="glbLabel" for="birthdate">Birthdate:</label>
+                <input class="glbInput" type="date" id="birthdate" formControlName="birthdate">
                 <div *ngIf="petForm.get('birthdate')?.hasError('required') && petForm.get('birthdate')?.touched" class="input-error">
                   Birthdate is required.
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="gender">Gender:</label>
-                <select id="gender" formControlName="gender">
+              <div>
+                <label class="glbLabel" for="gender">Gender:</label>
+                <select class="glbInput" id="gender" formControlName="gender">
                   <option value="true">Male</option>
                   <option value="false">Female</option>
                 </select>
@@ -101,63 +103,63 @@
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="healthStatus">Health Status:</label>
-                <input type="text" id="healthStatus" formControlName="healthStatus">
+              <div>
+                <label class="glbLabel" for="healthStatus">Health Status:</label>
+                <input class="glbInput" type="text" id="healthStatus" formControlName="healthStatus">
                 <div *ngIf="petForm.get('healthStatus')?.hasError('required') && petForm.get('healthStatus')?.touched" class="input-error">
                   Health Status is required.
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="behaviour">Behaviour:</label>
-                <input type="text" id="behaviour" formControlName="behaviour">
+              <div>
+                <label class="glbLabel" for="behaviour">Behaviour:</label>
+                <input class="glbInput" type="text" id="behaviour" formControlName="behaviour">
                 <div *ngIf="petForm.get('behaviour')?.hasError('required') && petForm.get('behaviour')?.touched" class="input-error">
                   Behaviour is required.
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="description">Description:</label>
-                <textarea id="description" formControlName="description"></textarea>
+              <div>
+                <label class="glbLabel" for="description">Description:</label>
+                <textarea class="glbInput" id="description" formControlName="description"></textarea>
                 <div *ngIf="petForm.get('description')?.hasError('required') && petForm.get('description')?.touched" class="input-error">
                   Description is required.
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="shelterId">Shelter ID:</label>
-                <input type="number" id="shelterId" formControlName="shelterId">
+              <div>
+                <label class="glbLabel" for="shelterId">Shelter ID:</label>
+                <input class="glbInput" type="number" id="shelterId" formControlName="shelterId">
                 <div *ngIf="petForm.get('shelterId')?.hasError('required') && petForm.get('shelterId')?.touched" class="input-error">
                   Shelter ID is required.
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="neutering">Neutering:</label>
-                <input type="checkbox" id="neutering" formControlName="neutering">
+              <div class="checkboxHolder">
+                <label class="glbLabel" for="neutering">Neutering:</label>
+                <input class="glbCheckbox" type="checkbox" id="neutering" formControlName="neutering">
               </div>
 
-              <div class="form-group">
-                <label for="houseTraining">House Training:</label>
-                <input type="checkbox" id="houseTraining" formControlName="houseTraining">
+              <div class="checkboxHolder">
+                <label class="glbLabel" for="houseTraining">House Training:</label>
+                <input class="glbCheckbox" type="checkbox" id="houseTraining" formControlName="houseTraining">
               </div>
 
-              <div class="form-group">
-                <label for="vaccination">Vaccination:</label>
-                <input type="checkbox" id="vaccination" formControlName="vaccination">
+              <div class="checkboxHolder">
+                <label class="glbLabel" for="vaccination">Vaccination:</label>
+                <input class="glbCheckbox" type="checkbox" id="vaccination" formControlName="vaccination">
               </div>
 
-              <div class="form-group">
-                <button mat-raised-button type="submit" [disabled]="!petForm.valid" (click)="onCreatePet()">Create Pet</button>
+              <div>
+                <button class="glbButton" type="submit" [disabled]="!petForm.valid" (click)="onCreatePet()">Create Pet</button>
               </div>
 
-              <div class="form-group">
-                <button mat-raised-button type="submit" [disabled]="!petForm.valid" (click)="onUpdatePet()">Update Pet</button>
+              <div>
+                <button class="glbButton" type="submit" [disabled]="!petForm.valid" (click)="onUpdatePet()">Update Pet</button>
               </div>
 
-              <div class="form-group">
-                <button mat-raised-button type="submit" [disabled]="!petForm.valid" (click)="onDeletePet()">Delete Pet</button>
+              <div>
+                <button class="glbButton" type="submit" [disabled]="!petForm.valid" (click)="onDeletePet()">Delete Pet</button>
               </div>
             </form>
 
@@ -168,6 +170,7 @@
                 </li>
               </ul>
             </div>
+
           </div>
         </ng-container>
 
