@@ -1,15 +1,18 @@
 package db_proj_be.Database.DAOs;
 
 import db_proj_be.BusinessLogic.EntityModels.Pet;
+import db_proj_be.BusinessLogic.EntityModels.Shelter;
 import db_proj_be.besrc.BeSrcApplication;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = BeSrcApplication.class)
@@ -21,10 +24,12 @@ public class PetDAOTests {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private PetDAO petDAO;
+    private ShelterDAO shelterDAO;
 
     @BeforeAll
     public void setUp() {
         petDAO = new PetDAO(jdbcTemplate, namedParameterJdbcTemplate);
+        shelterDAO = new ShelterDAO(jdbcTemplate);
     }
 
     @Test
@@ -129,92 +134,6 @@ public class PetDAOTests {
 
         // Assert
         assertFalse(result);
-    }
-
-
-    @Test
-    @DisplayName ("PetDAO - sort pets successfully")
-    public void sortPetsSuccessfully() {
-        // Arrange
-        Pet pet1 = new Pet();
-        pet1.setName("Dog");
-        pet1.setSpecie("test");
-        pet1.setBreed("test");
-        pet1.setGender(true);
-        pet1.setBirthdate("1001-5-6");
-        pet1.setHealthStatus("test");
-
-        Pet pet2 = new Pet();
-        pet2.setName("Dog");
-        pet2.setSpecie("test");
-        pet2.setBreed("test");
-        pet2.setGender(true);
-        pet2.setBirthdate("1000-5-6");
-        pet2.setHealthStatus("test");
-
-        // Act
-        int petId1 = petDAO.create(pet1);
-        int petId2 = petDAO.create(pet2);
-
-        List<Pet> sortedPets = petDAO.sortByAttribute("birthdate", true);
-
-        // Assert
-        assertTrue(petId1 >= 1);
-        assertTrue(petId2 >= 1);
-        assertEquals(petId2, sortedPets.get(0).getId());
-        assertEquals(petId1, sortedPets.get(1).getId());
-        assertEquals("1000-05-06", sortedPets.get(0).getBirthdate());
-        assertEquals("1001-05-06", sortedPets.get(1).getBirthdate());
-
-        // Clean
-        jdbcTemplate.update("DELETE FROM PET WHERE id = ?", petId1);
-        jdbcTemplate.update("DELETE FROM PET WHERE id = ?", petId2);
-    }
-
-    @Test
-    @DisplayName ("PetDAO - sort pets descending successfully")
-    public void sortPetsSuccessfullyDescending() {
-        // Arrange
-        Pet pet1 = new Pet();
-        pet1.setName("Dog");
-        pet1.setSpecie("test");
-        pet1.setBreed("test");
-        pet1.setGender(true);
-        pet1.setBirthdate("3001-5-6");
-        pet1.setHealthStatus("test");
-
-        Pet pet2 = new Pet();
-        pet2.setName("Dog");
-        pet2.setSpecie("test");
-        pet2.setBreed("test");
-        pet2.setGender(true);
-        pet2.setBirthdate("3000-5-6");
-        pet2.setHealthStatus("test");
-
-        // Act
-        int petId1 = petDAO.create(pet1);
-        int petId2 = petDAO.create(pet2);
-
-        List<Pet> sortedPets = petDAO.sortByAttribute("birthdate", false);
-
-        // Assert
-        assertTrue(petId1 >= 1);
-        assertTrue(petId2 >= 1);
-        assertEquals(petId1, sortedPets.get(0).getId());
-        assertEquals(petId2, sortedPets.get(1).getId());
-        assertEquals("3001-05-06", sortedPets.get(0).getBirthdate());
-        assertEquals("3000-05-06", sortedPets.get(1).getBirthdate());
-
-        // Clean
-        jdbcTemplate.update("DELETE FROM PET WHERE id = ?", petId1);
-        jdbcTemplate.update("DELETE FROM PET WHERE id = ?", petId2);
-    }
-
-    @Test
-    @DisplayName ("PetDAO - sort pet failed by passing invalid attribute")
-    public void sortPetsFailed() {
-        // Act and Assert
-        assertThrows(IllegalArgumentException.class, () -> petDAO.sortByAttribute("test", true));
     }
 
     @Test
@@ -329,6 +248,18 @@ public class PetDAOTests {
     }
 
     @Test
+    @DisplayName ("PetDAO - filter pets failed with exception")
+    public void filterPetsFailedWithException() {
+        // Act
+        Map<String, Object> attributesToValue = new HashMap<>();
+        attributesToValue.put("No column", true);
+        List<Pet> pets = petDAO.findByAttributes(attributesToValue);
+
+        // Assert
+        assertNull(pets);
+    }
+
+    @Test
     @DisplayName ("PetDAO - filter pets failed by passing null map")
     public void filterPetsFailed() {
         // Act and Assert
@@ -426,18 +357,128 @@ public class PetDAOTests {
 
     }
 
-//    @Test
-//    public void test() {
-//        List<Integer> shelterIds = Arrays.asList(1, 2);
-//        Map<String, Object> criteria = new HashMap<>();
-//        criteria.put("specie", "dog");
-//        criteria.put("gender", true);
-//        List<String> columns = Arrays.asList("neutering", "house_training");
-//
-//        List<Pet> pets = petDAO.getPetsWithOptionsAndSorted(shelterIds, criteria, columns);
-//
-//        System.out.println(pets);
-//
-//    }
+    @Test
+    @DisplayName("Pet DAO Tests - Get unAdopted Pets")
+    public void testGetUnAdoptedPetsSuccessfully() {
+        // Arrange
+        int petId = -1;
+
+        Pet pet = new Pet();
+        pet.setName("Dog");
+        pet.setSpecie("test");
+        pet.setBreed("test");
+        pet.setGender(true);
+        pet.setHealthStatus("test");
+
+        // Add the record to the DB
+        petId = petDAO.create(pet);
+        assertTrue(petId >= 1);
+        pet.setId(petId);
+
+        // Act
+        List<Pet> unAdoptedPets = petDAO.getUnAdoptedPets();
+
+        // Assert
+        assertTrue(unAdoptedPets.size() >= 1);
+        assertTrue(unAdoptedPets.contains(pet));
+
+        // Clean
+        assertTrue(petDAO.delete(pet));
+
+    }
+
+    @Test
+    @DisplayName("Pet DAO Tests - Get unAdopted Pets failed with exception")
+    public void testGetUnAdoptedPetsFailedWithException() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        PetDAO newPetDAO = new PetDAO(mockJdbcTemplate, namedParameterJdbcTemplate);
+
+        when(mockJdbcTemplate.query(
+                anyString(),
+                any(newPetDAO.getRowMapper().getClass()))
+        )
+                .thenThrow(new DataAccessException("Simulated database error") {});
+        // Act
+        List<Pet> unAdoptedPets = newPetDAO.getUnAdoptedPets();
+
+        // Assert
+        assertNull(unAdoptedPets);
+    }
+
+    @Test
+    @DisplayName("Pet DAO Tests - Get pet with options and sorted")
+    public void testGetPetsWithOptionsAndSorted() {
+        // Arrange
+        int shelterId = -1, petId = -1, petId2 = -1;
+
+        Shelter shelter = new Shelter();
+        shelter.setName("shelter");
+        shelter.setEmail("shleter@gmail.com");
+        shelter.setPhone("0152");
+        shelter.setLocation("alex");
+
+        shelterId = shelterDAO.create(shelter);
+        shelter.setId(shelterId);
+
+        Pet pet = new Pet();
+        pet.setName("Dog");
+        pet.setSpecie("test");
+        pet.setBreed("test");
+        pet.setGender(true);
+        pet.setHealthStatus("test");
+        pet.setNeutering(false);
+        pet.setShelterId(shelterId);
+
+        Pet pet2 = new Pet();
+        pet2.setName("Dog");
+        pet2.setSpecie("test");
+        pet2.setBreed("test");
+        pet2.setGender(true);
+        pet2.setHealthStatus("test");
+        pet2.setShelterId(shelterId);
+
+        petId = petDAO.create(pet);
+        pet.setId(petId);
+
+        petId2 = petDAO.create(pet2);
+        pet2.setId(petId2);
+
+        // Act
+        List<Integer> shelterIds = new ArrayList<>(List.of(shelterId));
+        Map<String, Object> criteria = new HashMap<>();
+        criteria.put("specie", "test");
+        criteria.put("breed", "test");
+        List<String> orderBy = new ArrayList<>(List.of("neutering"));
+
+        List<Pet> fetchedPets = petDAO.getPetsWithOptionsAndSorted(shelterIds, criteria, orderBy);
+
+        // Assert
+        assertTrue(petId >= 1);
+        assertTrue(petId2 >= 1);
+        assertTrue(shelterId >= 1);
+        assertEquals(2, fetchedPets.size());
+        assertTrue(fetchedPets.contains(pet));
+        assertTrue(fetchedPets.contains(pet2));
+
+        // Clean
+        assertTrue(petDAO.delete(pet));
+        assertTrue(petDAO.delete(pet2));
+        assertTrue(shelterDAO.delete(shelter));
+
+    }
+
+    @Test
+    @DisplayName("Pet DAO Tests - Get pet with options and sorted with Exception")
+    public void testGetPetsWithOptionsAndSortedException() {
+        // Act
+        List<String> orderBy = new ArrayList<>(List.of("no column"));
+
+        List<Pet> fetchedPets = petDAO.getPetsWithOptionsAndSorted(null, null, orderBy);
+
+        // Assert
+        assertNull(fetchedPets);
+
+    }
 
 }

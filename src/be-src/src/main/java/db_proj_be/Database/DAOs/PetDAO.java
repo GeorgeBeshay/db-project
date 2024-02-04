@@ -40,30 +40,6 @@ public class PetDAO extends DAO<Pet> {
         }
     }
 
-    @Transactional
-    public List<Pet> sortByAttribute(String attribute, boolean ascending) {
-        List<String> allowedColumns = Arrays.asList("id", "name", "specie", "breed", "birthdate",
-                "gender", "health_status", "behaviour", "description", "shelter_id", "neutering",
-                "house_training", "vaccination");
-
-        if (!allowedColumns.contains(attribute)) {
-            throw new IllegalArgumentException("Invalid attribute: " + attribute);
-        }
-
-        try {
-            String sortOrder = ascending ? "ASC" : "DESC";
-
-            String sql = "SELECT * FROM PET ORDER BY " + attribute + " " + sortOrder;
-
-            return jdbcTemplate.query(sql, rowMapper);
-        }
-
-        catch (Exception e) {
-            Logger.logMsgFrom(this.getClass().getName(), "Error in sorting the pets: " + e.getMessage(), 1);
-            return null;
-        }
-    }
-
     /**
      * This function filter the pets according to the map attributesToValues
      * This function selects the pets that satisfy all equality conditions of attributes map
