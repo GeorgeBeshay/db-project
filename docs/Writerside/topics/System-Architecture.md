@@ -1,8 +1,6 @@
 # System Architecture
 
-## Introduction
-
-This section of the documentation provides detailed information considering the overall system architecture adopted, and the architecture patterns used. 
+This topic of the documentation provides detailed information considering the overall system architecture adopted, and the architecture patterns used. 
 Also it mentions the rationale behind the decisions / choices made.
 
 ## Layered Architecture

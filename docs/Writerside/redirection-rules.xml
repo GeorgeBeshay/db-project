@@ -18,4 +18,12 @@
         <description>Created after removal of "Overview" from Help Instance</description>
         <accepts>Overview.html</accepts>
     </rule>
+    <rule id="6683f33">
+        <description>Created after removal of "Example Component" from Help Instance</description>
+        <accepts>Example-Component.html</accepts>
+    </rule>
+    <rule id="47bee024">
+        <description>Created after removal of "Starter" from Help Instance</description>
+        <accepts>Starter.html</accepts>
+    </rule>
 </rules>
