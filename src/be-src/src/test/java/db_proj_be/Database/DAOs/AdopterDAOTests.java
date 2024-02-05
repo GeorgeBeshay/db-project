@@ -6,9 +6,11 @@ import db_proj_be.besrc.BeSrcApplication;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /*
  * Important Notes and Assumptions
@@ -275,6 +277,57 @@ public class AdopterDAOTests {
         jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id);
     }
 
+    @Test
+    @DisplayName("Adopter DAO Tests - Testing the catch block")
+    public void testAdopterUpdatingCatchBlock() {
+        // Arrange
+        String firstName = "John";
+        String lastName = "Doe";
+        String email = "john.doe@example.com";
+        String passwordHash = "hashedpassword";
+        String address = "123 Main St, City";
+
+        Adopter adopter = new Adopter();
+        adopter.setFirstName(firstName);
+        adopter.setLastName(lastName);
+        adopter.setEmail(email);
+        adopter.setPasswordHash(passwordHash);
+        adopter.setAddress(address);
+
+        // Add the record to the DB
+        int id = adopterDAO.create(adopter);
+        assertTrue(id >= 1);
+        adopter.setId(id);
+
+        String modifiedAddress = "86 Main St, Alexandria";
+        adopter.setAddress(modifiedAddress);
+
+        // Act
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.update(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+                ))
+                .thenThrow(new DataAccessException("Test DataAccessException") {});
+
+        this.adopterDAO = new AdopterDAO(mockJdbcTemplate);
+        boolean isSuccess = adopterDAO.update(adopter);
+
+        // Assert
+        assertFalse(isSuccess);
+
+        // clean
+        jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id);
+    }
+
     // ------------------------- Find Tests -------------------------
 
     @Test
@@ -369,6 +422,144 @@ public class AdopterDAOTests {
         // clean
         jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id);
         jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id2);
+    }
+
+    @Test
+    @DisplayName("Adopter DAO Tests - Find by valid email")
+    public void testAdopterFindByEmailValid() {
+        // Arrange
+        String firstName = "John";
+        String lastName = "Doe";
+        String email = "john.doe@example.com";
+        String passwordHash = "hashedpassword";
+        String address = "123 Main St, City";
+
+        Adopter adopter = new Adopter();
+        adopter.setFirstName(firstName);
+        adopter.setLastName(lastName);
+        adopter.setEmail(email);
+        adopter.setPasswordHash(passwordHash);
+        adopter.setAddress(address);
+
+        // Add the record to the DB
+        int id = adopterDAO.create(adopter);
+        assertTrue(id >= 1);
+        adopter.setId(id);
+
+        // Act
+        Adopter fetchedAdopter = adopterDAO.findByEmail(email);
+
+        // Assert
+        assertNotNull(fetchedAdopter);
+        assertEquals(adopter, fetchedAdopter);
+
+        // clean
+        jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id);
+    }
+
+    @Test
+    @DisplayName("Adopter DAO Tests - Find by invalid email")
+    public void testAdopterFindByEmailInvalid() {
+        // Arrange
+        String firstName = "John";
+        String lastName = "Doe";
+        String email = "john.doe@example.com";
+        String passwordHash = "hashedpassword";
+        String address = "123 Main St, City";
+
+        Adopter adopter = new Adopter();
+        adopter.setFirstName(firstName);
+        adopter.setLastName(lastName);
+        adopter.setEmail(email);
+        adopter.setPasswordHash(passwordHash);
+        adopter.setAddress(address);
+
+        // Add the record to the DB
+        int id = adopterDAO.create(adopter);
+        assertTrue(id >= 1);
+        adopter.setId(id);
+
+        // Act
+        Adopter fetchedAdopter = adopterDAO.findByEmail(email + "invalid");
+
+        // Assert
+        assertNull(fetchedAdopter);
+
+        // clean
+        jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id);
+    }
+
+    @Test
+    @DisplayName("Adopter DAO Tests - Get Adopter IDs")
+    public void testGetAdopterIDs() {
+        // Arrange
+        String firstName = "John";
+        String lastName = "Doe";
+        String email = "john.doe@example.com";
+        String passwordHash = "hashedpassword";
+        String address = "123 Main St, City";
+
+        Adopter adopter = new Adopter();
+        adopter.setFirstName(firstName);
+        adopter.setLastName(lastName);
+        adopter.setEmail(email);
+        adopter.setPasswordHash(passwordHash);
+        adopter.setAddress(address);
+
+        String firstName2 = "John";
+        String lastName2 = "Doe";
+        String email2 = "john.doe2@example.com";
+        String passwordHash2 = "hashedpassword";
+        String address2 = "123 Main St, City";
+
+        Adopter adopter2 = new Adopter();
+        adopter2.setFirstName(firstName2);
+        adopter2.setLastName(lastName2);
+        adopter2.setEmail(email2);
+        adopter2.setPasswordHash(passwordHash2);
+        adopter2.setAddress(address2);
+
+        // Add the record to the DB
+        int id = adopterDAO.create(adopter);
+        assertTrue(id >= 1);
+        adopter.setId(id);
+
+        int id2 = adopterDAO.create(adopter2);
+        assertTrue(id2 >= 1);
+        adopter2.setId(id2);
+
+        // Act
+        List<Integer> fetchedAdoptersIDs = adopterDAO.getAdoptersIDs();
+
+        // Assert
+        assertTrue(fetchedAdoptersIDs.size() >= 2);
+        assertTrue(fetchedAdoptersIDs.contains(adopter.getId()));
+        assertTrue(fetchedAdoptersIDs.contains(adopter2.getId()));
+
+        // clean
+        jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id);
+        jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", id2);
+    }
+
+    @Test
+    @DisplayName("Adopter DAO Tests - Get Adopter IDs (catch block)")
+    public void testGetAdopterIDsCatchBlock() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        // DataAccessException is an abstract class that can't be instantiated directly,
+        // so we can create an instance object on the fly that is of the same type.
+        when(mockJdbcTemplate.queryForList(anyString(), eq(Integer.class)))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.adopterDAO = new AdopterDAO(mockJdbcTemplate);
+
+        // Act
+        List<Integer> fetchedAdoptersIDs = adopterDAO.getAdoptersIDs();
+
+        // Assert
+        assertNull(fetchedAdoptersIDs);
     }
 
 }

@@ -1,14 +1,13 @@
-import { PetAvailabilityNotification } from './../../Entities/PetAvailabilityNotification';
-import { ApplicationNotification } from './../../Entities/ApplicationNotification';
-import { AdoptionApplication } from './../../Entities/AdoptionApplication';
+import { PetAvailabilityNotification } from '../../Entities/PetAvailabilityNotification';
+import { ApplicationNotification } from '../../Entities/ApplicationNotification';
+import { AdoptionApplication } from '../../Entities/AdoptionApplication';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApplicationStatus } from 'src/app/Entities/ApplicationStatus';
 import { AdopterServicesService } from 'src/app/Services/adopter-services.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import {UtilitiesService} from "../../Services/utilities.service";
-import {Admin} from "../../Entities/Admin";
 import {Adopter} from "../../Entities/Adopter";
 
 
@@ -136,8 +135,11 @@ export class AdopterComponent implements OnInit{
     const lastName = this.signUpForm.get('lastName')?.value;
     const phone = this.signUpForm.get('phone')?.value;
     const birthDate = this.signUpForm.get('birthDate')?.value;
-    const gender = this.signUpForm.get('gender')?.value;
+    const gender = (this.signUpForm.get('gender')?.value) === "male";
     const address = this.signUpForm.get('address')?.value;
+
+    console.log(birthDate)
+    console.log(gender)
 
 
     let tempAdopter = new Adopter(undefined, firstName, lastName, email, phone, password, birthDate, gender, address);

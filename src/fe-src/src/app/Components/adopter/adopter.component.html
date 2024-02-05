@@ -4,57 +4,67 @@
 
   <ng-container *ngIf="adopter == null; else loggedIn">
     <div class="center">
+
       <h2>Adopter Sign In</h2>
-      <form class="formGroup" [formGroup]="signInForm" (ngSubmit)="signIn()">
+
+      <form class="glbFormGroup" [formGroup]="signInForm" (ngSubmit)="signIn()">
         <div>
-          <label for="email">Email</label>
-          <input type="email" id="email" formControlName="email" required />
+          <label class="glbLabel" for="email">Email</label>
+          <input class="glbInput" type="email" id="email" formControlName="email" placeholder="john.doe@example.com" required />
         </div>
         <div>
-          <label for="password">Password:</label>
-          <input type="password" id="password" formControlName="password" placeholder="Enter your password" required>
+          <label class="glbLabel" for="password">Password:</label>
+          <input class="glbInput" type="password" id="password" formControlName="password" placeholder="Enter your password" required>
         </div>
         <div>
-          <button type="submit" [disabled]="!signInForm.valid">Sign In</button>
+          <button class="glbButton" type="submit" [disabled]="!signInForm.valid">Sign In</button>
         </div>
       </form>
 
+      <h2>Adopter Sign Up</h2>
 
-      <form class="formGroup" [formGroup]="signUpForm" (ngSubmit)="signUp()">
+      <form class="glbFormGroup" [formGroup]="signUpForm" (ngSubmit)="signUp()">
         <div>
-          <label for="firstName">First Name</label>
-          <input type="text" id="firstName" formControlName="firstName" required />
+          <label class="glbLabel" for="firstName">First Name</label>
+          <input class="glbInput" type="text" id="firstName" formControlName="firstName" required />
         </div>
         <div>
-          <label for="lastName">Last Name</label>
-          <input type="text" id="lastName" formControlName="lastName" required />
+          <label class="glbLabel" for="lastName">Last Name</label>
+          <input class="glbInput" type="text" id="lastName" formControlName="lastName" required />
         </div>
         <div>
-          <label for="emailSignUp">Email</label>
-          <input type="email" id="emailSignUp" formControlName="email" required />
+          <label class="glbLabel" for="emailSignUp">Email</label>
+          <input class="glbInput" type="email" id="emailSignUp" formControlName="email" required />
         </div>
         <div>
-          <label for="phone">Phone</label>
-          <input type="text" id="phone" formControlName="phone" />
+          <label class="glbLabel" for="phone">Phone</label>
+          <input class="glbInput" type="text" id="phone" formControlName="phone" />
         </div>
         <div>
-          <label for="passwordSignUp">Password</label>
-          <input type="password" id="passwordSignUp" formControlName="password" required />
+          <label class="glbLabel" for="passwordSignUp">Password</label>
+          <input class="glbInput" type="password" id="passwordSignUp" formControlName="password" required />
         </div>
         <div>
-          <label for="birthDate">Birth Date</label>
-          <input type="text" id="birthDate" formControlName="birthDate" required />
+          <label class="glbLabel" for="birthDate">Birth Date</label>
+          <input class="glbInput" type="date" id="birthDate" formControlName="birthDate" required />
+<!--          <input class="glbInput" type="text" id="birthDate" formControlName="birthDate" required />-->
         </div>
         <div>
-          <label for="gender">Gender</label>
-          <input type="text" id="gender" formControlName="gender" required />
+          <label class="glbLabel" for="gender">Gender</label>
+<!--          <input class="glbInput" type="text" id="gender" formControlName="gender" required />-->
+          <select class="glbInput" id="gender" formControlName="gender" required>
+            <!-- Male option -->
+            <option value="male">Male</option>
+            <!-- Female option -->
+            <option value="female">Female</option>
+          </select>
         </div>
         <div>
-          <label for="address">Address</label>
-          <input type="text" id="address" formControlName="address" required />
+          <label class="glbLabel" for="address">Address</label>
+          <input class="glbInput" type="text" id="address" formControlName="address" required />
         </div>
         <div>
-          <button type="submit" [disabled]="!signUpForm.valid">Sign Up</button>
+          <button class="glbButton" type="submit" [disabled]="!signUpForm.valid">Sign Up</button>
         </div>
       </form>
 
@@ -77,7 +87,7 @@
           <li><a (click)="selectSection(1)">New Application</a></li>
           <li><a (click)="selectSection(2)">My Applications</a></li>
           <li><a (click)="selectSection(3)">Notifications</a></li>
-          <ul><a (click)="signOut()">Sign Out</a></ul>
+          <li><a (click)="signOut()">Sign Out</a></li>
         </ul>
       </div>
 
@@ -140,24 +150,28 @@
         </ng-container>
 
         <ng-container *ngIf="currentSection == 3">
-          <div>
-            <h2>Application Notifications</h2>
-            <ul class="not-list">
-              <!-- TODO update notification status in BE -->
-              <li *ngFor="let notification of applicationNotifications" (click)="currentSection = 2">
-                You have an update in the status of your application with id {{ notification.applicationId }}
-                <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
-                <!-- Display other notification details as needed -->
-              </li>
-            </ul>
-          
-            <h2>Pet Availability Notifications</h2>
-            <ul class="not-list">
-              <li *ngFor="let notification of petAvailabilityNotifications" (click)="currentSection = 0">
-                We just got a new pet whose id is {{ notification.petId }}. Don't miss to check it out!!
-                <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
-              </li>
-            </ul>
+          <div class="not-list">
+            <div class="notification-column">
+              <h2>Application Notifications</h2>
+              <ul>
+                <!-- TODO update notification status in BE -->
+                <li *ngFor="let notification of applicationNotifications" (click)="currentSection = 2">
+                  You have an update in the status of your application (ID: {{ notification.applicationId }})
+                  <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
+                </li>
+              </ul>
+            </div>
+
+            <div class="notification-column">
+              <h2>Pet Availability Notifications</h2>
+              <ul>
+                <!-- TODO diplay pet's details when clicked on -->
+                <li *ngFor="let notification of petAvailabilityNotifications">
+                  We just got a new pet whose ID is {{ notification.petId }}. Don't miss to check it out!!
+                  <p class="notification-date">{{ notification.date | date: 'medium' }}</p>
+                </li>
+              </ul>
+            </div>
           </div>
         </ng-container>
 
