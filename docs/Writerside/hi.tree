@@ -10,9 +10,10 @@
     <toc-element topic="System-Architecture.md"/>
     <toc-element topic="Frontend.md"/>
     <toc-element topic="Backend.md">
-        <toc-element topic="Notifications-APIs-Services.md"/>
-        <toc-element topic="Adopter-APIs-Services.md"/>
         <toc-element topic="Admin-APIs-Services.md"/>
+        <toc-element topic="Adopter-APIs-Services.md"/>
+        <toc-element topic="Notifications-APIs-Services.md"/>
+        <toc-element topic="Visitor-APIs-Services.md"/>
     </toc-element>
     <toc-element topic="System-Database.md">
     </toc-element>
