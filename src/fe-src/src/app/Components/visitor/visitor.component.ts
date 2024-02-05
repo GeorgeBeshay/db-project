@@ -12,9 +12,10 @@ import { VisitorServicesService } from 'src/app/Services/visitor-services.servic
 })
 export class VisitorComponent implements OnInit{
 
-  pets: any[] | null = [];
+  pets: Pet[] = [];
+  utilitiesService: UtilitiesService;
 
-  selectedDocuments: PetDocument[] | null = [];
+  selectedDocuments: PetDocument[] = [];
   currentDocument: PetDocument | null = null;
   selectedPetView: Pet = new Pet(0, "", "", "", "", false, "", "", "", 1);
 
@@ -35,21 +36,10 @@ export class VisitorComponent implements OnInit{
 
   constructor(private http: HttpClient) {
     this.visitorService = new VisitorServicesService(http);
+    this.utilitiesService = new UtilitiesService();
   }
 
-  async ngOnInit() {
-    // let criteria = {
-    //   "specie": "dog",
-    //   "gender": true
-    // };
-
-    // let shelterLocation = "";
-
-    // let orderedByColumns = ["neutering"];
-
-    // let result = await this.visitorService.getSearchedAndSortedPets(criteria, shelterLocation, orderedByColumns);
-    // console.log(result);
-  }
+  async ngOnInit() {}
 
   async search() {
     let criteria: { [key: string]: string | boolean } = {}
@@ -101,7 +91,7 @@ export class VisitorComponent implements OnInit{
 
     } catch (error) {
       console.error('Error downloading document', error);
-      // Handle the error as needed (e.g., show an error message to the user)
+      this.utilitiesService.sweetAlertFailure("Error in downloading the file.")
     }
   }
 

@@ -37,7 +37,7 @@ export class VisitorServicesService {
       else
         console.error('Error');
     }
-    return null;
+    return [];
   }
 
   async downloadFile(documentId: number) {
@@ -60,7 +60,7 @@ export class VisitorServicesService {
 
     } catch (error) {
       console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
-      return null;
+      return [];
     }
   }
 }
