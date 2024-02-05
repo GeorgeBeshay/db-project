@@ -28,10 +28,11 @@ export class StaffComponent implements OnInit{
   adoptionApplications: AdoptionApplication[] = [];
   selectedPet: Pet | null = null;
   signInForm!: FormGroup;
-  selectedPetView: Pet = new Pet(0, "", "", "", "", false, "", "", "", 1);
-  selectedDocuments: PetDocument[] | null = [];
+  selectedPetView: Pet | null = null;
+  selectedDocuments: PetDocument[] = [];
   currentDocument: PetDocument | null = null;
-  selectedFiles!: File[];
+  selectedFiles: File[] = [];
+  dragOver: boolean = false;
 
   constructor(private http: HttpClient, private formBuilder: NonNullableFormBuilder, private datePipe: DatePipe) {
     this.selectedSection = 0
@@ -211,7 +212,7 @@ export class StaffComponent implements OnInit{
 
     } catch (error) {
       console.error('Error downloading document', error);
-      // Handle the error as needed (e.g., show an error message to the user)
+      this.utilitiesService.sweetAlertFailure("Error in downloading the file.")
     }
   }
 
@@ -221,8 +222,44 @@ export class StaffComponent implements OnInit{
 
   async onUpload() {
     if (!this.selectedFiles || this.selectedFiles.length === 0) {
+      this.utilitiesService.sweetAlertFailure("Please choose files.")
       return;
     }
-    await this.staffService.uploadFiles(this.selectedPetView.id, this.selectedFiles);
+
+    if (this.selectedPetView != null) {
+      let result = await this.staffService.uploadFiles(this.selectedPetView.id, this.selectedFiles);
+      if(result > 0) {
+        this.utilitiesService.sweetAlertSuccess("Files uploaded successfully.")
+        this.selectedFiles = [];
+        this.onSelectPetView(this.selectedPetView);
+      }
+      else {
+        this.utilitiesService.sweetAlertFailure("Error in uploading the files.")
+      }
+    }
   }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dragOver = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dragOver = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dragOver = false;
+
+    const files = event.dataTransfer?.files;
+    if (files) {
+      this.selectedFiles = Array.from(files);
+    }
+  }
+
 }

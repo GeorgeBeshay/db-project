@@ -20,6 +20,7 @@ public class PetDocumentService {
     }
 
     public int uploadFilesForPet(int petId, MultipartFile[] files) {
+        int count = 0;
         for (MultipartFile file : files) {
             PetDocument petDocument = new PetDocument();
             petDocument.setPetId(petId);
@@ -27,7 +28,8 @@ public class PetDocumentService {
             petDocument.setName(file.getOriginalFilename());
             try {
                 petDocument.setDocument(file.getBytes());
-                return petDocumentDAO.create(petDocument);
+                if (petDocumentDAO.create(petDocument) >= 1)
+                    count++;
             }
 
             catch (Exception e) {
@@ -36,7 +38,7 @@ public class PetDocumentService {
             }
         }
 
-        return -1;
+        return count;
     }
 
     public PetDocument downloadFile(int documentId) {
