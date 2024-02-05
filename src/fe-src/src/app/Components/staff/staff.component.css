@@ -256,3 +256,39 @@ input {
 .glbFormGroup .glbButton {
   width: 120px;
 }
+
+.drop-container {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.drop-container.drag-over {
+  border-color: #2196F3;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+
+.custom-file-input-label {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: var(--dark-brown);
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+
+#fileInput {
+  display: none; 
+}
+

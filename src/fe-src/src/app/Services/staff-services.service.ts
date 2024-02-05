@@ -224,7 +224,7 @@ export class StaffServicesService {
 
     } catch (error) {
       console.error(error instanceof HttpErrorResponse ? 'Bad request' : 'Error');
-      return null;
+      return [];
     }
   }
 
