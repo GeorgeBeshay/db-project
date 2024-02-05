@@ -3,80 +3,104 @@
   <!-- pet-search.component.html -->
 
   <div class="search-container">
-    <h2>Pet Search</h2>
+    <h2 class="title">Pet Search</h2>
 
-    <div class="search-form">
-      <label for="specie">Specie:</label>
-      <input type="text" id="specie" [(ngModel)]="searchParams.specie" />
+    <div class="glbFormGroup">
+      <div>
+        <label class="glbLabel" for="specie">Specie:</label>
+        <input class="glbInput" type="text" id="specie" [(ngModel)]="searchParams.specie" />
+      </div>
 
-      <label for="breed">Breed:</label>
-      <input type="text" id="breed" [(ngModel)]="searchParams.breed" />
+      <div>
+        <label class="glbLabel" for="breed">Breed:</label>
+        <input class="glbInput" type="text" id="breed" [(ngModel)]="searchParams.breed" />
+      </div>
 
-      <label for="birthdate">Birthdate:</label>
-      <input type="date" id="birthdate" [(ngModel)]="searchParams.birthdate" />
+      <div>
+        <label class="glbLabel" for="birthdate">Birthdate:</label>
+        <input class="glbInput" type="date" id="birthdate" [(ngModel)]="searchParams.birthdate" />
+      </div>
 
-      <label for="gender">Gender:</label>
-      <select id="gender" [(ngModel)]="searchParams.gender">
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
+      <div>
+        <label class="glbLabel" for="gender">Gender:</label>
+        <select class="glbInput" id="gender" [(ngModel)]="searchParams.gender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
 
-      <label for="shelterLocation">Shelter Location:</label>
-      <input type="text" id="shelterLocation" [(ngModel)]="searchParams.shelterLocation" />
+      <div>
+        <label class="glbLabel" for="shelterLocation">Shelter Location:</label>
+        <input class="glbInput" type="text" id="shelterLocation" [(ngModel)]="searchParams.shelterLocation" />
+      </div>
 
       <div class="sorting-options">
         <h3>Sort by:</h3>
 
-        <div class="toggle-switch">
-          <label for="neutering">Neutering:</label>
-          <input type="checkbox" id="neutering" [(ngModel)]="sorting.neutering" />
-          <span class="slider"></span>
+        <div class="checkboxHolder">
+          <label class="glbLabel" for="neutering">Neutering:</label>
+          <input class="glbCheckbox" type="checkbox" id="neutering" [(ngModel)]="sorting.neutering" />
         </div>
 
-        <div class="toggle-switch">
-          <label for="house_training">House Training:</label>
-          <input type="checkbox" id="house_training" [(ngModel)]="sorting.house_training" />
-          <span class="slider"></span>
+        <div class="checkboxHolder">
+          <label class="glbLabel" for="house_training">House Training:</label>
+          <input class="glbCheckbox" type="checkbox" id="house_training" [(ngModel)]="sorting.house_training" />
         </div>
 
-        <div class="toggle-switch">
-          <label for="vaccination">Vaccination:</label>
-          <input type="checkbox" id="vaccination" [(ngModel)]="sorting.vaccination" />
-          <span class="slider"></span>
+        <div class="checkboxHolder">
+          <label class="glbLabel" for="vaccination">Vaccination:</label>
+          <input class="glbCheckbox" type="checkbox" id="vaccination" [(ngModel)]="sorting.vaccination" />
         </div>
       </div>
 
-      <button (click)="search()">Search</button>
+      <div>
+        <button class="glbButton" (click)="search()">Search</button>
+      </div>
+
     </div>
 
-    <div class="search-content">
+    <div class="search-content" *ngIf="pets.length > 0">
       <h2>The resulted pets</h2>
 
-      <div *ngFor="let pet of pets" class="pet-card" (click)="onSelectPetView(pet)">
-        <h3>{{ pet.name }}</h3>
-        <p><strong>Specie:</strong> {{ pet.specie }}</p>
-        <p><strong>Breed:</strong> {{ pet.breed }}</p>
-        <p><strong>Birthdate:</strong> {{ pet.birthdate }}</p>
-        <p><strong>Gender:</strong> {{ pet.gender ? 'Male' : 'Female' }}</p>
-        <p><strong>Health Status:</strong> {{ pet.healthStatus }}</p>
-        <p><strong>Behaviour:</strong> {{ pet.behaviour }}</p>
-        <p><strong>Description:</strong> {{ pet.description }}</p>
-        <p><strong>Shelter ID:</strong> {{ pet.shelterId }}</p>
-        <p><strong>Neutering:</strong> {{ pet.neutering ? 'Yes' : 'No' }}</p>
-        <p><strong>House Training:</strong> {{ pet.houseTraining ? 'Yes' : 'No' }}</p>
-        <p><strong>Vaccination:</strong> {{ pet.vaccination ? 'Yes' : 'No' }}</p>
+      <div *ngFor="let pet of pets" class="pet-form" (click)="onSelectPetView(pet)">
+        <h3>
+          <i class="fas" [ngClass]="{'fa-chevron-down': selectedPetView && pet.id === selectedPetView.id, 'fa-chevron-right': selectedPetView == null || pet.id != selectedPetView.id}"></i>
+          Name: {{ pet.name }} (ID: {{ pet.id }})
+        </h3>
 
-        <h2>Document List</h2>
+        <div *ngIf="selectedPetView && pet.id === selectedPetView.id">
+          <p><strong>Specie:</strong> {{ pet.specie }}</p>
+          <p><strong>Breed:</strong> {{ pet.breed }}</p>
+          <p><strong>Birthdate:</strong> {{ pet.birthdate }}</p>
+          <p><strong>Gender:</strong> {{ pet.gender ? 'Male' : 'Female' }}</p>
+          <p><strong>Health Status:</strong> {{ pet.healthStatus }}</p>
+          <p><strong>Behaviour:</strong> {{ pet.behaviour }}</p>
+          <p><strong>Description:</strong> {{ pet.description }}</p>
+          <p><strong>Shelter ID:</strong> {{ pet.shelterId }}</p>
+          <p><strong>Neutering:</strong> {{ pet.neutering ? 'Yes' : 'No' }}</p>
+          <p><strong>House Training:</strong> {{ pet.houseTraining ? 'Yes' : 'No' }}</p>
+          <p><strong>Vaccination:</strong> {{ pet.vaccination ? 'Yes' : 'No' }}</p>
 
-        <ul>
-          <ng-container *ngFor="let document of selectedDocuments">
-            <li *ngIf="pet.id === selectedPetView.id" (click)="onDocumentSelected(document)">
-              {{ document.name }}
-            </li>
-          </ng-container>
-        </ul>
+          <div *ngIf="selectedDocuments.length > 0">
+            <h2>Document List</h2>
+
+            <ul>
+              <ng-container *ngFor="let document of selectedDocuments">
+                <li (click)="onDocumentSelected(document)">
+                  {{ document.name }}
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+
         <hr class="pet-divider">
       </div>
+
+    </div>
+
+    <div class="search-content" *ngIf="pets.length == 0">
+      <h2>No search results</h2>
     </div>
 </div>
 
