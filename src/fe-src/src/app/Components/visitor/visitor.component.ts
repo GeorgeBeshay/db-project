@@ -17,7 +17,7 @@ export class VisitorComponent implements OnInit{
 
   selectedDocuments: PetDocument[] = [];
   currentDocument: PetDocument | null = null;
-  selectedPetView: Pet = new Pet(0, "", "", "", "", false, "", "", "", 1);
+  selectedPetView: Pet | null= null;
 
   visitorService: VisitorServicesService;
   searchParams: any = {
@@ -96,8 +96,13 @@ export class VisitorComponent implements OnInit{
   }
 
   async onSelectPetView(pet: Pet) {
-    this.selectedPetView = pet;
-    this.selectedDocuments = await this.visitorService.findByPetId(pet.id);
+    if (this.selectedPetView != null && this.selectedPetView.id === pet.id) {
+      this.selectedPetView = null;
+    }
+    else {
+      this.selectedPetView = pet;
+      this.selectedDocuments = await this.visitorService.findByPetId(pet.id);
+    }
   }
 
 

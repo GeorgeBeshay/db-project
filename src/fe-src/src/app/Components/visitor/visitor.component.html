@@ -64,7 +64,7 @@
 
       <div *ngFor="let pet of pets" class="pet-form" (click)="onSelectPetView(pet)">
         <h3>
-          <i class="fas" [ngClass]="{'fa-chevron-down': selectedPetView && pet.id === selectedPetView.id, 'fa-chevron-right': pet.id != selectedPetView.id}"></i>
+          <i class="fas" [ngClass]="{'fa-chevron-down': selectedPetView && pet.id === selectedPetView.id, 'fa-chevron-right': selectedPetView == null || pet.id != selectedPetView.id}"></i>
           Name: {{ pet.name }} (ID: {{ pet.id }})
         </h3>
 
