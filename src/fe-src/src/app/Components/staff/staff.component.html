@@ -214,42 +214,58 @@
         <ng-container *ngIf="selectedSection == 4">
           <div class="pet-form-container">
             <div class="pet-form">
-              <h3>{{ selectedPetView.name }}</h3>
-              <p><strong>Specie:</strong> {{ selectedPetView.specie }}</p>
-              <p><strong>Breed:</strong> {{ selectedPetView.breed }}</p>
-              <p><strong>Birthdate:</strong> {{ selectedPetView.birthdate }}</p>
-              <p><strong>Gender:</strong> {{ selectedPetView.gender ? 'Male' : 'Female' }}</p>
-              <p><strong>Health Status:</strong> {{ selectedPetView.healthStatus }}</p>
-              <p><strong>Behaviour:</strong> {{ selectedPetView.behaviour }}</p>
-              <p><strong>Description:</strong> {{ selectedPetView.description }}</p>
-              <p><strong>Shelter ID:</strong> {{ selectedPetView.shelterId }}</p>
-              <p><strong>Neutering:</strong> {{ selectedPetView.neutering ? 'Yes' : 'No' }}</p>
-              <p><strong>House Training:</strong> {{ selectedPetView.houseTraining ? 'Yes' : 'No' }}</p>
-              <p><strong>Vaccination:</strong> {{ selectedPetView.vaccination ? 'Yes' : 'No' }}</p>
+              <div *ngIf="selectedPetView == null">
+                Please choose pet to edit its documents...
+              </div>
+              <div *ngIf="selectedPetView != null">
+                <h3>Name: {{ selectedPetView.name }}</h3>
+                <p><strong>Specie:</strong> {{ selectedPetView.specie }}</p>
+                <p><strong>Breed:</strong> {{ selectedPetView.breed }}</p>
+                <p><strong>Birthdate:</strong> {{ selectedPetView.birthdate }}</p>
+                <p><strong>Gender:</strong> {{ selectedPetView.gender ? 'Male' : 'Female' }}</p>
+                <p><strong>Health Status:</strong> {{ selectedPetView.healthStatus }}</p>
+                <p><strong>Behaviour:</strong> {{ selectedPetView.behaviour }}</p>
+                <p><strong>Description:</strong> {{ selectedPetView.description }}</p>
+                <p><strong>Shelter ID:</strong> {{ selectedPetView.shelterId }}</p>
+                <p><strong>Neutering:</strong> {{ selectedPetView.neutering ? 'Yes' : 'No' }}</p>
+                <p><strong>House Training:</strong> {{ selectedPetView.houseTraining ? 'Yes' : 'No' }}</p>
+                <p><strong>Vaccination:</strong> {{ selectedPetView.vaccination ? 'Yes' : 'No' }}</p>
 
-              <h2>Document List</h2>
+                <div *ngIf="selectedDocuments.length > 0">
+                  <h2>Document List</h2>
 
-                <ul>
-                  <li *ngFor="let document of selectedDocuments" (click)="onDocumentSelected(document)">
-                    {{ document.name }}
-                  </li>
-                </ul>
-
-                <h3>Upload New Documents</h3>
-
-                <div
-                  class="drop-container"
-                  [ngClass]="{'drag-over': dragOver}"
-                  (dragover)="onDragOver($event)"
-                  (dragleave)="onDragLeave($event)"
-                  (drop)="onDrop($event)">
-                  <p>Drop files here or</p>
-                  <input type="file" (change)="onFilesSelected($event)" multiple />
-                  <button (click)="onUpload()">Upload</button>
+                  <ul>
+                    <li *ngFor="let document of selectedDocuments" (click)="onDocumentSelected(document)">
+                      {{ document.name }}
+                    </li>
+                  </ul>
                 </div>
 
-            </div>
+                  <h3>Upload New Documents</h3>
 
+                  <div
+                    class="drop-container"
+                    [ngClass]="{'drag-over': dragOver}"
+                    (dragover)="onDragOver($event)"
+                    (dragleave)="onDragLeave($event)"
+                    (drop)="onDrop($event)">
+                    <p>Drop files here or</p>
+                    <label for="fileInput" class="custom-file-input-label">
+                      Choose Files
+                      <input type="file" id="fileInput" (change)="onFilesSelected($event)" multiple style="display: none;" />
+                    </label>
+                  </div>
+                  <button class="glbButton" (click)="onUpload()">Upload</button>
+
+                  <div *ngIf="selectedFiles.length > 0">
+                    <p>Selected files:</p>
+                    <ul>
+                      <li *ngFor="let file of selectedFiles">{{ file.name }}</li>
+                    </ul>
+                  </div>
+              </div>
+
+            </div>
             <div class="pet-list">
               <ul>
                 <li *ngFor="let pet of availablePetsForAdoption" (click)="onSelectPetView(pet)">
