@@ -1,5 +1,6 @@
 package db_proj_be.APIs;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import db_proj_be.BusinessLogic.EntityModels.Admin;
 import db_proj_be.BusinessLogic.EntityModels.Shelter;
 import db_proj_be.BusinessLogic.EntityModels.Staff;
@@ -8,6 +9,7 @@ import db_proj_be.BusinessLogic.Utilities.Hasher;
 import db_proj_be.Database.DAOs.AdminDAO;
 import db_proj_be.Database.DAOs.ShelterDAO;
 import db_proj_be.besrc.BeSrcApplication;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,6 +22,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -230,6 +234,333 @@ public class AdminAPITests {
         // Clean
         assertEquals(1, jdbcTemplate.update("DELETE FROM STAFF WHERE id = ?", staffId));
         assertEquals(1, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId));
+    }
+
+    @Test
+    @Disabled("Useless, not reaching the API actually.")
+    @DisplayName("Admin Creating Shelter - Null Shelter")
+    public void testCreateNullShelter() throws Exception {
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/createShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(null)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int status = result.getResponse().getStatus();
+
+        // Assert the status code
+        assertEquals("", result.getResponse().getContentAsString());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), status);
+    }
+
+    @Test
+    @DisplayName("Admin Creating Shelter - Valid Creation")
+    public void testCreateValidShelter() throws Exception {
+        // Arrange
+        int shelterId;
+        String shelterName = "SHELTER X";
+        String shelterLocation = "SHELTER X LOCATION";
+        String shelterPhone = "123456789";
+        String shelterEmail = "shelterX@testmail.com";
+
+        Shelter shelter = new Shelter();
+        shelter.setName(shelterName);
+        shelter.setLocation(shelterLocation);
+        shelter.setPhone(shelterPhone);
+        shelter.setEmail(shelterEmail);
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/createShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a shelter object
+        Shelter resultShelter = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Shelter.class);
+
+        // Assert the status code and shelter object
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(resultShelter);
+        shelterId = resultShelter.getId();
+        shelter.setId(shelterId);
+        assertEquals(shelter, resultShelter);
+
+        // Clean
+        assertEquals(1, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId));
+    }
+
+    @Test
+    @DisplayName("Admin Creating Shelter - Invalid Duplicate Creation")
+    public void testCreateInvalidDuplicateShelter() throws Exception {
+        // Arrange
+        int shelterId;
+        String shelterName = "SHELTER X";
+        String shelterLocation = "SHELTER X LOCATION";
+        String shelterPhone = "123456789";
+        String shelterEmail = "shelterX@testmail.com";
+
+        Shelter shelter = new Shelter();
+        shelter.setName(shelterName);
+        shelter.setLocation(shelterLocation);
+        shelter.setPhone(shelterPhone);
+        shelter.setEmail(shelterEmail);
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/createShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a shelter object
+        Shelter resultShelter = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Shelter.class);
+
+        // Assert the status code and Admin object
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(resultShelter);
+        shelterId = resultShelter.getId();
+        shelter.setId(shelterId);
+        assertEquals(shelter, resultShelter);
+
+        // Create a duplicate
+        result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/createShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter)))
+                .andReturn();
+
+        // Retrieve the response status code
+        status = result.getResponse().getStatus();
+
+        // Assert the status code
+        assertEquals("", result.getResponse().getContentAsString());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), status);
+
+        // Clean
+        assertEquals(1, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId));
+    }
+
+    @Test
+    @DisplayName("Admin Finding All Shelters")
+    public void testFindAllShelters() throws Exception {
+        // Arrange
+        int shelterId;
+        String shelterName = "SHELTER X";
+        String shelterLocation = "SHELTER X LOCATION";
+        String shelterPhone = "123456789";
+        String shelterEmail = "shelterX@testmail.com";
+
+        Shelter shelter = new Shelter();
+        shelter.setName(shelterName);
+        shelter.setLocation(shelterLocation);
+        shelter.setPhone(shelterPhone);
+        shelter.setEmail(shelterEmail);
+
+        int shelterId2;
+        String shelterName2 = "SHELTER Y";
+        String shelterLocation2 = "SHELTER Y LOCATION";
+        String shelterPhone2 = "123456789";
+        String shelterEmail2 = "shelterY@testmail.com";
+
+        Shelter shelter2 = new Shelter();
+        shelter2.setName(shelterName2);
+        shelter2.setLocation(shelterLocation2);
+        shelter2.setPhone(shelterPhone2);
+        shelter2.setEmail(shelterEmail2);
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/createShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a shelter object
+        Shelter resultShelter = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Shelter.class);
+
+        // Assert the status code and shelter object
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(resultShelter);
+        shelterId = resultShelter.getId();
+        shelter.setId(shelterId);
+        assertEquals(shelter, resultShelter);
+
+        // Act
+        result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/createShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter2)))
+                .andReturn();
+
+        // Retrieve the response status code
+        status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a shelter object
+        resultShelter = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Shelter.class);
+
+        // Assert the status code and shelter object
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(resultShelter);
+        shelterId2 = resultShelter.getId();
+        shelter2.setId(shelterId2);
+        assertEquals(shelter2, resultShelter);
+
+        // Act
+        result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/findAllShelters")
+                        .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+        // Retrieve the response status code
+        status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a list of shelters
+        List<Shelter> sheltersFound = new ObjectMapper().readValue(result.getResponse().getContentAsString(), new TypeReference<List<Shelter>>() {});
+
+
+        // Assert the status code and shelters found.
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(sheltersFound);
+        assertTrue(sheltersFound.size() >= 2);
+        assertTrue(sheltersFound.contains(shelter));
+        assertTrue(sheltersFound.contains(shelter2));
+
+        // Clean
+        assertEquals(1, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId));
+        assertEquals(1, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId2));
+    }
+
+    @Test
+    @DisplayName("Admin Deleting a Valid Shelter")
+    public void testDeleteValidShelter() throws Exception {
+        // Arrange
+        int shelterId;
+        String shelterName = "SHELTER X";
+        String shelterLocation = "SHELTER X LOCATION";
+        String shelterPhone = "123456789";
+        String shelterEmail = "shelterX@testmail.com";
+
+        Shelter shelter = new Shelter();
+        shelter.setName(shelterName);
+        shelter.setLocation(shelterLocation);
+        shelter.setPhone(shelterPhone);
+        shelter.setEmail(shelterEmail);
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/createShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a shelter object
+        Shelter resultShelter = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Shelter.class);
+
+        // Assert the status code and shelter object
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(resultShelter);
+        shelterId = resultShelter.getId();
+        shelter.setId(shelterId);
+        assertEquals(shelter, resultShelter);
+
+        // Act
+        result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/deleteShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter)))
+                .andReturn();
+
+        // Retrieve the response status code
+        status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a shelter object
+        Boolean deletionResult = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Boolean.class);
+
+        // Assert the status code and shelter object
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(deletionResult);
+        assertTrue(deletionResult);
+
+        // Clean
+        assertEquals(0, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId));
+    }
+
+    @Test
+    @DisplayName("Admin Deleting a Shelter - Invalid Deletion")
+    public void testDeleteInvalidShelter() throws Exception {
+        // Arrange
+        int shelterId;
+        String shelterName = "SHELTER X";
+        String shelterLocation = "SHELTER X LOCATION";
+        String shelterPhone = "123456789";
+        String shelterEmail = "shelterX@testmail.com";
+
+        Shelter shelter = new Shelter();
+        shelter.setName(shelterName);
+        shelter.setLocation(shelterLocation);
+        shelter.setPhone(shelterPhone);
+        shelter.setEmail(shelterEmail);
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/createShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a shelter object
+        Shelter resultShelter = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Shelter.class);
+
+        // Assert the status code and shelter object
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(resultShelter);
+        shelterId = resultShelter.getId();
+        shelter.setId(shelterId);
+        assertEquals(shelter, resultShelter);
+
+        // Act
+        result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/deleteShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter)))
+                .andReturn();
+
+        // Retrieve the response status code
+        status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a shelter object
+        Boolean deletionResult = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Boolean.class);
+
+        // Assert the status code and shelter object
+        assertEquals(HttpStatus.OK.value(), status);
+        assertNotNull(deletionResult);
+        assertTrue(deletionResult);
+
+        // Delete again (should fail)
+        result = mockMvc.perform(post("http://localhost:8081/pasms-server/admin-api/deleteShelter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(shelter)))
+                .andReturn();
+
+        // Retrieve the response status code
+        status = result.getResponse().getStatus();
+
+        // Retrieve the response content as a shelter object
+        deletionResult = new ObjectMapper().readValue(result.getResponse().getContentAsString(), Boolean.class);
+
+        // Assert the status code and shelter object
+        assertEquals(HttpStatus.BAD_REQUEST.value(), status);
+        assertNotNull(deletionResult);
+        assertFalse(deletionResult);
+
+        // Clean
+        assertEquals(0, jdbcTemplate.update("DELETE FROM SHELTER WHERE id = ?", shelterId));
     }
 
 }
