@@ -7,12 +7,15 @@ import db_proj_be.BusinessLogic.Utilities.Hasher;
 import db_proj_be.Database.DAOs.*;
 import db_proj_be.besrc.BeSrcApplication;
 import org.junit.jupiter.api.*;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,6 +23,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -901,6 +907,40 @@ public class StaffAPITests {
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST.value(), status);
         assertFalse(updateResult);
+    }
+
+    @Test
+    @DisplayName("Staff Fetching Adoption Applications - Failure")
+    public void testFetchAllAdoptionApplicationsFailure() {
+        // Arrange
+        JdbcTemplate jdbcTemplateMock = mock(JdbcTemplate.class);
+        StaffAPI controller = new StaffAPI(jdbcTemplateMock);
+        when(jdbcTemplateMock.query(anyString(), Mockito.any(RowMapper.class))).thenThrow(new RuntimeException());
+
+        // Act
+        ResponseEntity<List<AdoptionApplication>> responseEntity = controller.fetchAllAdoptionApplications();
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertTrue(responseEntity.getBody().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Staff Fetching Adoption Applications By Status - Failure")
+    public void testFetchAdoptionApplicationsByStatusFailure() {
+        // Arrange
+        JdbcTemplate jdbcTemplateMock = mock(JdbcTemplate.class);
+        StaffAPI controller = new StaffAPI(jdbcTemplateMock);
+        when(jdbcTemplateMock.query(anyString(), Mockito.any(RowMapper.class), Mockito.anyString())).thenThrow(new RuntimeException());
+
+        // Act
+        ResponseEntity<List<AdoptionApplication>> responseEntity = controller.fetchAdoptionApplicationsByStatus(ApplicationStatus.PENDING);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertTrue(responseEntity.getBody().isEmpty());
     }
 
 }
