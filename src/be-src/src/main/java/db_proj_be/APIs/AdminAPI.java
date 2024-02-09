@@ -37,6 +37,7 @@ public class AdminAPI {
         return new ResponseEntity<>(resultAdminObject,
                 (resultAdminObject != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
+
     @PostMapping("createShelter")
     @ResponseBody
     public ResponseEntity<Shelter> createShelter(@RequestBody Shelter shelterToBeCreated){
@@ -56,6 +57,7 @@ public class AdminAPI {
         Staff createdStaff = this.adminService.createStaff(staffToBeCreated);
         return new ResponseEntity<>(createdStaff, (createdStaff != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
+
     @PostMapping("deleteShelter")
     @ResponseBody
     public ResponseEntity<Boolean> deleteShelter(@RequestBody Shelter shelterToBeDeleted){
@@ -63,10 +65,12 @@ public class AdminAPI {
         boolean result = this.adminService.deleteShelter(shelterToBeDeleted);
         return new ResponseEntity<>(result,(result) ? HttpStatus.OK:HttpStatus.BAD_REQUEST);
     }
+
     @PostMapping("findAllShelters")
     @ResponseBody
     public ResponseEntity<List<Shelter>> findAllShelters(){
         Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to display all shelters.",0);
         return new ResponseEntity<>(this.adminService.findAllShelters(),HttpStatus.OK);
     }
+
 }

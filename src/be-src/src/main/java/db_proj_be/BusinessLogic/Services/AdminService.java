@@ -8,7 +8,6 @@ import db_proj_be.BusinessLogic.Utilities.Logger;
 import db_proj_be.Database.DAOs.AdminDAO;
 import db_proj_be.Database.DAOs.ShelterDAO;
 import db_proj_be.Database.DAOs.StaffDAO;
-import org.apache.juli.logging.Log;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -104,6 +103,7 @@ public class AdminService {
         Logger.logMsgFrom(this.getClass().getName(), "Something had went wrong ..", 1);
         return null;
     }
+
     public Shelter createShelter(Shelter shelter) {
         if(shelter == null){
             Logger.logMsgFrom(this.getClass().getName(),"Shelter creation failed .. shelter object sent is null",1);
@@ -115,17 +115,15 @@ public class AdminService {
             return null;
         }
         Shelter createdShelter = this.shelterDAO.findById(createdShelterId);
-        if(createdShelter != null){
-            Logger.logMsgFrom(this.getClass().getName(),"Created a shelter record with id "+createdShelterId + " successfully. ",0);
-            return createdShelter;
-        }
-        Logger.logMsgFrom(this.getClass().getName(),"Something went wrong .. ",1);
-        return null;
+        Logger.logMsgFrom(this.getClass().getName(),"Created a shelter record with id " + createdShelterId + " successfully. ",0);
+        return createdShelter;
     }
+
     public List<Shelter> findAllShelters(){
         Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to get all system shelters .. processing the request .. ",0);
         return this.shelterDAO.findAll();
     }
+
     public boolean deleteShelter(Shelter shelter){
         if(shelter == null ){
             Logger.logMsgFrom(this.getClass().getName(),"Shelter object to be deleted was sent null",1);
@@ -134,8 +132,10 @@ public class AdminService {
         Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to deleter shelter with id: "+shelter.getId()+" processing the request .. ",0);
         return this.shelterDAO.delete(shelter);
     }
+
     public boolean deleteShelterByName(String name){
         Logger.logMsgFrom(this.getClass().getName(),"Admin has requested to deleter shelter with id: "+name+" processing the request .. ",0);
         return this.shelterDAO.deleteByName(name);
     }
+
 }

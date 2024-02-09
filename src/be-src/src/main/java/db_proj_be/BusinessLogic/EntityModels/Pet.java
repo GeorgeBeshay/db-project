@@ -1,10 +1,6 @@
 package db_proj_be.BusinessLogic.EntityModels;
 
-
-import org.springframework.data.relational.core.sql.In;
-
 import java.util.Objects;
-
 
 public class Pet implements Identifiable {
 
@@ -152,10 +148,10 @@ public class Pet implements Identifiable {
         Pet pet = (Pet) o;
         return id == pet.id &&
                 gender == pet.gender &&
-                shelterId == pet.shelterId &&
                 neutering == pet.neutering &&
                 houseTraining == pet.houseTraining &&
                 vaccination == pet.vaccination &&
+                Objects.equals(shelterId, pet.shelterId) &&
                 Objects.equals(name, pet.name) &&
                 Objects.equals(specie, pet.specie) &&
                 Objects.equals(breed, pet.breed) &&
