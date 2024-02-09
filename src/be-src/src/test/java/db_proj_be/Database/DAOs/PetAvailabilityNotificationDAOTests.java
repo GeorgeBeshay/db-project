@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -17,6 +19,7 @@ import java.sql.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = BeSrcApplication.class)
@@ -207,6 +210,133 @@ public class PetAvailabilityNotificationDAOTests {
         this.clean(petId, adopterId);
     }
 
+    @Test
+    public void testPetAvailabilityNotificationDeletionCatchBlock() {
+        // Arrange
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe36@example.com");
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        PetAvailabilityNotification petAvailabilityNotification = new PetAvailabilityNotification(petId, adopterId, status, date);
+
+        boolean isSuccess = petAvailabilityNotificationDao.create(petAvailabilityNotification);
+        assertTrue(isSuccess);
+
+        boolean newStatus = true;
+        petAvailabilityNotification.setStatus(newStatus);
+
+        // Act
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.update(
+                any(),
+                anyInt(),
+                anyInt()
+        ))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.petAvailabilityNotificationDao =
+                new PetAvailabilityNotificationDAO(mockJdbcTemplate);
+        isSuccess = petAvailabilityNotificationDao.delete(petAvailabilityNotification);
+
+        // Assert
+        assertFalse(isSuccess);
+
+        // clean
+        this.clean(petId, adopterId);
+    }
+
+    // ------------------------- Updating Tests -------------------------
+
+    @Test
+    public void testPetAvailabilityNotificationUpdatingNullObject() {
+        // Arrange - none
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> petAvailabilityNotificationDao.update(null));
+    }
+
+    @Test
+    public void testApplicationNotificationUpdatingObjectDoesntExist() {
+        // Arrange
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe37@example.com");
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        PetAvailabilityNotification petAvailabilityNotification = new PetAvailabilityNotification(petId, adopterId, status, date);
+
+        // Act
+        petAvailabilityNotification.setStatus(true);
+        boolean isSuccess = petAvailabilityNotificationDao.update(petAvailabilityNotification);
+
+        // Assert
+        assertFalse(isSuccess);
+
+        // Clean
+        this.clean(petId, adopterId);
+    }
+
+    @Test
+    public void testPetAvailabilityNotificationUpdatingValidObject() {
+        // Arrange
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe342@example.com");
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        PetAvailabilityNotification petAvailabilityNotification = new PetAvailabilityNotification(petId, adopterId, status, date);
+        boolean isSuccess = petAvailabilityNotificationDao.create(petAvailabilityNotification);
+        assertTrue(isSuccess);
+
+        // Act
+        petAvailabilityNotification.setStatus(true);
+        isSuccess = petAvailabilityNotificationDao.update(petAvailabilityNotification);
+
+        // Assert
+        assertTrue(isSuccess);
+
+        // Clean
+        this.clean(petId, adopterId);
+    }
+
+    @Test
+    public void testPetAvailabilityNotificationUpdatingCatchBlock() {
+        // Arrange
+        int petId = this.createPet();
+        int adopterId = this.createAdopter("john.Doe39@example.com");
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        PetAvailabilityNotification petAvailabilityNotification = new PetAvailabilityNotification(petId, adopterId, status, date);
+        boolean isSuccess = petAvailabilityNotificationDao.create(petAvailabilityNotification);
+        assertTrue(isSuccess);
+
+        boolean newStatus = true;
+        petAvailabilityNotification.setStatus(newStatus);
+
+        // Act
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.update(
+                any(),
+                anyBoolean(),
+                anyInt(),
+                anyInt()
+        ))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.petAvailabilityNotificationDao = new PetAvailabilityNotificationDAO(mockJdbcTemplate);
+        isSuccess = petAvailabilityNotificationDao.update(petAvailabilityNotification);
+
+        // Assert
+        assertFalse(isSuccess);
+
+        // clean
+        this.clean(petId, adopterId);
+    }
+
     // ------------------------- Find Tests -------------------------
 
     @Test
@@ -221,7 +351,7 @@ public class PetAvailabilityNotificationDAOTests {
     @Test
     public void testPetAvailabilityNotificationFindAdopterIdValid() {
         int petId = this.createPet();
-        int adopterId = this.createAdopter("john.Doe36@example.com");
+        int adopterId = this.createAdopter("john.Doe40@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -255,7 +385,7 @@ public class PetAvailabilityNotificationDAOTests {
     public void testPetAvailabilityNotificationFindAppIdValid() {
         // Arrange
         int petId = this.createPet();
-        int adopterId = this.createAdopter("john.Doe37@example.com");
+        int adopterId = this.createAdopter("john.Doe41@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -280,7 +410,7 @@ public class PetAvailabilityNotificationDAOTests {
     public void testPetAvailabilityNotificationFindStatusValid() {
         // Arrange
         int petId = this.createPet();
-        int adopterId = this.createAdopter("john.Doe38@example.com");
+        int adopterId = this.createAdopter("john.Doe42@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -291,7 +421,7 @@ public class PetAvailabilityNotificationDAOTests {
         assertTrue(isSuccess);
 
         int petId2 = this.createPet();
-        int adopterId2 = this.createAdopter("john.Doe39@example.com");
+        int adopterId2 = this.createAdopter("john.Doe43@example.com");
         boolean status2 = true;
         Date date2 = Date.valueOf("2006-03-15");
 
@@ -323,7 +453,7 @@ public class PetAvailabilityNotificationDAOTests {
     public void testPetAvailabilityNotificationFindAll() {
         // Arrange
         int petId = this.createPet();
-        int adopterId = this.createAdopter("john.Doe40@example.com");
+        int adopterId = this.createAdopter("john.Doe44@example.com");
         boolean status = false;
         Date date = Date.valueOf("2001-12-15");
 
@@ -334,7 +464,7 @@ public class PetAvailabilityNotificationDAOTests {
         assertTrue(isSuccess);
 
         int petId2 = this.createPet();
-        int adopterId2 = this.createAdopter("john.Doe41@example.com");
+        int adopterId2 = this.createAdopter("john.Doe45@example.com");
         boolean status2 = true;
         Date date2 = Date.valueOf("2006-03-15");
 
@@ -355,5 +485,89 @@ public class PetAvailabilityNotificationDAOTests {
         // clean
         this.clean(petId, adopterId);
         this.clean(petId2, adopterId2);
+    }
+
+    @Test
+    public void testFindAllCatchBlock() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        // DataAccessException is an abstract class that can't be instantiated directly,
+        // so we can create an instance object on the fly that is of the same type.
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class)))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.petAvailabilityNotificationDao = new PetAvailabilityNotificationDAO(mockJdbcTemplate);
+
+        // Act
+        List<PetAvailabilityNotification> fetchedNotifications = petAvailabilityNotificationDao.findAll();
+
+        // Assert
+        assertNull(fetchedNotifications);
+    }
+
+    @Test
+    public void testFindByAppIdCatchBlock() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class), anyInt()))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.petAvailabilityNotificationDao = new PetAvailabilityNotificationDAO(mockJdbcTemplate);
+
+        // Act
+        int petId = 1;
+        List<PetAvailabilityNotification> fetchedNotifications =
+                petAvailabilityNotificationDao.findByPetId(petId);
+
+        // Assert
+        assertNull(fetchedNotifications);
+    }
+
+    @Test
+    public void testFindByAdopterIdCatchBlock() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        // DataAccessException is an abstract class that can't be instantiated directly,
+        // so we can create an instance object on the fly that is of the same type.
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class), anyInt()))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.petAvailabilityNotificationDao = new PetAvailabilityNotificationDAO(mockJdbcTemplate);
+
+        // Act
+        int adopterId = 1;
+        List<PetAvailabilityNotification> fetchedNotifications =
+                petAvailabilityNotificationDao.findByAdopterId(adopterId);
+
+        // Assert
+        assertNull(fetchedNotifications);
+    }
+
+    @Test
+    public void testFindByStatusCatchBlock() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        // DataAccessException is an abstract class that can't be instantiated directly,
+        // so we can create an instance object on the fly that is of the same type.
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class), anyBoolean()))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.petAvailabilityNotificationDao = new PetAvailabilityNotificationDAO(mockJdbcTemplate);
+
+        // Act
+        boolean status = false;
+        List<PetAvailabilityNotification> fetchedNotifications =
+                petAvailabilityNotificationDao.findByStatus(status);
+
+        // Assert
+        assertNull(fetchedNotifications);
     }
 }
