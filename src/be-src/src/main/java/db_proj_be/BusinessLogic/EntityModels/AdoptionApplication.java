@@ -95,7 +95,13 @@ public class AdoptionApplication implements Identifiable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AdoptionApplication that = (AdoptionApplication) o;
-        return adopterId == that.adopterId && petId == that.petId && status == that.status && description.equals(that.description) && experience.equals(that.experience) && creationDate.equals(that.creationDate) && Objects.equals(closingDate, that.closingDate);
+        return adopterId == that.adopterId &&
+                petId == that.petId &&
+                status == that.status &&
+                description.equals(that.description) &&
+                experience.equals(that.experience) &&
+                creationDate.equals(that.creationDate) &&
+                Objects.equals(closingDate, that.closingDate);
     }
 
     @Override
