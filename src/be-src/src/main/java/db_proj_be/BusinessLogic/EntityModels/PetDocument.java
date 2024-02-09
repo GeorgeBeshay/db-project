@@ -76,4 +76,15 @@ public class PetDocument implements Identifiable {
         result = 31 * result + Arrays.hashCode(document);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "PetDocument{" +
+                "id=" + id +
+                ", petId=" + petId +
+                ", documentType='" + documentType + '\'' +
+                ", name='" + name + '\'' +
+                ", document=" + Arrays.toString(document) +
+                '}';
+    }
 }
