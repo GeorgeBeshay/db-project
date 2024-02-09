@@ -93,8 +93,8 @@ public class ApplicationNotificationDAO {
         }
 
         try {
-            String sql = "UPDATE APPLICATION_NOTIFICATION" +
-                    "SET status = ?" +
+            String sql = "UPDATE APPLICATION_NOTIFICATION " +
+                    "SET status = ? " +
                     "WHERE application_id = ?";
             return jdbcTemplate.update(sql, applicationNotification.getStatus(),
                     applicationNotification.getApplicationId()) > 0;
