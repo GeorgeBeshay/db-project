@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.List;
 
 public class PetAvailabilityNotificationDAO {
@@ -61,17 +60,6 @@ public class PetAvailabilityNotificationDAO {
         try {
             String sql = "SELECT * FROM PET_AVAILABILITY_NOTIFICATION WHERE status = ?";
             return jdbcTemplate.query(sql, rowMapper, status);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    // Return all records with the given date
-    @Transactional
-    public List<PetAvailabilityNotification> findByDate(Date date) {
-        try {
-            String sql = "SELECT * FROM PET_AVAILABILITY_NOTIFICATION WHERE date = ?";
-            return jdbcTemplate.query(sql, rowMapper, date);
         } catch (Exception e) {
             return null;
         }
