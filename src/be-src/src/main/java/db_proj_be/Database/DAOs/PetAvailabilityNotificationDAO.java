@@ -93,7 +93,7 @@ public class PetAvailabilityNotificationDAO {
         }
 
         try {
-            String sql = "UPDATE PET_AVAILABILITY_NOTIFICATION" +
+            String sql = "UPDATE PET_AVAILABILITY_NOTIFICATION " +
                     "SET status = ?" +
                     " WHERE pet_id = ? and adopter_id = ?";
             return jdbcTemplate.update(sql, petAvailabilityNotification.getStatus(),
