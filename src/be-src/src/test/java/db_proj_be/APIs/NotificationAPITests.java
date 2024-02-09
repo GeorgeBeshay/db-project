@@ -2,10 +2,7 @@ package db_proj_be.APIs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import db_proj_be.BusinessLogic.EntityModels.*;
-import db_proj_be.Database.DAOs.AdopterDAO;
-import db_proj_be.Database.DAOs.AdoptionApplicationDAO;
-import db_proj_be.Database.DAOs.ApplicationNotificationDAO;
-import db_proj_be.Database.DAOs.PetDAO;
+import db_proj_be.Database.DAOs.*;
 import db_proj_be.besrc.BeSrcApplication;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +66,7 @@ public class NotificationAPITests {
     private int createAdopter() {
         String firstName = "John";
         String lastName = "Doe";
-        String email = "John.Doe1111@example.com";
+        String email = "John.Doe234@example.com";
         String passwordHash = "hashedpassword";
         String address = "123 Main St, City";
 
@@ -112,9 +109,9 @@ public class NotificationAPITests {
 
     @AfterAll
     public void clean() {
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", this.adoptionApplicationId);
         jdbcTemplate.update("DELETE FROM PET WHERE id = ?", this.petId);
         jdbcTemplate.update("DELETE FROM ADOPTER WHERE id = ?", this.adopterId);
-        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", this.adoptionApplicationId);
     }
 
     @AfterAll
@@ -135,7 +132,7 @@ public class NotificationAPITests {
 
     @Test
     @DisplayName("Updating status of application notification - Successful")
-    public void testUpdateStaffSuccessful() throws Exception {
+    public void testUpdateAppNotSuccessful() throws Exception {
         // Arrange
         int appId = this.adoptionApplicationId;
         int adopterId = this.adopterId;
@@ -171,5 +168,110 @@ public class NotificationAPITests {
         // Clean
         assertEquals(1, jdbcTemplate.update("DELETE FROM APPLICATION_NOTIFICATION WHERE application_id = ?", appId));
     }
+
+    @Test
+    @DisplayName("Updating status of application notification - Failure")
+    public void testUpdateAppNotFailed() throws Exception {
+        // Arrange
+        int appId = this.adoptionApplicationId;
+        int adopterId = this.adopterId;
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        ApplicationNotification applicationNotification = new ApplicationNotification(appId, adopterId, status, date);
+
+        // modify the record
+        boolean newStatus = true;
+        applicationNotification.setStatus(newStatus);
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/notification-api/updateAppNot")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(applicationNotification)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int responseStatus = result.getResponse().getStatus();
+
+        // Assert the status code and Admin object
+        assertEquals(HttpStatus.BAD_REQUEST.value(), responseStatus);
+        assertEquals("false", result.getResponse().getContentAsString());
+
+        // Clean
+        assertEquals(0, jdbcTemplate.update("DELETE FROM APPLICATION_NOTIFICATION WHERE application_id = ?", appId));
+    }
+
+    @Test
+    @DisplayName("Updating status of pet availability notification - Successful")
+    public void testUpdatePetNotSuccessful() throws Exception {
+        // Arrange
+        int petId = this.petId;
+        int adopterId = this.adopterId;
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        PetAvailabilityNotification petAvailabilityNotification = new PetAvailabilityNotification(petId, adopterId, status, date);
+
+        // Act
+        PetAvailabilityNotificationDAO petAvailabilityNotificationDAO =
+                new PetAvailabilityNotificationDAO(jdbcTemplate);
+        boolean isSuccess = petAvailabilityNotificationDAO.create(petAvailabilityNotification);
+
+        // Assert
+        assertTrue(isSuccess);
+
+        // modify the record
+        boolean newStatus = true;
+        petAvailabilityNotification.setStatus(newStatus);
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/notification-api/updatePetNot")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(petAvailabilityNotification)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int responseStatus = result.getResponse().getStatus();
+
+        // Assert the status code and Admin object
+        assertEquals(HttpStatus.OK.value(), responseStatus);
+        assertEquals("true", result.getResponse().getContentAsString());
+
+        // Clean
+        assertEquals(1, jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE pet_id = ? and adopter_id = ?", petId, adopterId));
+    }
+
+    @Test
+    @DisplayName("Updating status of pet availability notification - Failure")
+    public void testUpdatePetNotFailed() throws Exception {
+        // Arrange
+        int petId = this.petId;
+        int adopterId = this.adopterId;
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        PetAvailabilityNotification petAvailabilityNotification = new PetAvailabilityNotification(petId, adopterId, status, date);
+
+        // modify the record
+        boolean newStatus = true;
+        petAvailabilityNotification.setStatus(newStatus);
+
+        // Act
+        MvcResult result = mockMvc.perform(post("http://localhost:8081/pasms-server/notification-api/updatePetNot")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(petAvailabilityNotification)))
+                .andReturn();
+
+        // Retrieve the response status code
+        int responseStatus = result.getResponse().getStatus();
+
+        // Assert the status code and Admin object
+        assertEquals(HttpStatus.BAD_REQUEST.value(), responseStatus);
+        assertEquals("false", result.getResponse().getContentAsString());
+
+        // Clean
+        assertEquals(0, jdbcTemplate.update("DELETE FROM PET_AVAILABILITY_NOTIFICATION WHERE pet_id = ? and adopter_id = ?", petId, adopterId));
+    }
+
 }
 
