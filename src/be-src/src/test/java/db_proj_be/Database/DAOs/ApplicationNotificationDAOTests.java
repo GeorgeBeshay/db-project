@@ -5,6 +5,8 @@ import db_proj_be.besrc.BeSrcApplication;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -12,6 +14,7 @@ import java.sql.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = BeSrcApplication.class)
@@ -42,7 +45,7 @@ public class ApplicationNotificationDAOTests {
 
         String firstName = "John";
         String lastName = "Doe";
-        String email = "John.Doe@example.com";
+        String email = "John.Doe10@example.com";
         String passwordHash = "hashedpassword";
         String address = "123 Main St, City";
 
@@ -226,6 +229,137 @@ public class ApplicationNotificationDAOTests {
         jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", appId);
     }
 
+    @Test
+    public void testApplicationNotificationDeletionCatchBlock() {
+        // Arrange
+        int appId = this.createAdoptionApplication();
+        int adopterId = this.adopterId;
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        ApplicationNotification applicationNotification =
+                new ApplicationNotification(appId, adopterId, status, date);
+
+        boolean isSuccess = applicationNotificationDAO.create(applicationNotification);
+        assertTrue(isSuccess);
+
+        boolean newStatus = true;
+        applicationNotification.setStatus(newStatus);
+
+        // Act
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.update(
+                any(),
+                anyInt()
+        ))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.applicationNotificationDAO = new ApplicationNotificationDAO(mockJdbcTemplate);
+        isSuccess = applicationNotificationDAO.delete(applicationNotification);
+
+        // Assert
+        assertFalse(isSuccess);
+
+        // clean
+        jdbcTemplate.update("DELETE FROM APPLICATION_NOTIFICATION WHERE application_id = ?", appId);
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", appId);
+    }
+
+    // ------------------------- Updating Tests -------------------------
+
+    @Test
+    public void testApplicationNotificationUpdatingNullObject() {
+        // Arrange - none
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> applicationNotificationDAO.update(null));
+    }
+
+    @Test
+    public void testApplicationNotificationUpdatingObjectDoesntExist() {
+        // Arrange - none
+        ApplicationNotification applicationNotification = new ApplicationNotification();
+
+        int appId = this.createAdoptionApplication();
+
+        applicationNotification.setApplicationId(appId);
+        applicationNotification.setAdopterId(this.adopterId);
+        applicationNotification.setStatus(false);
+
+        // Act
+        applicationNotification.setStatus(true);
+        boolean isSuccess = applicationNotificationDAO.update(applicationNotification);
+
+        // Assert
+        assertFalse(isSuccess);
+
+        // Clean
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", appId);
+    }
+
+    @Test
+    public void testApplicationNotificationUpdatingValidObject() {
+        // Arrange
+        int appId = this.createAdoptionApplication();
+        int adopterId = this.adopterId;
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        ApplicationNotification applicationNotification = new ApplicationNotification(appId, adopterId, status, date);
+
+        boolean isSuccess = applicationNotificationDAO.create(applicationNotification);
+        assertTrue(isSuccess);
+
+        // Act
+        applicationNotification.setStatus(true);
+        isSuccess = applicationNotificationDAO.update(applicationNotification);
+
+        // Assert
+        assertTrue(isSuccess);
+
+        // Clean
+        jdbcTemplate.update("DELETE FROM APPLICATION_NOTIFICATION WHERE application_id = ?", appId);
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", appId);
+    }
+
+    @Test
+    public void testApplicationNotificationUpdatingCatchBlock() {
+        // Arrange
+        int appId = this.createAdoptionApplication();
+        int adopterId = this.adopterId;
+        boolean status = false;
+        Date date = Date.valueOf("2001-12-15");
+
+        ApplicationNotification applicationNotification = new ApplicationNotification(appId, adopterId, status, date);
+
+        boolean isSuccess = applicationNotificationDAO.create(applicationNotification);
+        assertTrue(isSuccess);
+
+        boolean newStatus = true;
+        applicationNotification.setStatus(newStatus);
+
+        // Act
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.update(
+                any(),
+                anyBoolean(),
+                anyInt()
+        ))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.applicationNotificationDAO = new ApplicationNotificationDAO(mockJdbcTemplate);
+        isSuccess = applicationNotificationDAO.update(applicationNotification);
+
+        // Assert
+        assertFalse(isSuccess);
+
+        // clean
+        jdbcTemplate.update("DELETE FROM APPLICATION_NOTIFICATION WHERE application_id = ?", appId);
+        jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", appId);
+    }
+
     // ------------------------- Find Tests -------------------------
 
     @Test
@@ -382,4 +516,87 @@ public class ApplicationNotificationDAOTests {
         jdbcTemplate.update("DELETE FROM ADOPTION_APPLICATION WHERE id = ?", appId2);
     }
 
+    @Test
+    public void testFindAllCatchBlock() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        // DataAccessException is an abstract class that can't be instantiated directly,
+        // so we can create an instance object on the fly that is of the same type.
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class)))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.applicationNotificationDAO = new ApplicationNotificationDAO(mockJdbcTemplate);
+
+        // Act
+        List<ApplicationNotification> fetchedAppNotifications = applicationNotificationDAO.findAll();
+
+        // Assert
+        assertNull(fetchedAppNotifications);
+    }
+
+    @Test
+    public void testFindByAppIdCatchBlock() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class), anyInt()))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.applicationNotificationDAO = new ApplicationNotificationDAO(mockJdbcTemplate);
+
+        // Act
+        int appId = 1;
+        List<ApplicationNotification> fetchedAppNotifications =
+                applicationNotificationDAO.findByAppId(appId);
+
+        // Assert
+        assertNull(fetchedAppNotifications);
+    }
+
+    @Test
+    public void testFindByAdopterIdCatchBlock() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        // DataAccessException is an abstract class that can't be instantiated directly,
+        // so we can create an instance object on the fly that is of the same type.
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class), anyInt()))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.applicationNotificationDAO = new ApplicationNotificationDAO(mockJdbcTemplate);
+
+        // Act
+        int adopterId = 1;
+        List<ApplicationNotification> fetchedAppNotifications =
+                applicationNotificationDAO.findByAdopterId(adopterId);
+
+        // Assert
+        assertNull(fetchedAppNotifications);
+    }
+
+    @Test
+    public void testFindByStatusCatchBlock() {
+        // Arrange
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        // DataAccessException is an abstract class that can't be instantiated directly,
+        // so we can create an instance object on the fly that is of the same type.
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class), anyBoolean()))
+                .thenThrow(new DataAccessException("Test DataAccessException") {
+                });
+
+        this.applicationNotificationDAO = new ApplicationNotificationDAO(mockJdbcTemplate);
+
+        // Act
+        boolean status = false;
+        List<ApplicationNotification> fetchedAppNotifications =
+                applicationNotificationDAO.findByStatus(status);
+
+        // Assert
+        assertNull(fetchedAppNotifications);
+    }
 }
